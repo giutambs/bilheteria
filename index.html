@@ -1,0 +1,3202 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Tevelisão</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'%3E%3Cline x1='38.6' y1='19.7' x2='26.8' y2='3.2' stroke='%23c7cdd6' stroke-width='3.5' stroke-linecap='round'/%3E%3Cline x1='57.4' y1='19.7' x2='69.2' y2='3.2' stroke='%23c7cdd6' stroke-width='3.5' stroke-linecap='round'/%3E%3Crect x='7.9' y='19.7' width='80.2' height='59' rx='10' fill='%23a9682f' stroke='%230e1c30' stroke-width='2.5'/%3E%3Crect x='17.3' y='29.1' width='47.2' height='37.8' rx='3.5' fill='%230e1c30'/%3E%3Crect x='18.5' y='30.3' width='7.1' height='35.4' fill='%23f1ecdd'/%3E%3Crect x='25.6' y='30.3' width='7.1' height='35.4' fill='%23ffcc33'/%3E%3Crect x='32.7' y='30.3' width='7.0' height='35.4' fill='%232bb3a0'/%3E%3Crect x='39.7' y='30.3' width='7.1' height='35.4' fill='%233fae4a'/%3E%3Crect x='46.8' y='30.3' width='7.1' height='35.4' fill='%23d24fb0'/%3E%3Crect x='53.9' y='30.3' width='7.1' height='35.4' fill='%23e8453a'/%3E%3Ccircle cx='75.1' cy='38.6' r='5.3' fill='%230e1c30' stroke='%23ffcc33' stroke-width='1.8'/%3E%3Ccircle cx='75.1' cy='57.4' r='5.3' fill='%230e1c30' stroke='%23ffcc33' stroke-width='1.8'/%3E%3Crect x='17.3' y='77.5' width='10.6' height='8.3' rx='1.8' fill='%230e1c30'/%3E%3Crect x='65.7' y='77.5' width='10.6' height='8.3' rx='1.8' fill='%230e1c30'/%3E%3C/svg%3E">
+<link rel="shortcut icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'%3E%3Cline x1='38.6' y1='19.7' x2='26.8' y2='3.2' stroke='%23c7cdd6' stroke-width='3.5' stroke-linecap='round'/%3E%3Cline x1='57.4' y1='19.7' x2='69.2' y2='3.2' stroke='%23c7cdd6' stroke-width='3.5' stroke-linecap='round'/%3E%3Crect x='7.9' y='19.7' width='80.2' height='59' rx='10' fill='%23a9682f' stroke='%230e1c30' stroke-width='2.5'/%3E%3Crect x='17.3' y='29.1' width='47.2' height='37.8' rx='3.5' fill='%230e1c30'/%3E%3Crect x='18.5' y='30.3' width='7.1' height='35.4' fill='%23f1ecdd'/%3E%3Crect x='25.6' y='30.3' width='7.1' height='35.4' fill='%23ffcc33'/%3E%3Crect x='32.7' y='30.3' width='7.0' height='35.4' fill='%232bb3a0'/%3E%3Crect x='39.7' y='30.3' width='7.1' height='35.4' fill='%233fae4a'/%3E%3Crect x='46.8' y='30.3' width='7.1' height='35.4' fill='%23d24fb0'/%3E%3Crect x='53.9' y='30.3' width='7.1' height='35.4' fill='%23e8453a'/%3E%3Ccircle cx='75.1' cy='38.6' r='5.3' fill='%230e1c30' stroke='%23ffcc33' stroke-width='1.8'/%3E%3Ccircle cx='75.1' cy='57.4' r='5.3' fill='%230e1c30' stroke='%23ffcc33' stroke-width='1.8'/%3E%3Crect x='17.3' y='77.5' width='10.6' height='8.3' rx='1.8' fill='%230e1c30'/%3E%3Crect x='65.7' y='77.5' width='10.6' height='8.3' rx='1.8' fill='%230e1c30'/%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep:#ffffff;
+    --bg-panel:#ffffff;
+    --bg-panel-alt:#f1f1f1;
+    --border:#e2e2e2;
+    --gold:#e8a415;
+    --gold-dim:#c4870c;
+    --cream:#1a1a1a;
+    --slate:#6b6b6b;
+    --teal:#1c8f79;
+    --red:#c93a2e;
+    --wood:#a9682f;
+    --wood-dim:#7a4a20;
+    --on-gold:#1b2740;
+    --gold-text:#7a4d08;
+  }
+  html[data-theme="dark"]{
+    --bg-deep:#12141c;
+    --bg-panel:#1b1e29;
+    --bg-panel-alt:#242838;
+    --border:#333a4d;
+    --gold:#ffcc33;
+    --gold-dim:#dda818;
+    --cream:#f1ecdd;
+    --slate:#97a0b5;
+    --teal:#2bb3a0;
+    --red:#e8453a;
+    --wood:#c9863f;
+    --wood-dim:#a9682f;
+    --on-gold:#12213a;
+    --gold-text:#ffcc33;
+  }
+  *{box-sizing:border-box;}
+  html{overflow-x:hidden;width:100%;}
+  body{margin:0;background:var(--bg-deep);color:var(--cream);font-family:'Poppins',sans-serif;transition:background-color .25s ease, color .25s ease;overflow-x:hidden;width:100%;max-width:100vw;}
+  h1,h2,h3,.display{font-family:'Poppins',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.03em;}
+  .mono{font-family:'Poppins',sans-serif;font-weight:600;}
+  a{color:inherit;}
+
+  .topbar{
+    background:var(--bg-panel);border-bottom:2px solid var(--gold-dim);
+    padding:10px 14px;display:flex;align-items:center;gap:10px;
+    position:sticky;top:0;z-index:35;
+  }
+  .sidebar-toggle-btn{
+    background:none;border:1px solid var(--border);border-radius:8px;color:var(--cream);
+    width:38px;height:38px;flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;
+    transition:background-color .15s ease, border-color .15s ease;
+  }
+  .sidebar-toggle-btn:hover{border-color:var(--gold-dim);color:var(--gold-text);}
+  .brand{display:flex;align-items:center;gap:12px;flex-shrink:0;}
+  .logo-badge{height:40px;display:flex;align-items:center;flex-shrink:0;}
+  .logo-svg{height:100%;width:auto;}
+  @keyframes tvflicker{0%,100%{opacity:1;}92%{opacity:1;}94%{opacity:.75;}96%{opacity:1;}}
+  .tv-stripes{animation:tvflicker 3.6s infinite;transform-origin:center;}
+  .brand-sub{display:none;color:var(--slate);font-size:11px;text-transform:none;letter-spacing:0;font-family:'Poppins',sans-serif;white-space:nowrap;}
+  .sidebar-sub{display:block;padding:14px 16px 4px;margin:0;}
+
+  .global-profile-bar{margin-left:auto;display:flex;align-items:center;min-width:0;}
+
+  .app-shell{display:flex;align-items:stretch;}
+  .sidebar{
+    width:190px;flex-shrink:0;max-width:65vw;
+    background:var(--bg-panel);border-right:2px solid var(--gold-dim);
+    overflow-y:auto;overflow-x:hidden;padding-bottom:24px;
+    transition:width .3s cubic-bezier(.22,.68,0,1), opacity .2s ease, border-color .3s ease;
+  }
+  .sidebar.collapsed{width:0;opacity:0;border-right-color:transparent;pointer-events:none;}
+  .tabs{display:flex;flex-direction:column;gap:2px;padding:10px;width:190px;}
+  .tab{
+    background:none;border:none;color:var(--slate);font-family:'Poppins',sans-serif;text-transform:uppercase;
+    letter-spacing:.04em;font-size:13px;font-weight:600;padding:12px 14px;cursor:pointer;border-radius:8px;white-space:nowrap;
+    border-left:3px solid transparent;text-align:left;width:100%;
+    display:flex;align-items:center;gap:11px;
+  }
+  .tab .tab-icon{display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--gold);}
+  .tab .tab-icon svg{width:20px;height:20px;display:block;}
+  .tab:hover{color:var(--cream);background:rgba(255,255,255,.04);}
+  .tab.active{color:var(--gold-text);border-left:3px solid var(--gold);background:var(--bg-deep);font-weight:700;}
+
+  .perf{
+    height:7px;
+    background:linear-gradient(90deg,
+      #f1ecdd 0%, #f1ecdd calc(100%/6),
+      #ffcc33 calc(100%/6), #ffcc33 calc(200%/6),
+      #2bb3a0 calc(200%/6), #2bb3a0 calc(300%/6),
+      #3fae4a calc(300%/6), #3fae4a calc(400%/6),
+      #d24fb0 calc(400%/6), #d24fb0 calc(500%/6),
+      #e8453a calc(500%/6), #e8453a 100%);
+  }
+
+  main{flex:1;min-width:0;max-width:1100px;margin:0 auto;padding:22px 20px 60px;}
+  .hidden{display:none !important;}
+
+  .searchbar{display:flex;gap:10px;margin-bottom:20px;}
+  .searchbar input{
+    flex:1;background:var(--bg-panel);border:1px solid var(--border);color:var(--cream);
+    padding:12px 14px;border-radius:8px;font-size:15px;font-family:'Poppins',sans-serif;
+  }
+  .searchbar input:focus{outline:none;border-color:var(--gold-dim);}
+  .section-title{display:flex;align-items:center;gap:10px;margin:26px 0 14px;color:var(--slate);font-size:14px;}
+  .section-title::after{content:'';flex:1;height:1px;background:var(--border);}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:16px;}
+  .poster-card{
+    cursor:pointer;position:relative;background:var(--bg-panel);border:1px solid var(--border);
+    border-radius:12px;overflow:hidden;transition:border-color .2s ease;
+  }
+  .poster-card:hover{border-color:var(--gold-dim);}
+  .poster-card .poster-img{
+    width:100%;aspect-ratio:2/3;background:var(--bg-panel-alt);position:relative;overflow:hidden;
+  }
+  .poster-card .poster-img-inner{
+    position:absolute;inset:0;background-size:cover;background-position:center;
+    transition:transform .45s cubic-bezier(.22,.68,0,1);
+  }
+  .poster-card:hover .poster-img-inner, .poster-card:focus-visible .poster-img-inner{transform:scale(1.09);}
+  .poster-card .poster-img.noimg::after{content:'🎞';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:32px;color:var(--slate);}
+  .poster-card .card-tag{
+    position:absolute;top:8px;left:8px;z-index:2;background:var(--gold);color:var(--on-gold);
+    font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;padding:5px 10px;border-radius:6px;
+    box-shadow:0 3px 10px rgba(0,0,0,.45);
+  }
+  .poster-card .card-body{padding:10px 11px 12px;}
+  .poster-card .card-body .title{font-size:13px;font-weight:700;line-height:1.3;color:var(--cream);margin:0 0 3px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+  .poster-card .card-body .year{font-size:11px;color:var(--slate);}
+  .poster-card .card-pills{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;}
+  .poster-card .card-pill{background:var(--bg-panel-alt);color:var(--cream);font-size:9.5px;font-weight:600;padding:3px 8px;border-radius:20px;border:1px solid var(--border);white-space:nowrap;}
+  .badge{
+    position:absolute;top:8px;right:8px;background:var(--teal);color:var(--on-gold);font-family:'Poppins',sans-serif;
+    font-size:11px;font-weight:600;padding:2px 6px;border-radius:4px;z-index:2;
+  }
+  .badge.want{background:var(--gold);}
+  .badge.fav{background:var(--red);color:#fff;}
+
+  .empty{text-align:center;padding:50px 20px;color:var(--slate);}
+  .empty .icon{font-size:38px;margin-bottom:10px;}
+
+  .overlay{position:fixed;inset:0;background:rgba(8,9,13,.75);display:flex;align-items:center;justify-content:center;padding:20px;z-index:50;}
+  .modal{background:var(--bg-panel);border:1px solid var(--border);border-radius:12px;max-width:560px;width:100%;max-height:88vh;overflow-y:auto;}
+  .modal-hero{width:100%;aspect-ratio:16/7;background:var(--bg-panel-alt) center/cover no-repeat;border-radius:12px 12px 0 0;position:relative;}
+  .modal-body{padding:20px 22px 24px;}
+  .modal-body h2{font-size:22px;margin:0 0 4px;color:var(--gold-text);}
+  .modal-meta{color:var(--slate);font-size:12.5px;margin-bottom:12px;}
+  .modal-overview{font-size:13.5px;line-height:1.55;color:var(--cream);margin-bottom:14px;}
+  .detail-info-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px;margin-bottom:18px;padding:12px;background:var(--bg-panel-alt);border-radius:10px;}
+  .awards-pill{background:linear-gradient(90deg,#7a4d08,#e8a415);color:#1b1405;font-size:12.5px;font-weight:700;padding:10px 14px;border-radius:10px;margin-bottom:14px;line-height:1.4;}
+  .awards-hero{position:relative;overflow:hidden;border-radius:18px;padding:30px 28px;margin-bottom:20px;background:linear-gradient(115deg,#1b1a2e 0%,#2a1f2e 45%,#4a3020 100%);}
+  .awards-hero-star{position:absolute;top:-20px;right:-20px;width:170px;height:170px;pointer-events:none;}
+  .awards-hero-label{color:#e8a415;font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:9px;}
+  .awards-hero-title{color:#ffffff;font-family:'Poppins',sans-serif;font-weight:800;font-size:clamp(27px,5.8vw,38px);margin:0 0 11px;text-transform:uppercase;letter-spacing:.01em;position:relative;z-index:1;}
+  .awards-hero-sub{color:#d8d5e0;font-size:13px;line-height:1.65;margin:0;max-width:520px;position:relative;z-index:1;}
+  .detail-info-item{display:flex;flex-direction:column;gap:2px;}
+  .detail-info-item .dl{font-size:10px;color:var(--slate);text-transform:uppercase;letter-spacing:.04em;}
+  .detail-info-item .dv{font-size:12.5px;color:var(--cream);font-weight:600;}
+  .cast-scroll{display:flex;gap:12px;overflow-x:auto;padding-bottom:6px;margin-bottom:6px;scroll-behavior:smooth;}
+  .cast-card{flex:0 0 76px;text-align:center;}
+  .cast-photo{width:76px;height:76px;border-radius:50%;background:var(--bg-panel-alt) center/cover no-repeat;border:1px solid var(--border);margin-bottom:6px;position:relative;}
+  .cast-photo.noimg::after{content:'👤';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:26px;color:var(--slate);}
+  .cast-name{font-size:11px;color:var(--cream);font-weight:600;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .cast-role{font-size:10px;color:var(--slate);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .close-btn{position:absolute;top:10px;right:10px;background:rgba(0,0,0,.55);border:none;color:#fff;width:30px;height:30px;border-radius:50%;font-size:16px;cursor:pointer;}
+  .btn-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;}
+  .btn{
+    border:1px solid var(--border);background:var(--bg-panel-alt);color:var(--cream);padding:9px 14px;border-radius:7px;
+    font-family:'Poppins',sans-serif;text-transform:uppercase;font-size:12.5px;letter-spacing:.03em;cursor:pointer;
+  }
+  .btn:hover{border-color:var(--gold-dim);}
+  .btn.primary{background:var(--gold);color:var(--on-gold);border-color:var(--gold);}
+  .btn.on{background:var(--teal);color:var(--on-gold);border-color:var(--teal);}
+  .btn.on.want{background:var(--gold);color:var(--on-gold);}
+  .btn.on.fav{background:var(--red);color:#fff;border-color:var(--red);}
+  .btn.danger{color:var(--red);border-color:var(--red);background:transparent;}
+  .btn.small{padding:7px 10px;font-size:11px;}
+
+  .rating-section{text-align:center;}
+  .stars{display:flex;gap:6px;margin:6px 0 4px;align-items:center;justify-content:center;}
+  .star-wrap{position:relative;display:inline-block;width:42px;height:42px;cursor:pointer;flex-shrink:0;}
+  .star-wrap svg{position:absolute;inset:0;}
+  .star-wrap .star-fill{position:absolute;inset:0;overflow:hidden;}
+  .rating-numeric{font-size:12px;color:var(--slate);margin:0 0 14px;text-align:center;}
+  .feelings-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:8px auto 16px;max-width:420px;}
+  .feeling-option{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 4px;border-radius:12px;border:2px solid var(--border);cursor:pointer;color:var(--slate);transition:transform .15s ease,border-color .15s ease,color .15s ease,background-color .15s ease;}
+  .feeling-emoji{font-size:44px;line-height:1;}
+  .feeling-emoji-img{width:44px;height:44px;display:block;}
+  .feeling-option:active{transform:scale(.92);}
+  .feeling-option.selected{border-color:var(--gold);color:var(--gold-text);background:var(--bg-panel-alt);}
+  .feeling-option span{font-size:13px;font-weight:700;text-align:center;line-height:1.2;}
+  textarea{
+    width:100%;min-height:70px;background:var(--bg-deep);border:1px solid var(--border);color:var(--cream);
+    border-radius:7px;padding:10px;font-family:'Poppins',sans-serif;font-size:13px;resize:vertical;
+  }
+  label{display:block;font-size:11.5px;color:var(--slate);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;}
+
+  .ticket{
+    display:flex;background:linear-gradient(135deg,var(--bg-panel-alt),var(--bg-panel));
+    border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:12px;position:relative;
+  }
+  .ticket-poster{width:64px;flex-shrink:0;background:var(--bg-deep) center/cover no-repeat;overflow:hidden;transition:background-size .4s cubic-bezier(.22,.68,0,1);}
+  .ticket:hover .ticket-poster{background-size:118%;}
+  .ticket-main{flex:1;padding:10px 12px;min-width:0;}
+  .ticket-main .t-title{font-size:14px;color:var(--cream);margin:0 0 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .ticket-main .t-meta{font-size:11px;color:var(--slate);margin-bottom:6px;}
+  .ticket-main .t-notes{font-size:11.5px;color:var(--slate);font-style:italic;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .ticket-stub{
+    width:74px;flex-shrink:0;border-left:2px dashed var(--border);position:relative;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+    background:radial-gradient(circle at 0 0, transparent 8px, var(--bg-panel) 8.5px) top left / 100% 50% no-repeat,
+               radial-gradient(circle at 0 100%, transparent 8px, var(--bg-panel) 8.5px) bottom left / 100% 50% no-repeat;
+  }
+  .ticket-stub .admit{font-size:8.5px;color:var(--slate);text-transform:uppercase;letter-spacing:.06em;}
+  .ticket-stub .stub-rating{font-family:'Poppins',sans-serif;color:var(--gold-text);font-size:15px;font-weight:600;}
+
+  .stat-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:26px;}
+  .stat-card{background:var(--bg-panel);border:1px solid var(--border);border-radius:9px;padding:14px;text-align:center;}
+  .stat-card .num{font-family:'Poppins',sans-serif;font-weight:800;font-size:26px;color:var(--gold-text);}
+  .stat-card .lbl{font-size:11px;color:var(--slate);text-transform:uppercase;letter-spacing:.04em;margin-top:4px;}
+  .bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:12.5px;}
+  .bar-row .lbl{width:110px;flex-shrink:0;color:var(--slate);text-align:right;}
+  .bar-track{flex:1;background:var(--bg-panel-alt);border-radius:4px;height:14px;overflow:hidden;}
+  .bar-fill{height:100%;background:linear-gradient(90deg,var(--gold-dim),var(--gold));}
+  .bar-row .count{width:26px;font-family:'Poppins',sans-serif;font-weight:700;color:var(--cream);}
+
+  .config-box{max-width:480px;background:var(--bg-panel);border:1px solid var(--border);border-radius:10px;padding:22px;margin-bottom:24px;}
+  .theme-toggle-row{display:flex;gap:10px;margin-top:6px;}
+  .theme-btn{flex:1;background:var(--bg-panel-alt);border:2px solid var(--border);color:var(--slate);padding:14px 10px;border-radius:10px;font-family:'Poppins',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:border-color .15s ease,color .15s ease,transform .15s ease;}
+  .theme-btn:active{transform:scale(.96);}
+  .theme-btn.active{border-color:var(--gold);color:var(--gold-text);background:var(--bg-deep);}
+  .config-box input, .config-box textarea{width:100%;background:var(--bg-deep);border:1px solid var(--border);color:var(--cream);padding:10px 12px;border-radius:7px;font-family:'Poppins',sans-serif;font-size:12.5px;margin-bottom:10px;}
+  .config-box textarea{min-height:110px;}
+  .config-box p{font-size:12.5px;color:var(--slate);line-height:1.6;}
+  .config-box a{color:var(--gold-text);text-decoration:underline;}
+  .status-msg{font-size:12.5px;margin-top:8px;}
+  .status-ok{color:var(--teal);}
+  .status-err{color:var(--red);}
+
+  .profile-bar{
+    display:flex;align-items:center;gap:6px;flex-wrap:nowrap;font-size:12px;min-width:0;
+  }
+  .profile-bar input{
+    background:var(--bg-panel-alt);border:1px solid var(--border);color:var(--cream);
+    padding:7px 10px;border-radius:20px;font-size:12px;width:110px;min-width:60px;
+  }
+  .profile-bar input:focus{outline:none;border-color:var(--gold-dim);}
+  .profile-bar .btn.small{padding:7px 12px;font-size:11.5px;border-radius:20px;white-space:nowrap;}
+  .who-pill{
+    display:flex;align-items:center;gap:6px;background:var(--bg-panel-alt);border:1px solid var(--gold-dim);
+    color:var(--gold-text);padding:5px 6px 5px 10px;border-radius:20px;font-size:11.5px;white-space:nowrap;
+    text-transform:uppercase;letter-spacing:.03em;
+  }
+  .who-pill button{
+    background:rgba(255,255,255,.08);border:none;color:var(--cream);width:18px;height:18px;border-radius:50%;
+    cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;line-height:1;padding:0;
+  }
+  .readonly-tag{background:var(--bg-panel-alt);color:var(--slate);padding:2px 8px;border-radius:4px;font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;}
+
+  /* ---------- profile tab ---------- */
+  .profile-top{position:relative;}
+  .cover-wrap{position:relative;border-radius:12px;overflow:hidden;border:1px solid var(--border);}
+  .cover-img{width:100%;aspect-ratio:16/5;background:var(--bg-panel-alt) center/cover no-repeat;position:relative;}
+  .cover-img.noimg::after{content:'🎬 escolha uma capa';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--slate);font-size:13px;letter-spacing:.03em;}
+  .avatar-wrap{position:absolute;left:24px;bottom:-42px;z-index:5;}
+  .avatar{width:96px;height:96px;border-radius:50%;background:var(--bg-panel-alt) center/cover no-repeat;border:4px solid var(--bg-deep);position:relative;cursor:default;overflow:hidden;}
+  .avatar.noimg::after{content:'👤';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:34px;color:var(--slate);}
+  .avatar-edit-btn{
+    position:absolute;bottom:0;right:0;background:var(--gold);color:var(--on-gold);border:2px solid var(--bg-deep);
+    width:36px;height:36px;border-radius:50%;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+    z-index:6;
+  }
+  .profile-header{padding:52px 24px 20px;}
+  .profile-header .pname{font-size:22px;color:var(--gold-text);margin:0 0 4px;}
+  .profile-header .ptag{color:var(--slate);font-size:12.5px;}
+  .cover-picker-btn{margin-top:10px;}
+  .cover-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px;}
+  .char-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px 10px;margin-top:8px;max-height:60vh;overflow-y:auto;padding:4px;}
+  .char-option{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;text-align:center;}
+  .char-option svg{transition:transform .15s ease;border-radius:50%;}
+  .char-option:active svg{transform:scale(.9);}
+  .char-option span{font-size:10px;color:var(--cream);line-height:1.25;}
+  .cover-opt{aspect-ratio:16/9;border-radius:6px;background:var(--bg-panel-alt) center/cover no-repeat;cursor:pointer;border:2px solid transparent;position:relative;}
+  .cover-opt:hover{border-color:var(--gold-dim);}
+  .cover-opt .cap{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.65);font-size:9px;padding:3px 5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+  /* ---------- stats: sub-tabs ---------- */
+  .stat-subtabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:18px;}
+  .stat-subtab{flex:1;text-align:center;padding:10px;background:none;border:none;color:var(--slate);font-family:'Poppins',sans-serif;text-transform:uppercase;letter-spacing:.04em;font-size:13px;cursor:pointer;border-bottom:3px solid transparent;}
+  .stat-subtab.active{color:var(--gold-text);border-bottom-color:var(--gold);}
+
+  /* ---------- stats: big number blocks ---------- */
+  .big-stat-card{background:var(--bg-panel);border:1px solid var(--border);border-radius:10px;padding:16px 18px;margin-bottom:14px;}
+  .big-stat-card .bs-title{font-size:12.5px;color:var(--slate);margin-bottom:8px;}
+  .big-stat-card .bs-num{font-family:'Poppins',sans-serif;font-weight:800;color:var(--gold-text);font-size:26px;}
+  .big-stat-card .bs-num .unit{font-family:'Poppins',sans-serif;font-size:13px;color:var(--slate);margin-right:10px;}
+  .big-stat-card .bs-sub{font-size:11px;color:var(--slate);margin-top:6px;}
+
+  /* ---------- stats: vertical bar chart ---------- */
+  .vbar-chart{display:flex;align-items:flex-end;gap:5px;height:110px;margin:16px 0 4px;padding-top:16px;overflow-x:auto;}
+  .vbar-col{flex:1;min-width:20px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;}
+  .vbar-val{font-size:9.5px;color:var(--slate);margin-bottom:4px;font-family:'Poppins',sans-serif;white-space:nowrap;}
+  .vbar{width:100%;max-width:20px;background:var(--bg-panel-alt);border-radius:3px 3px 0 0;min-height:2px;}
+  .vbar.current{background:linear-gradient(180deg,var(--gold),var(--gold-dim));}
+  .vbar-lbl{font-size:9px;color:var(--slate);margin-top:4px;text-transform:uppercase;}
+
+  /* ---------- stats: table ---------- */
+  .stat-table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:8px;}
+  .stat-table th{text-align:left;color:var(--slate);font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;padding-bottom:8px;border-bottom:1px solid var(--border);}
+  .stat-table td{padding:8px 0;border-bottom:1px solid var(--border);color:var(--cream);}
+  .stat-table td:last-child, .stat-table th:last-child{text-align:right;}
+
+  /* ---------- stats: badges ---------- */
+  .badge-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:16px 10px;margin-top:14px;}
+  .badge-item{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;text-align:center;}
+  .badge-hex{width:64px;height:64px;clip-path:polygon(25% 4%,75% 4%,100% 50%,75% 96%,25% 96%,0% 50%);background:var(--bg-panel-alt) center/cover no-repeat;display:flex;align-items:center;justify-content:center;font-size:24px;border:2px solid var(--gold-dim);}
+  .badge-item.locked .badge-hex{opacity:.3;filter:grayscale(1);border-color:var(--border);}
+  .badge-item .b-title{font-size:9.5px;color:var(--cream);max-width:78px;line-height:1.25;}
+  .badge-item.locked .b-title{color:var(--slate);}
+  .badge-modal{background:var(--bg-panel);border:1px solid var(--border);border-radius:12px;max-width:340px;width:100%;padding:30px 24px;text-align:center;}
+  .badge-modal .badge-hex{width:120px;height:120px;font-size:44px;margin:0 auto 18px;}
+  .badge-modal h3{color:var(--gold-text);font-size:19px;margin:0 0 8px;}
+  .badge-modal p{color:var(--cream);font-size:13px;line-height:1.5;margin:0 0 4px;}
+  .badge-modal .b-date{color:var(--slate);font-size:11px;text-transform:uppercase;letter-spacing:.04em;margin-bottom:18px;}
+
+  /* ---------- perfil: collection rows & grid ---------- */
+  .badge.notwatched{background:var(--bg-panel-alt);color:var(--slate);}
+  .collection-row{margin-bottom:28px;}
+  .collection-row-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;cursor:pointer;}
+  .collection-row-actions{display:flex;align-items:center;gap:10px;}
+  .collection-row-header h3{font-size:15px;color:var(--gold-text);margin:0;font-family:'Poppins',sans-serif;text-transform:uppercase;letter-spacing:.03em;}
+  .collection-row-header h3 span{color:var(--slate);font-size:12px;text-transform:none;letter-spacing:0;font-family:'Poppins',sans-serif;}
+  .collection-row-header .chev{color:var(--slate);display:inline-flex;align-items:center;}
+  .collection-scroll{display:flex;gap:12px;overflow-x:auto;padding-bottom:4px;scroll-behavior:smooth;}
+  .collection-scroll .poster-card{flex:0 0 150px;}
+  .collection-scroll .poster-card .poster-img{width:150px;}
+  .empty-row{color:var(--slate);font-size:12px;}
+  .grid-view-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+  .grid-view-header .back-btn{background:none;border:none;color:var(--cream);font-size:22px;cursor:pointer;padding:0 4px;}
+  .grid-view-header h2{margin:0;font-size:18px;color:var(--gold-text);flex:1;}
+  .sort-row{display:flex;align-items:center;gap:8px;margin-bottom:14px;font-size:12.5px;color:var(--slate);}
+  .sort-row select{background:var(--bg-panel);border:1px solid var(--border);color:var(--gold-text);padding:6px 10px;border-radius:6px;font-family:'Poppins',sans-serif;font-size:12.5px;}
+  .filter-chip-row{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;}
+  .filter-chip{background:var(--bg-panel-alt);border:1px solid var(--border);color:var(--slate);padding:6px 12px;border-radius:16px;font-size:11.5px;cursor:pointer;}
+  .filter-chip.active{background:var(--gold);color:var(--on-gold);border-color:var(--gold);}
+
+  /* ---------- episode tracking ---------- */
+  .badge.watching{background:var(--gold);color:var(--on-gold);}
+  .progress-pill{background:var(--bg-panel-alt);border:1px solid var(--border);color:var(--gold-text);font-family:'Poppins',sans-serif;font-weight:700;font-size:12px;padding:8px 12px;border-radius:7px;display:inline-block;margin-bottom:14px;}
+  .season-block{border:1px solid var(--border);border-radius:8px;margin-bottom:8px;overflow:hidden;}
+  .season-header{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg-panel-alt);}
+  .season-toggle{flex:1;cursor:pointer;font-size:13px;font-family:'Poppins',sans-serif;text-transform:uppercase;letter-spacing:.03em;display:flex;align-items:center;gap:8px;}
+  .season-toggle .chev{color:var(--slate);transition:transform .15s;display:inline-flex;align-items:center;}
+  .season-toggle.open .chev{transform:rotate(180deg);}
+  .season-count{color:var(--gold-text);font-family:'Poppins',sans-serif;font-weight:700;font-size:11.5px;white-space:nowrap;}
+  .season-mark-btn{background:none;border:1px solid var(--border);color:var(--cream);width:26px;height:26px;border-radius:6px;cursor:pointer;font-size:12px;flex-shrink:0;}
+  .season-episodes{padding:2px 12px;}
+  .season-episodes.hidden{display:none;}
+  .episode-row{display:flex;align-items:center;gap:10px;padding:8px 2px;border-bottom:1px solid var(--border);font-size:12.5px;}
+  .episode-row:last-child{border-bottom:none;}
+  .episode-row input{width:17px;height:17px;accent-color:var(--gold);flex-shrink:0;cursor:pointer;}
+  .episode-row .ep-name{color:var(--cream);cursor:pointer;flex:1;}
+  .episode-row .ep-num{color:var(--slate);font-family:'Poppins',sans-serif;font-size:11px;flex-shrink:0;}
+  .episode-row .ep-rating-badge{color:var(--gold-text);font-size:11px;font-weight:700;flex-shrink:0;white-space:nowrap;}
+
+  /* ---------- explorar ---------- */
+  .trend-row{margin-bottom:26px;}
+  .trend-row-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;}
+  .period-toggle{display:flex;background:var(--bg-panel-alt);border-radius:20px;padding:3px;gap:2px;}
+  .period-toggle-btn{background:none;border:none;padding:6px 12px;border-radius:16px;font-size:11px;font-family:'Poppins',sans-serif;font-weight:600;color:var(--slate);cursor:pointer;white-space:nowrap;}
+  .period-toggle-btn.active{background:var(--teal);color:#fff;}
+  .trend-row-header h3{font-size:15px;color:var(--gold-text);margin:0;font-family:'Poppins',sans-serif;text-transform:uppercase;letter-spacing:.03em;}
+  .trend-scroll{display:flex;gap:12px;overflow-x:auto;padding-bottom:4px;scroll-behavior:smooth;}
+  .h-scroll-wrap{position:relative;}
+  .h-scroll-wrap .trend-scroll,
+  .h-scroll-wrap .collection-scroll,
+  .h-scroll-wrap .cast-scroll{scrollbar-width:none;-ms-overflow-style:none;}
+  .h-scroll-wrap .trend-scroll::-webkit-scrollbar,
+  .h-scroll-wrap .collection-scroll::-webkit-scrollbar,
+  .h-scroll-wrap .cast-scroll::-webkit-scrollbar{display:none;}
+  .h-scroll-arrow{
+    position:absolute;top:42%;transform:translateY(-50%) scale(1);
+    width:42px;height:42px;border-radius:50%;padding:0;
+    background:rgba(24,19,12,.55);border:1px solid rgba(255,255,255,.14);color:var(--cream);
+    display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:6;
+    box-shadow:0 8px 20px rgba(0,0,0,.4);
+    transition:opacity .3s cubic-bezier(.22,.68,0,1), transform .25s cubic-bezier(.22,.68,0,1), background-color .2s ease, border-color .2s ease;
+  }
+  .h-scroll-arrow svg{width:19px;height:19px;}
+  .h-scroll-arrow.right{right:8px;}
+  .h-scroll-arrow.left{left:8px;}
+  .h-scroll-arrow:hover{background:var(--gold);border-color:var(--gold);color:#1a1305;}
+  .h-scroll-arrow:active{transform:translateY(-50%) scale(.88);}
+  .h-scroll-arrow.disabled{opacity:0;pointer-events:none;transform:translateY(-50%) scale(.7);}
+  .trend-scroll .poster-card{flex:0 0 165px;}
+  .trend-scroll .poster-card .poster-img{width:165px;}
+  .quick-add-btn{
+    position:absolute;top:6px;right:6px;width:28px;height:28px;border-radius:6px;
+    background:rgba(10,11,16,.6);border:2px solid var(--gold);color:var(--gold-text);font-size:16px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;cursor:pointer;line-height:1;
+  }
+  .quick-add-btn.added{background:var(--gold);color:var(--on-gold);}
+  .see-all-pill{
+    display:flex;align-items:center;justify-content:space-between;background:var(--gold);color:var(--on-gold);
+    border:none;border-radius:8px;padding:12px 16px;font-family:'Poppins',sans-serif;text-transform:uppercase;
+    letter-spacing:.03em;font-size:13px;cursor:pointer;width:100%;margin-bottom:26px;
+  }
+  .feed-card{display:flex;align-items:center;gap:18px;border-radius:14px;border:1px solid var(--border);background:var(--bg-panel);margin-bottom:16px;padding:18px;cursor:pointer;}
+  .feed-card .fc-media{width:130px;height:130px;border-radius:12px;background:var(--bg-panel-alt) center/cover no-repeat;flex-shrink:0;overflow:hidden;transition:background-size .4s cubic-bezier(.22,.68,0,1);}
+  .feed-card:hover .fc-media{background-size:118%;}
+  .feed-card .fc-body{flex:1;min-width:0;}
+  .feed-card .fc-title{color:var(--cream);font-family:'Poppins',sans-serif;font-weight:700;font-size:19px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .feed-card .fc-meta{color:var(--gold-text);font-size:13.5px;margin-top:4px;font-weight:600;}
+  .feed-card .fc-overview{color:var(--slate);font-size:13.5px;margin-top:7px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;}
+  .feed-card .fc-add-slot{flex-shrink:0;position:relative;width:36px;height:36px;}
+  .feed-card .fc-add-slot .quick-add-btn{position:static;width:36px;height:36px;}
+
+  /* ---------- media tabs (séries/filmes) ---------- */
+  .media-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:18px;}
+  .media-filter-select{
+    background:var(--bg-panel);border:1px solid var(--border);color:var(--gold-text);padding:8px 12px;border-radius:20px;
+    font-family:'Poppins',sans-serif;text-transform:uppercase;letter-spacing:.03em;font-size:12px;flex:1;
+  }
+  .view-toggle-btn{
+    background:var(--bg-panel);border:1px solid var(--border);color:var(--cream);width:38px;height:38px;
+    border-radius:8px;font-size:16px;cursor:pointer;flex-shrink:0;
+  }
+  .view-toggle-btn.active-list{color:var(--gold-text);border-color:var(--gold-dim);}
+  .media-row{
+    display:flex;align-items:center;gap:12px;background:var(--bg-panel);border:1px solid var(--border);
+    border-radius:10px;padding:10px;margin-bottom:10px;cursor:pointer;transition:transform .15s ease, border-color .15s ease;
+  }
+  .media-row:active{transform:scale(.98);}
+  .media-row .mr-poster{width:56px;height:56px;border-radius:8px;background:var(--bg-panel-alt) center/cover no-repeat;flex-shrink:0;overflow:hidden;transition:background-size .4s cubic-bezier(.22,.68,0,1);}
+  .media-row:hover .mr-poster{background-size:118%;}
+  .media-row .mr-body{flex:1;min-width:0;}
+  .media-row .mr-pill{
+    display:inline-block;border:1px solid var(--gold-dim);color:var(--gold-text);font-size:10.5px;padding:2px 10px;
+    border-radius:12px;font-family:'Poppins',sans-serif;text-transform:uppercase;letter-spacing:.03em;margin-bottom:5px;
+    max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  .media-row .mr-meta{font-size:13.5px;color:var(--cream);font-weight:600;}
+  .media-row .mr-sub{font-size:11.5px;color:var(--slate);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .media-row .mr-check{
+    width:34px;height:34px;border-radius:50%;background:var(--bg-panel-alt);border:1px solid var(--border);
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--slate);font-size:15px;cursor:pointer;
+    transition:transform .15s ease, background-color .15s, color .15s;
+  }
+  .media-row .mr-check:active{transform:scale(.85);}
+  .media-row .mr-check.done{background:var(--teal);color:var(--on-gold);border-color:var(--teal);}
+  .media-row .mr-countdown{
+    flex-shrink:0;background:var(--gold);color:var(--on-gold);font-family:'Poppins',sans-serif;font-weight:700;
+    font-size:11.5px;padding:6px 12px;border-radius:20px;text-align:center;white-space:nowrap;
+  }
+
+  /* ---------- fluidity: motion & feedback ---------- */
+  @keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+  @keyframes overlayIn{from{opacity:0;}to{opacity:1;}}
+  @keyframes modalIn{from{opacity:0;transform:translateY(18px) scale(.97);}to{opacity:1;transform:translateY(0) scale(1);}}
+  @keyframes shimmer{0%{background-position:120% 0;}100%{background-position:-20% 0;}}
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  main > section:not(.hidden){animation:fadeIn .28s ease;}
+
+  .btn{transition:transform .12s ease, background-color .15s, border-color .15s, opacity .15s;}
+  .btn:active{transform:scale(.95);}
+  .btn:disabled{opacity:.6;pointer-events:none;}
+  .tab{transition:color .18s ease, border-color .18s ease;}
+  .poster-card{transition:transform .15s ease;}
+  .poster-card:active{transform:scale(.94);}
+  .ticket{transition:transform .15s ease, border-color .15s ease;}
+  .ticket:active{transform:scale(.98);}
+  .badge-item{transition:transform .15s ease;}
+  .badge-item:active{transform:scale(.9);}
+  .cover-opt{transition:transform .15s ease;}
+  .cover-opt:hover{transform:scale(1.04);}
+  .quick-add-btn{transition:transform .15s ease, background-color .15s ease;}
+  .quick-add-btn:active{transform:scale(.82);}
+  .filter-chip, .stat-subtab, .tab{cursor:pointer;}
+  .filter-chip{transition:background-color .15s ease, color .15s ease, border-color .15s ease;}
+  .feed-card, .season-block{transition:transform .15s ease;}
+  .feed-card:active{transform:scale(.985);}
+  .avatar-edit-btn, .season-mark-btn, .close-btn{transition:transform .15s ease;}
+  .avatar-edit-btn:active, .season-mark-btn:active, .close-btn:active{transform:scale(.85);}
+
+  .overlay{animation:overlayIn .18s ease;}
+  .modal, .badge-modal{animation:modalIn .25s cubic-bezier(.2,1,.3,1);}
+
+  .searchbar{position:sticky;top:0;z-index:15;background:linear-gradient(var(--bg-deep) 78%, transparent);padding-top:4px;padding-bottom:6px;margin-bottom:16px;}
+
+  .skeleton{background:linear-gradient(100deg, var(--bg-panel-alt) 30%, var(--bg-panel) 50%, var(--bg-panel-alt) 70%);background-size:250% 100%;animation:shimmer 1.3s ease infinite;}
+  .skel-poster{border-radius:8px;aspect-ratio:2/3;border:1px solid var(--border);}
+  .skel-line{height:11px;border-radius:4px;margin-top:8px;}
+  .skel-line.w60{width:60%;}
+  .skel-line.w40{width:40%;}
+
+  .spinner{width:13px;height:13px;border:2px solid rgba(237,231,218,.25);border-top-color:var(--gold);border-radius:50%;display:inline-block;animation:spin .6s linear infinite;vertical-align:-2px;margin-right:7px;}
+
+  .toast{
+    position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(16px);
+    background:var(--bg-panel);border:1px solid var(--gold-dim);color:var(--cream);
+    padding:11px 20px;border-radius:9px;font-size:13px;box-shadow:0 10px 30px rgba(0,0,0,.5);
+    z-index:300;opacity:0;pointer-events:none;transition:opacity .25s ease, transform .25s ease;
+    max-width:88vw;text-align:center;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  ::-webkit-scrollbar{width:8px;}
+  ::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <button class="sidebar-toggle-btn" id="sidebarToggle" title="Abrir/fechar menu" aria-label="Abrir/fechar menu">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+  <div class="brand" id="brandHome" style="cursor:pointer;" title="Voltar para Explorar">
+    <div class="logo-badge">
+      <svg viewBox="0 0 340 100" xmlns="http://www.w3.org/2000/svg" class="logo-svg">
+        <g transform="translate(14,22)">
+          <!-- antenna -->
+          <line x1="30" y1="0" x2="14" y2="-14" stroke="#c7cdd6" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="42" y1="0" x2="58" y2="-14" stroke="#c7cdd6" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="14" cy="-14" r="2.6" fill="#c7cdd6"/>
+          <circle cx="58" cy="-14" r="2.6" fill="#c7cdd6"/>
+          <!-- TV body (wood tone) -->
+          <rect x="0" y="0" width="76" height="56" rx="8" fill="#a9682f" stroke="#12213a" stroke-width="2"/>
+          <rect x="3" y="3" width="70" height="50" rx="6" fill="none" stroke="#8a5424" stroke-width="1.5"/>
+          <!-- screen with colour bars -->
+          <rect x="8" y="8" width="44" height="36" rx="3" fill="#0e1c30"/>
+          <g class="tv-stripes">
+            <rect x="9" y="9" width="7" height="34" fill="#f1ecdd"/>
+            <rect x="16" y="9" width="7" height="34" fill="#ffcc33"/>
+            <rect x="23" y="9" width="7" height="34" fill="#2bb3a0"/>
+            <rect x="30" y="9" width="7" height="34" fill="#3fae4a"/>
+            <rect x="37" y="9" width="7" height="34" fill="#d24fb0"/>
+            <rect x="44" y="9" width="7" height="34" fill="#e8453a"/>
+          </g>
+          <!-- knobs -->
+          <circle cx="63" cy="17" r="5" fill="#12213a" stroke="#ffcc33" stroke-width="1.5"/>
+          <circle cx="63" cy="34" r="5" fill="#12213a" stroke="#ffcc33" stroke-width="1.5"/>
+          <!-- feet -->
+          <rect x="8" y="55" width="8" height="7" rx="1.5" fill="#12213a"/>
+          <rect x="56" y="55" width="8" height="7" rx="1.5" fill="#12213a"/>
+        </g>
+        <text x="106" y="60" font-family="Poppins" font-weight="800" font-size="32" letter-spacing=".5" fill="var(--gold-text, #7a4d08)">TEVELISÃO</text>
+      </svg>
+    </div>
+  </div>
+  <div id="globalProfileBar" class="global-profile-bar"></div>
+</div>
+<div class="perf"></div>
+
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar">
+    <small id="brandSub" class="brand-sub sidebar-sub">📺 seu canal particular de filmes e séries</small>
+    <div class="tabs" id="tabs">
+      <button class="tab active" data-tab="explorar"><span class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polygon points="14.5,9.5 10.5,10.5 9.5,14.5 13.5,13.5"/></svg></span>Explorar</button>
+      <button class="tab" data-tab="filmes"><span class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h16v9a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-9Z"/><path d="M4 10 5.5 5h13L20 10"/><path d="M8 5l1.5 5M13 5l1.5 5"/></svg></span>Filmes</button>
+      <button class="tab" data-tab="series"><span class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 3l4 4 4-4"/></svg></span>Séries</button>
+      <button class="tab" data-tab="favoritos"><span class="tab-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.3l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg></span>Favoritos</button>
+      <button class="tab" data-tab="premiacoes"><span class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4h8v5a4 4 0 0 1-8 0V4Z"/><path d="M8 5H5a2 2 0 0 0 0 4 3 3 0 0 0 2.5 1.5"/><path d="M16 5h3a2 2 0 0 1 0 4 3 3 0 0 1-2.5 1.5"/><path d="M12 13v3M9 20h6M9 20l.5-2.5h5l.5 2.5"/></svg></span>Premiações</button>
+      <button class="tab" data-tab="stats"><span class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="20" x2="5" y2="12"/><line x1="12" y1="20" x2="12" y2="6"/><line x1="19" y1="20" x2="19" y2="15"/><line x1="3" y1="20" x2="21" y2="20"/></svg></span>Estatísticas</button>
+      <button class="tab" data-tab="perfil"><span class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.5 3-6 7-6s7 2.5 7 6"/></svg></span>Perfil</button>
+      <button class="tab" data-tab="config"><span class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 13.5a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.9 2.9l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.2a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.9-2.9l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H4a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1.1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.9-2.9l.1.1a1.7 1.7 0 0 0 1.9.3H10a1.7 1.7 0 0 0 1-1.6V4a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.9 2.9l-.1.1a1.7 1.7 0 0 0-.3 1.9V10a1.7 1.7 0 0 0 1.6 1H20a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.6 1Z"/></svg></span>Configurações</button>
+    </div>
+  </aside>
+
+  <main>
+
+  <section id="tab-explorar">
+    <div class="stat-subtabs">
+      <button class="stat-subtab active" data-exploresub="catalogo">Catálogo</button>
+      <button class="stat-subtab" data-exploresub="descobrir">Descobrir</button>
+      <button class="stat-subtab" data-exploresub="recomendados">Recomendados</button>
+    </div>
+    <div id="explorarCatalogo">
+      <div class="searchbar">
+        <input type="text" id="searchInput" placeholder="Pesquisar filme ou série...">
+      </div>
+      <div class="section-title hidden" id="catalogoTitle">Em alta esta semana</div>
+      <div id="catalogoGrid"></div>
+      <div id="catalogoSentinel" style="height:1px;"></div>
+    </div>
+    <div id="explorarContent" class="hidden"></div>
+  </section>
+
+  <section id="tab-series" class="hidden">
+    <div class="stat-subtabs">
+      <button class="stat-subtab active" data-mediasub="naoterminadas">Não terminadas</button>
+      <button class="stat-subtab" data-mediasub="assistidas">Assistidas</button>
+      <button class="stat-subtab" data-mediasub="embreve">Em breve</button>
+    </div>
+    <div class="media-toolbar">
+      <button class="view-toggle-btn" id="seriesViewToggle" title="Alternar visualização">▦</button>
+    </div>
+    <div id="seriesContent"></div>
+  </section>
+
+  <section id="tab-filmes" class="hidden">
+    <div class="stat-subtabs">
+      <button class="stat-subtab active" data-mediasub="lista">Minha lista</button>
+      <button class="stat-subtab" data-mediasub="embreve">Em breve</button>
+    </div>
+    <div class="media-toolbar">
+      <select id="filmesFilterSelect" class="media-filter-select">
+        <option value="all">Todos</option>
+        <option value="watched">Assistido</option>
+        <option value="notwatched">Assistir a seguir</option>
+      </select>
+      <button class="view-toggle-btn" id="filmesViewToggle" title="Alternar visualização">▦</button>
+    </div>
+    <div id="filmesContent"></div>
+  </section>
+
+  <section id="tab-favoritos" class="hidden">
+    <div id="favoritosList"></div>
+  </section>
+
+  <section id="tab-perfil" class="hidden">
+    <div id="perfilContent"></div>
+    <div id="perfilBody"></div>
+  </section>
+
+  <section id="tab-premiacoes" class="hidden">
+    <div class="awards-hero">
+      <svg class="awards-hero-star" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <path d="M100,6 L122,72 L192,72 L136,112 L157,180 L100,140 L43,180 L64,112 L8,72 L78,72 Z" fill="#e8a415" opacity=".18"/>
+      </svg>
+      <div class="awards-hero-label">Temporada de prêmios · Guia internacional</div>
+      <h2 class="awards-hero-title">Premiações Mundiais</h2>
+      <p class="awards-hero-sub">Filmes e séries que marcaram o Oscar, o Emmy, o Globo de Ouro e os principais festivais.<br>Entre os títulos que você assistiu ou favoritou, veja quais têm conquistas reconhecidas.</p>
+    </div>
+    <div id="premiacoesContent"></div>
+  </section>
+
+  <section id="tab-stats" class="hidden">
+    <div class="stat-subtabs">
+      <button class="stat-subtab active" data-substat="series">Séries</button>
+      <button class="stat-subtab" data-substat="filmes">Filmes</button>
+    </div>
+    <div id="statsContent"></div>
+  </section>
+
+  <section id="tab-config" class="hidden">
+    <h3 style="color:var(--gold-text);margin-top:0;">Aparência</h3>
+    <div class="config-box">
+      <p>Escolha o visual do app.</p>
+      <div class="theme-toggle-row">
+        <button class="theme-btn" id="themeLightBtn" data-theme="light">☀️ Claro</button>
+        <button class="theme-btn" id="themeDarkBtn" data-theme="dark">🌙 Escuro</button>
+      </div>
+    </div>
+
+    <h3 style="color:var(--gold-text);">Seu apelido</h3>
+    <div class="config-box">
+      <p>Esse apelido identifica seus dados na nuvem. Sua amiga usa o dela — cada uma tem sua própria lista, mas dá pra espiar a da outra nas abas de listas.</p>
+      <input type="text" id="nicknameInput" placeholder="Ex: giulia">
+      <button class="btn primary" id="saveNicknameBtn">Salvar apelido</button>
+      <div class="status-msg" id="nicknameStatus"></div>
+    </div>
+
+    <p style="color:var(--slate);font-size:11px;margin-top:30px;">Versão do app: <strong>2026-07-14 — build perfil-sem-selos-v34</strong><br>Se essa versão não bater com a mais recente que o Claude te mandou, você está numa versão em cache — feche a aba inteira e abra o link de novo.</p>
+  </section>
+
+</main>
+</div>
+
+<div id="modalRoot"></div>
+<div id="toastEl" class="toast"></div>
+
+<script>
+(function(){
+  const IMG_SMALL = 'https://image.tmdb.org/t/p/w185';
+  const BACKDROP = 'https://image.tmdb.org/t/p/w780';
+
+  // ---------------- embedded shared credentials (so no one has to paste these in) ----------------
+  const BUILTIN_TMDB_KEY = '66e7fdebe1e76be2fbfaf2a51d2405ff';
+  const BUILTIN_OMDB_KEY = 'c33f0d52';
+  const BUILTIN_FIREBASE_CONFIG = {
+    apiKey: "AIzaSyDqNaAiU6VWL10Un4D57naoyUcCJk04vdA",
+    authDomain: "bilheteria-51f3b.firebaseapp.com",
+    projectId: "bilheteria-51f3b",
+    storageBucket: "bilheteria-51f3b.firebasestorage.app",
+    messagingSenderId: "724026538173",
+    appId: "1:724026538173:web:0badd015e462694fe09fd4"
+  };
+  let apiKey = null;
+  let omdbKey = null;
+  let myNickname = null;
+  let viewingNickname = null; // whose lists are currently displayed (defaults to myNickname)
+  let genreMap = { movie:{}, tv:{} };
+  let myData = { watched:{}, watchlist:{}, favorites:{}, profile:{ avatar:null, cover:null } };
+  let viewingData = null; // cache of whichever profile is being viewed
+  let searchTimer = null;
+  let fsRefs = null; // { db, doc, getDoc, setDoc }
+
+  const $ = (sel, el=document) => el.querySelector(sel);
+  function inferMediaType(item){
+    return item.media_type || (item.title ? 'movie' : (item.name ? 'tv' : 'movie'));
+  }
+  const $all = (sel, el=document) => Array.from(el.querySelectorAll(sel));
+
+  const ICON_HEART = '<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" style="vertical-align:-2px"><path d="M12 20.6l-1.4-1.3C5.6 14.9 2 11.6 2 7.7 2 4.9 4.2 2.7 7 2.7c1.6 0 3.1.8 4 2 .9-1.2 2.4-2 4-2 2.8 0 5 2.2 5 5 0 3.9-3.6 7.2-8.6 11.6L12 20.6z"/></svg>';
+  const ICON_PENCIL = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" style="display:block"><path d="M17 3a2.83 2.83 0 0 1 4 4L7 21l-4 1 1-4Z"/></svg>';
+  const ICON_CHEVRON = '<svg class="icon-chevron" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>';
+  const ICON_CHEVRON_LEFT = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg>';
+
+  function wireHScroll(scrollEl){
+    if(!scrollEl || scrollEl.dataset.hscrollWired) return;
+    scrollEl.dataset.hscrollWired = '1';
+    const wrap = document.createElement('div');
+    wrap.className = 'h-scroll-wrap';
+    scrollEl.parentNode.insertBefore(wrap, scrollEl);
+    wrap.appendChild(scrollEl);
+    const leftBtn = document.createElement('button');
+    leftBtn.type = 'button';
+    leftBtn.className = 'h-scroll-arrow left';
+    leftBtn.innerHTML = ICON_CHEVRON_LEFT;
+    const rightBtn = document.createElement('button');
+    rightBtn.type = 'button';
+    rightBtn.className = 'h-scroll-arrow right';
+    rightBtn.innerHTML = ICON_CHEVRON;
+    wrap.appendChild(leftBtn);
+    wrap.appendChild(rightBtn);
+    function update(){
+      const max = scrollEl.scrollWidth - scrollEl.clientWidth;
+      leftBtn.classList.toggle('disabled', scrollEl.scrollLeft <= 4 || max <= 4);
+      rightBtn.classList.toggle('disabled', scrollEl.scrollLeft >= max - 4 || max <= 4);
+    }
+    leftBtn.addEventListener('click', (e) => { e.stopPropagation(); scrollEl.scrollBy({ left: -Math.round(scrollEl.clientWidth * 0.82), behavior: 'smooth' }); });
+    rightBtn.addEventListener('click', (e) => { e.stopPropagation(); scrollEl.scrollBy({ left: Math.round(scrollEl.clientWidth * 0.82), behavior: 'smooth' }); });
+    scrollEl.addEventListener('scroll', update);
+    window.addEventListener('resize', update);
+    update();
+    requestAnimationFrame(() => requestAnimationFrame(update));
+    setTimeout(update, 200);
+    setTimeout(update, 800);
+    if(typeof ResizeObserver !== 'undefined'){
+      new ResizeObserver(update).observe(scrollEl);
+    }
+  }
+  const ICON_CHEVRON_DOWN = '<svg class="season-chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+  const ICON_CHECK = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><polyline points="4 12 10 18 20 6"/></svg>';
+  const STAR_PATH = 'M12 2.3l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z';
+
+  const FEELINGS = [
+    { id:'chocada',      label:'Chocada',      emoji:'😵', code:'1f635' },
+    { id:'frustrada',    label:'Frustrada',    emoji:'😣', code:'1f623' },
+    { id:'triste',       label:'Triste',       emoji:'😢', code:'1f622' },
+    { id:'reflexiva',    label:'Reflexiva',    emoji:'🤔', code:'1f914' },
+    { id:'comovida',     label:'Comovida',     emoji:'🥺', code:'1f97a' },
+    { id:'entretida',    label:'Entretida',    emoji:'😆', code:'1f606' },
+    { id:'assustada',    label:'Assustada',    emoji:'😱', code:'1f631' },
+    { id:'entediada',    label:'Entediada',    emoji:'😑', code:'1f611' },
+    { id:'compreensiva', label:'Compreensiva', emoji:'😌', code:'1f60c' },
+    { id:'empolgada',    label:'Empolgada',    emoji:'🤩', code:'1f929' },
+    { id:'confusa',      label:'Confusa',      emoji:'😕', code:'1f615' },
+    { id:'tensa',        label:'Tensa',        emoji:'😬', code:'1f62c' }
+  ];
+  function twemojiImg(code, alt){
+    return `<img class="feeling-emoji-img" src="https://cdn.jsdelivr.net/gh/shuding/fluentui-emoji-unicode/assets/${code}_color.svg" alt="${alt}" loading="lazy" data-fallback="1">`;
+  }
+  document.addEventListener('error', (e) => {
+    if(e.target && e.target.tagName === 'IMG' && e.target.dataset.fallback === '1'){
+      const alt = e.target.getAttribute('alt') || '';
+      const f = FEELINGS.find(x => x.label === alt);
+      if(f){
+        const span = document.createElement('span');
+        span.className = 'feeling-emoji';
+        span.textContent = f.emoji;
+        e.target.replaceWith(span);
+      }
+    }
+  }, true);
+  function feelingSVG(icon, size){
+    size = size || 28;
+    let extra = '';
+    if(icon === 'scared'){
+      extra = '<circle cx="14" cy="18" r="3" fill="currentColor" stroke="none"/><circle cx="26" cy="18" r="3" fill="currentColor" stroke="none"/><ellipse cx="20" cy="28" rx="4" ry="5"/><path d="M9,11 L16,13"/><path d="M31,11 L24,13"/>';
+    } else if(icon === 'confused'){
+      extra = '<circle cx="14" cy="19" r="2" fill="currentColor" stroke="none"/><circle cx="26" cy="17" r="2" fill="currentColor" stroke="none"/><path d="M9,12 L16,10"/><path d="M24,14 Q27,9 32,12"/><path d="M13,28 Q20,25 27,29"/>';
+    } else if(icon === 'excited'){
+      extra = '<path d="M9,18 Q14,11 19,18"/><path d="M21,18 Q26,11 31,18"/><path d="M11,25 Q20,34 29,25"/>';
+    } else if(icon === 'sad'){
+      extra = '<circle cx="14" cy="19" r="2" fill="currentColor" stroke="none"/><circle cx="26" cy="19" r="2" fill="currentColor" stroke="none"/><path d="M10,13 Q14,10 18,12"/><path d="M22,12 Q26,10 30,13"/><path d="M13,30 Q20,25 27,30"/>';
+    } else if(icon === 'touched'){
+      extra = '<circle cx="14" cy="19" r="2" fill="currentColor" stroke="none"/><circle cx="26" cy="19" r="2" fill="currentColor" stroke="none"/><path d="M14,22 Q12,28 10,30"/><path d="M13,27 Q20,33 27,27"/>';
+    } else if(icon === 'happy'){
+      extra = '<path d="M9,18 Q14,22 19,18"/><path d="M21,18 Q26,22 31,18"/><path d="M11,24 Q20,32 29,24"/>';
+    } else if(icon === 'love'){
+      extra = '<path d="M11,15 c-2,-2.4 -6,-0.3 -3.4,3 C9,20 12,22 12,22 c0,0 3,-2 4.4,-4 C19,15 13,12.6 11,15z" fill="currentColor" stroke="none"/><path d="M23,15 c-2,-2.4 -6,-0.3 -3.4,3 C21,20 24,22 24,22 c0,0 3,-2 4.4,-4 C31,15 25,12.6 23,15z" fill="currentColor" stroke="none"/><path d="M13,28 Q20,33 27,28"/>';
+    }
+    return `<svg viewBox="0 0 40 40" width="${size}" height="${size}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="20" cy="20" r="17"/>${extra}</svg>`;
+  }
+
+  // ---------------- fictional avatar characters ----------------
+  const CHARACTERS = [
+    { id:'c01', name:'Zé Pipoca',            bg:'#e8a415', icon:'popcorn' },
+    { id:'c02', name:'Fitinha Enroladona',   bg:'#c93a2e', icon:'tape' },
+    { id:'c03', name:'Seu Antena',           bg:'#1c8f79', icon:'tv' },
+    { id:'c04', name:'Dona Pilha Fraca',     bg:'#7a4a20', icon:'battery' },
+    { id:'c05', name:'Capitão Rebobina',     bg:'#1b2740', icon:'rewind' },
+    { id:'c06', name:'Coronel Estático',     bg:'#a9682f', icon:'static' },
+    { id:'c07', name:'Madame Rolo de Filme', bg:'#8a5a0a', icon:'reel' },
+    { id:'c08', name:'Xerife da Locadora',   bg:'#4a6fa5', icon:'badge' },
+    { id:'c09', name:'Robô CRT 3000',        bg:'#b5533c', icon:'robot' },
+    { id:'c10', name:'Baronesa do Aluguel',  bg:'#5c8a3a', icon:'crown' },
+    { id:'c11', name:'Mestre do Zapping',    bg:'#9c5fa8', icon:'remote' },
+    { id:'c12', name:'Vovô Betamax',         bg:'#c77b3e', icon:'betamax' },
+    { id:'c13', name:'Sofá-Rei Preguiçoso',  bg:'#3d7a8a', icon:'sofa' },
+    { id:'c14', name:'Fantasma do Chiado',   bg:'#a13d5c', icon:'ghost' },
+    { id:'c15', name:'Faroeste da Fita',     bg:'#6b8e23', icon:'hat' }
+  ];
+  function characterSVG(bg, icon, size){
+    size = size || 96;
+    const s = '#fffaf0';
+    let inner = '';
+    if(icon === 'tv'){
+      inner = `<line x1="34" y1="30" x2="26" y2="18" stroke="${s}" stroke-width="3" stroke-linecap="round"/>
+        <line x1="62" y1="30" x2="70" y2="18" stroke="${s}" stroke-width="3" stroke-linecap="round"/>
+        <rect x="22" y="30" width="52" height="36" rx="6" fill="none" stroke="${s}" stroke-width="4"/>
+        <rect x="30" y="38" width="36" height="20" rx="2" fill="${s}" opacity=".9"/>
+        <rect x="30" y="68" width="10" height="6" rx="1" fill="${s}"/>
+        <rect x="56" y="68" width="10" height="6" rx="1" fill="${s}"/>`;
+    } else if(icon === 'tape'){
+      inner = `<rect x="18" y="30" width="60" height="38" rx="5" fill="none" stroke="${s}" stroke-width="4"/>
+        <circle cx="36" cy="49" r="9" fill="none" stroke="${s}" stroke-width="3.5"/>
+        <circle cx="60" cy="49" r="9" fill="none" stroke="${s}" stroke-width="3.5"/>
+        <rect x="30" y="61" width="36" height="5" rx="2" fill="${s}"/>`;
+    } else if(icon === 'popcorn'){
+      inner = `<path d="M30,38 L66,38 L60,74 L36,74 Z" fill="none" stroke="${s}" stroke-width="4" stroke-linejoin="round"/>
+        <line x1="34" y1="38" x2="38" y2="74" stroke="${s}" stroke-width="2.5"/>
+        <line x1="62" y1="38" x2="58" y2="74" stroke="${s}" stroke-width="2.5"/>
+        <circle cx="34" cy="30" r="7" fill="${s}"/><circle cx="48" cy="24" r="8" fill="${s}"/><circle cx="62" cy="30" r="7" fill="${s}"/>`;
+    } else if(icon === 'remote'){
+      inner = `<rect x="36" y="18" width="24" height="60" rx="10" fill="none" stroke="${s}" stroke-width="4"/>
+        <circle cx="48" cy="34" r="4" fill="${s}"/><circle cx="48" cy="48" r="4" fill="${s}"/>
+        <circle cx="40" cy="60" r="3" fill="${s}"/><circle cx="56" cy="60" r="3" fill="${s}"/>`;
+    } else if(icon === 'reel'){
+      inner = `<circle cx="48" cy="48" r="26" fill="none" stroke="${s}" stroke-width="4"/>
+        <circle cx="48" cy="48" r="6" fill="${s}"/><circle cx="48" cy="28" r="5" fill="${s}"/>
+        <circle cx="48" cy="68" r="5" fill="${s}"/><circle cx="30" cy="48" r="5" fill="${s}"/><circle cx="66" cy="48" r="5" fill="${s}"/>`;
+    } else if(icon === 'battery'){
+      inner = `<rect x="26" y="30" width="44" height="38" rx="5" fill="none" stroke="${s}" stroke-width="4"/>
+        <rect x="70" y="42" width="8" height="14" rx="2" fill="${s}"/>
+        <path d="M50,36 L38,52 L47,52 L44,64 L58,46 L49,46 Z" fill="${s}"/>`;
+    } else if(icon === 'rewind'){
+      inner = `<circle cx="48" cy="48" r="27" fill="none" stroke="${s}" stroke-width="4"/>
+        <path d="M50,34 L36,48 L50,62 Z" fill="${s}"/>
+        <path d="M66,34 L52,48 L66,62 Z" fill="${s}"/>`;
+    } else if(icon === 'static'){
+      inner = `<rect x="20" y="28" width="56" height="40" rx="5" fill="none" stroke="${s}" stroke-width="4"/>
+        <path d="M26,38 L34,44 L26,48 L34,54 L26,60" fill="none" stroke="${s}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M42,36 L50,42 L42,48 L50,54 L42,62" fill="none" stroke="${s}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M58,38 L66,44 L58,48 L66,54 L58,60" fill="none" stroke="${s}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`;
+    } else if(icon === 'badge'){
+      inner = `<path d="M48,20 L57,27 L68,26 L66,37 L74,45 L66,53 L68,64 L57,63 L48,71 L39,63 L28,64 L30,53 L22,45 L30,37 L28,26 L39,27 Z"
+        fill="none" stroke="${s}" stroke-width="4" stroke-linejoin="round"/>
+        <polyline points="39,47 45,54 58,40" fill="none" stroke="${s}" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+    } else if(icon === 'robot'){
+      inner = `<rect x="28" y="34" width="40" height="34" rx="8" fill="none" stroke="${s}" stroke-width="4"/>
+        <line x1="48" y1="34" x2="48" y2="22" stroke="${s}" stroke-width="3.5" stroke-linecap="round"/>
+        <circle cx="48" cy="18" r="4" fill="${s}"/>
+        <circle cx="39" cy="50" r="5" fill="${s}"/><circle cx="57" cy="50" r="5" fill="${s}"/>
+        <rect x="38" y="60" width="20" height="4" rx="2" fill="${s}"/>
+        <rect x="16" y="44" width="8" height="14" rx="3" fill="${s}"/><rect x="72" y="44" width="8" height="14" rx="3" fill="${s}"/>`;
+    } else if(icon === 'crown'){
+      inner = `<path d="M24,64 L28,36 L42,50 L48,30 L54,50 L68,36 L72,64 Z" fill="none" stroke="${s}" stroke-width="4.5" stroke-linejoin="round"/>
+        <line x1="24" y1="64" x2="72" y2="64" stroke="${s}" stroke-width="4.5" stroke-linecap="round"/>
+        <circle cx="48" cy="26" r="3.5" fill="${s}"/>`;
+    } else if(icon === 'betamax'){
+      inner = `<rect x="16" y="34" width="64" height="32" rx="4" fill="none" stroke="${s}" stroke-width="4"/>
+        <rect x="22" y="40" width="30" height="8" rx="1.5" fill="${s}"/>
+        <path d="M60,44 L60,56 L70,50 Z" fill="${s}"/>
+        <rect x="30" y="70" width="36" height="5" rx="2" fill="${s}"/>`;
+    } else if(icon === 'sofa'){
+      inner = `<rect x="22" y="42" width="52" height="22" rx="6" fill="none" stroke="${s}" stroke-width="4"/>
+        <path d="M22,54 L14,54 L14,68 L24,68 L24,58" fill="none" stroke="${s}" stroke-width="4" stroke-linejoin="round"/>
+        <path d="M74,54 L82,54 L82,68 L72,68 L72,58" fill="none" stroke="${s}" stroke-width="4" stroke-linejoin="round"/>
+        <line x1="24" y1="68" x2="24" y2="74" stroke="${s}" stroke-width="4" stroke-linecap="round"/>
+        <line x1="72" y1="68" x2="72" y2="74" stroke="${s}" stroke-width="4" stroke-linecap="round"/>`;
+    } else if(icon === 'ghost'){
+      inner = `<path d="M30,70 L30,44 Q30,24 48,24 Q66,24 66,44 L66,70 L59,63 L52,70 L45,63 L38,70 Z"
+        fill="none" stroke="${s}" stroke-width="4" stroke-linejoin="round"/>
+        <circle cx="40" cy="42" r="3.2" fill="${s}"/><circle cx="56" cy="42" r="3.2" fill="${s}"/>`;
+    } else if(icon === 'hat'){
+      inner = `<ellipse cx="48" cy="60" rx="34" ry="9" fill="none" stroke="${s}" stroke-width="4"/>
+        <path d="M32,58 Q32,32 48,30 Q64,32 64,58" fill="none" stroke="${s}" stroke-width="4" stroke-linejoin="round"/>
+        <line x1="34" y1="46" x2="62" y2="46" stroke="${s}" stroke-width="3"/>`;
+    }
+    return `<svg viewBox="0 0 96 96" width="${size}" height="${size}" style="display:block"><circle cx="48" cy="48" r="48" fill="${bg}"/>${inner}</svg>`;
+  }
+  function findCharacter(avatarValue){
+    if(!avatarValue || !avatarValue.startsWith('char:')) return null;
+    return CHARACTERS.find(c => c.id === avatarValue.slice(5)) || null;
+  }
+
+  let toastTimer = null;
+  function showToast(msg){
+    const el = $('#toastEl');
+    if(!el) return;
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
+  }
+
+  window.addEventListener('error', (e) => {
+    console.error('Erro não tratado:', e.error || e.message);
+    showToast('⚠️ Ocorreu um erro: ' + ((e.error && e.error.message) || e.message || 'desconhecido'));
+  });
+  window.addEventListener('unhandledrejection', (e) => {
+    console.error('Promise rejeitada:', e.reason);
+    showToast('⚠️ Ocorreu um erro: ' + ((e.reason && e.reason.message) || e.reason || 'desconhecido'));
+  });
+
+  function skeletonPostersHTML(n){
+    let out = '';
+    for(let i=0;i<n;i++){
+      out += `<div><div class="skeleton skel-poster"></div><div class="skeleton skel-line w60"></div><div class="skeleton skel-line w40"></div></div>`;
+    }
+    return out;
+  }
+  function skeletonFeedHTML(n){
+    let out = '';
+    for(let i=0;i<n;i++){
+      out += `<div class="skeleton" style="aspect-ratio:16/9;border-radius:12px;margin-bottom:18px;border:1px solid var(--border);"></div>`;
+    }
+    return out;
+  }
+
+  function normalizeNick(n){
+    return (n||'').trim().toLowerCase().replace(/[^a-z0-9_-]/g,'-').slice(0,60);
+  }
+
+  // ---------------- local prefs (device-only, not the actual movie data) ----------------
+  function loadLocal(key, fallback){
+    try{ const v = localStorage.getItem('bilheteria-' + key); return v ? JSON.parse(v) : fallback; }
+    catch(e){ return fallback; }
+  }
+  function saveLocal(key, val){
+    try{ localStorage.setItem('bilheteria-' + key, JSON.stringify(val)); }catch(e){}
+  }
+
+  // ---------------- theme (light/dark) ----------------
+  function applyTheme(theme){
+    document.documentElement.setAttribute('data-theme', theme === 'dark' ? 'dark' : 'light');
+    $all('.theme-btn').forEach(b => b.classList.toggle('active', b.dataset.theme === theme));
+  }
+  function initTheme(){
+    const saved = loadLocal('theme', 'light');
+    applyTheme(saved);
+  }
+  $all('.theme-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      saveLocal('theme', btn.dataset.theme);
+      applyTheme(btn.dataset.theme);
+    });
+  });
+  initTheme();
+
+  // ---------------- Firebase / Firestore ----------------
+  async function connectFirebase(cfgText){
+    const objStr = cfgText.replace(/const\s+firebaseConfig\s*=/,'').replace(/export\s+default.*/,'').trim().replace(/;$/,'');
+    let cfg;
+    try{ cfg = (new Function('return (' + objStr + ')'))(); }
+    catch(e){ throw new Error('Não consegui interpretar o firebaseConfig colado. Cole o objeto exatamente como aparece no console do Firebase.'); }
+
+    const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js');
+    const { getFirestore, doc, getDoc, setDoc } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js');
+    const app = initializeApp(cfg);
+    const db = getFirestore(app);
+    fsRefs = { db, doc, getDoc, setDoc };
+    saveLocal('firebase-config', cfg);
+  }
+
+  async function loadProfile(nickname){
+    if(!fsRefs) return { watched:{}, watchlist:{}, favorites:{}, profile:{avatar:null,cover:null} };
+    const { db, doc, getDoc, setDoc } = fsRefs;
+    let base = { watched:{}, watchlist:{}, favorites:{} };
+    let profile = { avatar:null, cover:null };
+    try{
+      const snap = await getDoc(doc(db, 'bilheteria_profiles', nickname));
+      if(snap.exists()){
+        const d = snap.data();
+        base = { watched: d.watched||{}, watchlist: d.watchlist||{}, favorites: d.favorites||{} };
+        if(d.profile) profile = Object.assign(profile, d.profile); // legacy fallback for older saves
+      }
+    }catch(e){ console.error('load profile failed', e); }
+    try{
+      const mediaSnap = await getDoc(doc(db, 'bilheteria_profiles', nickname + '--media'));
+      if(mediaSnap.exists()) profile = Object.assign(profile, mediaSnap.data());
+    }catch(e){ /* no media doc yet, fine */ }
+    // self-heal: an item marked watched should never linger in the watchlist too
+    let neededResave = false;
+    Object.keys(base.watched).forEach(k => {
+      if(base.watchlist[k]){ delete base.watchlist[k]; neededResave = true; }
+    });
+    if(neededResave && nickname === myNickname){
+      try{ await setDoc(doc(db, 'bilheteria_profiles', nickname), { watched: base.watched, watchlist: base.watchlist, favorites: base.favorites }); }
+      catch(e){ /* will retry on next natural save */ }
+    }
+    return Object.assign({}, base, { profile });
+  }
+
+  async function saveMyProfile(){
+    if(!fsRefs || !myNickname) return false;
+    const { db, doc, setDoc } = fsRefs;
+    try{
+      await setDoc(doc(db, 'bilheteria_profiles', myNickname), {
+        watched: myData.watched, watchlist: myData.watchlist, favorites: myData.favorites
+      });
+      return true;
+    }catch(e){
+      console.error('save profile failed', e);
+      showToast('Erro ao salvar: ' + e.message);
+      return false;
+    }
+  }
+
+  async function saveMyMedia(){
+    if(!fsRefs || !myNickname){ showToast('Conecte o Firebase na aba Configurações primeiro.'); return false; }
+    const { db, doc, setDoc } = fsRefs;
+    try{
+      await setDoc(doc(db, 'bilheteria_profiles', myNickname + '--media'), {
+        avatar: (myData.profile && myData.profile.avatar) || null,
+        cover: (myData.profile && myData.profile.cover) || null
+      });
+      return true;
+    }catch(e){
+      console.error('save media failed', e);
+      showToast('Erro ao salvar foto/capa: ' + e.message);
+      return false;
+    }
+  }
+
+  // ---------------- TMDB fetch ----------------
+  async function tmdb(path, params){
+    if(!apiKey) throw new Error('no-key');
+    const url = new URL('https://api.themoviedb.org/3' + path);
+    url.searchParams.set('api_key', apiKey);
+    url.searchParams.set('language', 'pt-BR');
+    Object.entries(params||{}).forEach(([k,v]) => url.searchParams.set(k, v));
+    const res = await fetch(url.toString());
+    if(!res.ok) throw new Error('tmdb-error-' + res.status);
+    return res.json();
+  }
+
+  async function loadGenres(){
+    try{
+      const [m, t] = await Promise.all([tmdb('/genre/movie/list'), tmdb('/genre/tv/list')]);
+      m.genres.forEach(g => genreMap.movie[g.id] = g.name);
+      t.genres.forEach(g => genreMap.tv[g.id] = g.name);
+    }catch(e){ /* silent */ }
+  }
+
+  // ---------------- tabs ----------------
+  $all('.tab').forEach(btn => btn.addEventListener('click', () => switchTab(btn.dataset.tab)));
+  $('#brandHome').addEventListener('click', () => switchTab('explorar'));
+
+  const PEEKABLE_TABS = ['series','filmes','favoritos','perfil','premiacoes','stats'];
+  function switchTab(name){
+    $all('.tab').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+    ['explorar','series','filmes','favoritos','perfil','premiacoes','stats','config'].forEach(t => {
+      $('#tab-' + t).classList.toggle('hidden', t !== name);
+    });
+    if(PEEKABLE_TABS.includes(name)) refreshListTabs(name);
+    else { const gb = $('#globalProfileBar'); if(gb) gb.innerHTML = ''; }
+    if(name === 'explorar') renderExplorar();
+    saveLocal('activeTab', name);
+  }
+
+  // ---------------- sidebar (menu recolhível, visível por padrão) ----------------
+  const sidebarEl = $('#sidebar');
+  function toggleSidebar(){
+    sidebarEl.classList.toggle('collapsed');
+    saveLocal('sidebarCollapsed', sidebarEl.classList.contains('collapsed'));
+  }
+  $('#sidebarToggle').addEventListener('click', toggleSidebar);
+  if(loadLocal('sidebarCollapsed', false)) sidebarEl.classList.add('collapsed');
+
+  async function refreshListTabs(activeName){
+    if(!myNickname || !fsRefs){ renderMissingSetup(); return; }
+    if(!viewingNickname) viewingNickname = myNickname;
+    viewingData = viewingNickname === myNickname ? myData : await loadProfile(viewingNickname);
+    if(PEEKABLE_TABS.includes(activeName)) renderProfileBar('globalProfileBar');
+    if(activeName === 'series') renderMediaTab('tv');
+    if(activeName === 'filmes') renderMediaTab('movie');
+    if(activeName === 'favoritos') renderList('favoritosList', viewingData.favorites, 'favorito');
+    if(activeName === 'perfil') renderPerfilTab();
+    if(activeName === 'premiacoes') renderPremiacoes();
+    if(activeName === 'stats') renderStats();
+  }
+
+  function renderMissingSetup(){
+    ['seriesContent','filmesContent','favoritosList','statsContent','perfilContent','premiacoesContent'].forEach(id => {
+      const el = $('#' + id);
+      if(el) el.innerHTML = `<div class="empty"><div class="icon">⚙</div>Finalize a configuração na aba <strong>Configurações</strong> (apelido) para usar suas listas.</div>`;
+    });
+  }
+
+  function renderProfileBar(containerId){
+    const el = $('#' + containerId);
+    if(!el) return;
+    const isMine = viewingNickname === myNickname;
+    el.innerHTML = `
+      <div class="profile-bar">
+        ${!isMine ? `<span class="who-pill" title="Vendo perfil de ${viewingNickname} (somente leitura)">👤 ${viewingNickname}<button id="backToMineBtn" title="Voltar para o meu perfil">✕</button></span>` : ''}
+        <input type="text" id="peekInput" placeholder="ver perfil de...">
+        <button class="btn small" id="peekBtn">Ver</button>
+      </div>
+    `;
+    const backBtn = $('#backToMineBtn');
+    if(backBtn) backBtn.addEventListener('click', () => { viewingNickname = myNickname; refreshListTabs(currentActiveTab()); });
+    $('#peekBtn').addEventListener('click', () => {
+      const val = normalizeNick($('#peekInput').value);
+      if(!val) return;
+      viewingNickname = val;
+      refreshListTabs(currentActiveTab());
+    });
+    $('#peekInput').addEventListener('keydown', (e) => { if(e.key === 'Enter') $('#peekBtn').click(); });
+  }
+  function currentActiveTab(){ return $('.tab.active').dataset.tab; }
+
+  // ---------------- catalogo rendering ----------------
+  function posterCard(item){
+    const mediaType = item.media_type || (item.title ? 'movie' : 'tv');
+    const title = item.title || item.name || 'Sem título';
+    const date = item.release_date || item.first_air_date || '';
+    const year = date ? date.slice(0,4) : '—';
+    const div = document.createElement('div');
+    div.className = 'poster-card';
+    const key = mediaType + '-' + item.id;
+    let badge = '';
+    if(myData.watched[key]) badge = `<span class="badge">${ICON_CHECK} visto</span>`;
+    else if(myData.favorites[key]) badge = '<span class="badge fav">favorito</span>';
+    else if(myData.watchlist[key]) badge = '<span class="badge want">quero</span>';
+    div.innerHTML = `
+      <div class="poster-img ${item.poster_path ? '' : 'noimg'}">
+        <div class="poster-img-inner" style="${item.poster_path ? `background-image:url('${IMG_SMALL + item.poster_path}')` : ''}"></div>
+        ${badge}
+      </div>
+      <div class="card-body">
+        <div class="title">${title}</div>
+        <div class="year">${year} · ${mediaType === 'movie' ? 'Filme' : 'Série'}</div>
+      </div>
+    `;
+    div.addEventListener('click', () => openDetail(mediaType, item.id, item));
+    return div;
+  }
+
+  function renderGrid(containerId, items){
+    const el = $('#' + containerId);
+    el.innerHTML = '';
+    if(!items.length){
+      el.innerHTML = `<div class="empty" style="grid-column:1/-1"><div class="icon">🎬</div>Nenhum resultado encontrado.</div>`;
+      return;
+    }
+    items.forEach(it => el.appendChild(posterCard(it)));
+  }
+
+  const CATALOG_CATEGORIES = [
+    { title: 'Mood Romântico', type: 'movie', genre: 10749 },
+    { title: 'Rir Até Passar Mal', type: 'movie', genre: 35 },
+    { title: 'Coração na Mão', type: 'movie', genre: 53 },
+    { title: 'Se Esconde Atrás do Sofá', type: 'movie', genre: 27 },
+    { title: 'Chorar Litros', type: 'movie', genre: 18 },
+    { title: 'Sextou Com Ação', type: 'movie', genre: 28 },
+    { title: 'Mundo Mágico', type: 'movie', genre: 14 },
+    { title: 'Lá Fora Tem Alien', type: 'movie', genre: 878 },
+    { title: 'Cheiro de Crime', type: 'tv', genre: 80 },
+    { title: 'Pipoca em Família', type: 'movie', genre: 10751 },
+    { title: 'Desenho Não É Só Pra Criança', type: 'movie', genre: 16 },
+    { title: 'Baseado em Fatos Sérios Mesmo', type: 'movie', genre: 99 },
+    { title: 'Trilha Sonora Boa Demais', type: 'movie', genre: 10402 },
+    { title: 'Cadê Meu Óculos', type: 'movie', genre: 9648 },
+    { title: 'Guerra É Guerra', type: 'movie', genre: 10752 },
+    { title: 'Faroeste Empoeirado', type: 'movie', genre: 37 },
+    { title: 'Vestido Rodado, Muito Drama', type: 'tv', genre: 18 },
+    { title: 'Modo Maratona Ativado', type: 'tv', genre: 10759 },
+    { title: 'Ciência Meio Duvidosa', type: 'tv', genre: 10765 },
+    { title: 'Investigando Tudo', type: 'tv', genre: 9648 },
+    { title: 'Sapatona Louca, Senhorrr', type: 'movie', keyword: 158718 },
+  ];
+  let catalogState = { index: 0, loading: false, seen: new Set() };
+  let catalogObserver = null;
+
+  function catalogEpoch(){
+    return Math.floor(Date.now() / (12 * 3600 * 1000));
+  }
+
+  function nextCatalogCategory(){
+    const epoch = catalogEpoch();
+    const rotatedIndex = (catalogState.index + epoch * 3) % CATALOG_CATEGORIES.length;
+    const cat = CATALOG_CATEGORIES[rotatedIndex];
+    const cycle = Math.floor(catalogState.index / CATALOG_CATEGORIES.length);
+    const page = ((cycle + epoch) % 20) + 1; // TMDB só aceita páginas de 1 a 500
+    catalogState.index++;
+    return { cat, page };
+  }
+
+  let lastCatalogError = null;
+  async function loadNextCatalogBatch(count){
+    if(!apiKey || catalogState.loading) return;
+    catalogState.loading = true;
+    const grid = $('#catalogoGrid');
+    try{
+      for(let i=0;i<count;i++){
+        let cat, page;
+        try{ ({ cat, page } = nextCatalogCategory()); }
+        catch(e){ continue; }
+        const rowWrap = document.createElement('div');
+        rowWrap.className = 'trend-row';
+        rowWrap.innerHTML = `<div class="trend-row-header"><h3>${cat.title}</h3></div><div class="trend-scroll">${skeletonPostersHTML(4)}</div>`;
+        grid.appendChild(rowWrap);
+        try{
+          const discoverParams = { sort_by: 'popularity.desc', page, include_adult: false };
+          if(cat.keyword) discoverParams.with_keywords = cat.keyword;
+          else discoverParams.with_genres = cat.genre;
+          const data = await tmdb('/discover/' + cat.type, discoverParams);
+          const scroll = rowWrap.querySelector('.trend-scroll');
+          scroll.innerHTML = '';
+          const fresh = (data.results||[]).filter(it => !catalogState.seen.has(cat.type + '-' + it.id));
+          fresh.slice(0,12).forEach(it => {
+            catalogState.seen.add(cat.type + '-' + it.id);
+            scroll.appendChild(trendPosterCard(it, cat.type));
+          });
+          if(!fresh.length) rowWrap.remove();
+          else wireHScroll(scroll);
+        }catch(e){
+          console.error('catalog category failed', cat, e);
+          lastCatalogError = e.message + ' (categoria: ' + cat.title + ', tipo: ' + cat.type + ')';
+          rowWrap.remove();
+        }
+      }
+    } finally {
+      catalogState.loading = false;
+    }
+  }
+
+  function setupCatalogObserver(){
+    if(catalogObserver) catalogObserver.disconnect();
+    catalogObserver = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if(e.isIntersecting) loadNextCatalogBatch(2); });
+    }, { rootMargin: '700px' });
+    catalogObserver.observe($('#catalogoSentinel'));
+  }
+
+  function loadCatalogHome(){
+    if(!apiKey) return;
+    if(catalogObserver) catalogObserver.disconnect();
+    $('#catalogoTitle').classList.add('hidden');
+    $('#catalogoGrid').className = '';
+    $('#catalogoGrid').innerHTML = '';
+    catalogState = { index: 0, loading: false, seen: new Set() };
+    loadNextCatalogBatch(4).then(() => {
+      if(!$('#catalogoGrid').children.length){
+        $('#catalogoGrid').className = 'grid';
+        $('#catalogoGrid').innerHTML = `<div class="empty" style="grid-column:1/-1">
+          <div class="icon">⚠️</div>
+          Não foi possível carregar o catálogo agora.
+          ${lastCatalogError ? `<div style="margin-top:8px;font-size:11px;color:var(--slate);">Detalhe: ${lastCatalogError}</div>` : ''}
+          <div style="margin-top:12px;"><button class="btn primary" id="retryCatalogBtn">Tentar de novo</button></div>
+        </div>`;
+        const retryBtn = $('#retryCatalogBtn');
+        if(retryBtn) retryBtn.addEventListener('click', loadCatalogHome);
+      }
+    });
+    setupCatalogObserver();
+  }
+
+  async function doSearch(query){
+    if(!query){ loadCatalogHome(); return; }
+    if(!apiKey){ showNoKeyState(); return; }
+    if(catalogObserver) catalogObserver.disconnect();
+    $('#catalogoTitle').classList.remove('hidden');
+    $('#catalogoTitle').textContent = 'Resultados para "' + query + '"';
+    $('#catalogoGrid').className = 'grid';
+    $('#catalogoGrid').innerHTML = skeletonPostersHTML(8);
+    try{
+      const data = await tmdb('/search/multi', { query });
+      renderGrid('catalogoGrid', (data.results||[]).filter(r => r.media_type === 'movie' || r.media_type === 'tv'));
+    }catch(e){ renderGrid('catalogoGrid', []); }
+  }
+
+  $('#searchInput').addEventListener('input', (e) => {
+    clearTimeout(searchTimer);
+    const val = e.target.value.trim();
+    searchTimer = setTimeout(() => doSearch(val), 400);
+  });
+
+  function showNoKeyState(){
+    if(catalogObserver) catalogObserver.disconnect();
+    $('#catalogoTitle').classList.remove('hidden');
+    $('#catalogoTitle').textContent = 'Catálogo';
+    $('#catalogoGrid').className = 'grid';
+    $('#catalogoGrid').innerHTML = `<div class="empty" style="grid-column:1/-1">
+      <div class="icon">🔑</div>
+      Finalize a configuração na aba <strong>Configurações</strong> para carregar o catálogo.
+    </div>`;
+  }
+
+  // ---------------- explorar ----------------
+  let exploreSubTab = 'catalogo';
+  function switchExploreSub(name){
+    exploreSubTab = name;
+    $all('.stat-subtab[data-exploresub]').forEach(b => b.classList.toggle('active', b.dataset.exploresub === name));
+    renderExplorar();
+  }
+  $all('.stat-subtab[data-exploresub]').forEach(btn => {
+    btn.addEventListener('click', () => switchExploreSub(btn.dataset.exploresub));
+  });
+
+  function quickAddButton(item, mediaType, onAdd){
+    const key = mediaType + '-' + item.id;
+    const added = !!myData.watchlist[key] || !!myData.watched[key];
+    const btn = document.createElement('button');
+    btn.className = 'quick-add-btn' + (added ? ' added' : '');
+    btn.innerHTML = added ? ICON_CHECK : '+';
+    btn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const already = !!myData.watchlist[key] || !!myData.watched[key];
+      btn.classList.toggle('added');
+      btn.innerHTML = btn.classList.contains('added') ? ICON_CHECK : '+';
+      if(already){
+        delete myData.watchlist[key];
+        showToast('Removido da lista');
+      } else {
+        myData.watchlist[key] = {
+          id: item.id, media_type: mediaType, title: item.title || item.name,
+          poster_path: item.poster_path || null, genre_ids: item.genre_ids || [],
+          added_at: new Date().toISOString().slice(0,10)
+        };
+        showToast('Adicionado à lista ★');
+        if(onAdd) onAdd();
+      }
+      await saveMyProfile();
+    });
+    return btn;
+  }
+
+  function trendPosterCard(item, mediaType){
+    const div = document.createElement('div');
+    div.className = 'poster-card';
+    const mt = mediaType || item.media_type || (item.title ? 'movie' : 'tv');
+    const title = item.title || item.name || 'Sem título';
+    const dateStr = item.release_date || item.first_air_date || '';
+    const year = dateStr ? dateStr.slice(0,4) : '—';
+    div.innerHTML = `
+      <div class="poster-img ${item.poster_path?'':'noimg'}">
+        <div class="poster-img-inner" style="${item.poster_path?`background-image:url('${IMG_SMALL+item.poster_path}')`:''}"></div>
+      </div>
+      <div class="card-body">
+        <div class="title">${title}</div>
+        <div class="year">${year}${mediaType?'':' · '+(mt==='movie'?'Filme':'Série')}</div>
+      </div>
+    `;
+    div.style.position = 'relative';
+    div.querySelector('.poster-img').appendChild(quickAddButton(item, mt));
+    div.addEventListener('click', () => openDetail(mt, item.id, item));
+    return div;
+  }
+
+  function buildTrendRow(title, items, mediaType){
+    const wrap = document.createElement('div');
+    wrap.className = 'trend-row';
+    wrap.innerHTML = `<div class="trend-row-header"><h3>${title}</h3></div>`;
+    const scroll = document.createElement('div');
+    scroll.className = 'trend-scroll';
+    items.slice(0,12).forEach(it => scroll.appendChild(trendPosterCard(it, mediaType)));
+    wrap.appendChild(scroll);
+    return wrap;
+  }
+
+  let descobrirState = { trendPeriod: 'week', popularMovieCat: 'streaming', popularTvCat: 'populares' };
+
+  const POPULAR_MOVIE_CATS = [
+    { id:'streaming', label:'Streaming', path:'/discover/movie', params:{ with_watch_monetization_types:'flatrate', watch_region:'BR', sort_by:'popularity.desc' } },
+    { id:'cinema',    label:'Nos Cinemas', path:'/movie/now_playing', params:{} },
+    { id:'alugar',    label:'Para Alugar', path:'/discover/movie', params:{ with_watch_monetization_types:'rent', watch_region:'BR', sort_by:'popularity.desc' } },
+    { id:'populares', label:'Populares', path:'/movie/popular', params:{} }
+  ];
+  const POPULAR_TV_CATS = [
+    { id:'populares', label:'Populares', path:'/tv/popular', params:{} },
+    { id:'noar',      label:'No Ar', path:'/tv/on_the_air', params:{} },
+    { id:'hoje',      label:'Estreando Hoje', path:'/tv/airing_today', params:{} },
+    { id:'streaming', label:'Streaming', path:'/discover/tv', params:{ with_watch_monetization_types:'flatrate', watch_region:'BR', sort_by:'popularity.desc' } }
+  ];
+
+  async function loadTrendSection(period){
+    descobrirState.trendPeriod = period;
+    const box = $('#trendSectionBody');
+    box.innerHTML = `<div class="trend-scroll">${skeletonPostersHTML(4)}</div>`;
+    $all('.period-toggle-btn').forEach(b => b.classList.toggle('active', b.dataset.period === period));
+    try{
+      const data = await tmdb('/trending/all/' + period);
+      box.innerHTML = '';
+      const scroll = document.createElement('div');
+      scroll.className = 'trend-scroll';
+      (data.results||[]).filter(it => it.media_type==='movie'||it.media_type==='tv').slice(0,14).forEach(it => scroll.appendChild(trendPosterCard(it)));
+      box.appendChild(scroll);
+      wireHScroll(scroll);
+    }catch(e){
+      box.innerHTML = `<div class="empty">Não foi possível carregar.</div>`;
+    }
+  }
+
+  async function loadPopularSection(kind, catId){
+    const list = kind === 'movie' ? POPULAR_MOVIE_CATS : POPULAR_TV_CATS;
+    const cat = list.find(c => c.id === catId);
+    if(kind === 'movie') descobrirState.popularMovieCat = catId; else descobrirState.popularTvCat = catId;
+    const boxId = kind === 'movie' ? '#popularMovieBody' : '#popularTvBody';
+    const btnClass = kind === 'movie' ? '.popular-movie-cat-btn' : '.popular-tv-cat-btn';
+    const box = $(boxId);
+    box.innerHTML = `<div class="trend-scroll">${skeletonPostersHTML(4)}</div>`;
+    $all(btnClass).forEach(b => b.classList.toggle('active', b.dataset.cat === catId));
+    try{
+      const data = await tmdb(cat.path, cat.params);
+      box.innerHTML = '';
+      const scroll = document.createElement('div');
+      scroll.className = 'trend-scroll';
+      (data.results||[]).slice(0,14).forEach(it => scroll.appendChild(trendPosterCard(it, kind)));
+      box.appendChild(scroll);
+      wireHScroll(scroll);
+    }catch(e){
+      box.innerHTML = `<div class="empty">Não foi possível carregar essa categoria agora.</div>`;
+    }
+  }
+
+  async function renderDescobrir(el){
+    if(!apiKey){
+      el.innerHTML = `<div class="empty"><div class="icon">🔑</div>Configure sua chave da TMDB na aba Configurações.</div>`;
+      return;
+    }
+    el.innerHTML = `
+      <div class="trend-row">
+        <div class="trend-row-header">
+          <h3>Tendências</h3>
+          <div class="period-toggle">
+            <button class="period-toggle-btn ${descobrirState.trendPeriod==='day'?'active':''}" data-period="day">Hoje</button>
+            <button class="period-toggle-btn ${descobrirState.trendPeriod==='week'?'active':''}" data-period="week">Nesta semana</button>
+          </div>
+        </div>
+        <div id="trendSectionBody"></div>
+      </div>
+      <div class="trend-row">
+        <div class="trend-row-header"><h3>Filmes mais populares</h3></div>
+        <div class="filter-chip-row">
+          ${POPULAR_MOVIE_CATS.map(c => `<button class="filter-chip popular-movie-cat-btn ${descobrirState.popularMovieCat===c.id?'active':''}" data-cat="${c.id}">${c.label}</button>`).join('')}
+        </div>
+        <div id="popularMovieBody"></div>
+      </div>
+      <div class="trend-row">
+        <div class="trend-row-header"><h3>Séries mais populares</h3></div>
+        <div class="filter-chip-row">
+          ${POPULAR_TV_CATS.map(c => `<button class="filter-chip popular-tv-cat-btn ${descobrirState.popularTvCat===c.id?'active':''}" data-cat="${c.id}">${c.label}</button>`).join('')}
+        </div>
+        <div id="popularTvBody"></div>
+      </div>
+    `;
+    $all('.period-toggle-btn').forEach(btn => btn.addEventListener('click', () => loadTrendSection(btn.dataset.period)));
+    $all('.popular-movie-cat-btn').forEach(btn => btn.addEventListener('click', () => loadPopularSection('movie', btn.dataset.cat)));
+    $all('.popular-tv-cat-btn').forEach(btn => btn.addEventListener('click', () => loadPopularSection('tv', btn.dataset.cat)));
+    loadTrendSection(descobrirState.trendPeriod);
+    loadPopularSection('movie', descobrirState.popularMovieCat);
+    loadPopularSection('tv', descobrirState.popularTvCat);
+  }
+
+  function feedCard(details, mediaType){
+    const title = details.title || details.name || 'Sem título';
+    const date = details.release_date || details.first_air_date || '';
+    const year = date ? date.slice(0,4) : '—';
+    const genreNames = (details.genres||[]).map(g=>g.name).filter(Boolean).slice(0,2);
+    const div = document.createElement('div');
+    div.className = 'poster-card';
+    div.innerHTML = `
+      <div class="poster-img ${details.poster_path ? '' : 'noimg'}">
+        <div class="poster-img-inner" style="${details.poster_path ? `background-image:url('${IMG_SMALL+details.poster_path}')` : ''}"></div>
+      </div>
+      <div class="card-body">
+        <div class="title">${title}</div>
+        <div class="year">${year} · ${mediaType==='movie'?'Filme':'Série'}</div>
+        ${genreNames.length ? `<div class="card-pills">${genreNames.map(g => `<span class="card-pill">${g}</span>`).join('')}</div>` : ''}
+      </div>
+    `;
+    div.style.position = 'relative';
+    div.querySelector('.poster-img').appendChild(quickAddButton(details, mediaType, () => {
+      div.style.transition = 'opacity .2s ease, transform .2s ease';
+      div.style.opacity = '0';
+      div.style.transform = 'scale(.96)';
+      setTimeout(() => div.remove(), 200);
+    }));
+    div.addEventListener('click', () => openDetail(mediaType, details.id, details));
+    return div;
+  }
+
+  async function renderRecomendados(el){
+    if(!apiKey){
+      el.innerHTML = `<div class="empty"><div class="icon">🔑</div>Configure sua chave da TMDB na aba Configurações.</div>`;
+      return;
+    }
+    const favs = Object.values(myData.favorites);
+    const ratedWatched = Object.values(myData.watched).filter(i=>i.rating>=4);
+    const seeds = [...favs, ...ratedWatched].slice(0,4);
+    if(!seeds.length){
+      el.innerHTML = `<div class="empty"><div class="icon">✨</div>Favorite ou avalie bem alguns títulos para receber recomendações personalizadas.</div>`;
+      return;
+    }
+    el.innerHTML = '<div class="grid" id="recomendadosGrid">' + skeletonPostersHTML(6) + '</div>';
+    try{
+      const recLists = await Promise.all(seeds.map(s => tmdb('/' + s.media_type + '/' + s.id + '/recommendations').catch(()=>({results:[]}))));
+      const excludedKeys = new Set([...Object.keys(myData.watched), ...Object.keys(myData.watchlist)]);
+      const merged = [];
+      const usedIds = new Set();
+      recLists.forEach((r, idx) => {
+        (r.results||[]).slice(0,3).forEach(item => {
+          const mt = seeds[idx].media_type;
+          const k = mt + '-' + item.id;
+          if(excludedKeys.has(k) || usedIds.has(k)) return;
+          usedIds.add(k);
+          merged.push({ item, mediaType: mt });
+        });
+      });
+      if(!merged.length){
+        el.innerHTML = `<div class="empty"><div class="icon">✨</div>Não encontramos recomendações novas agora. Continue assistindo!</div>`;
+        return;
+      }
+      const top = merged.slice(0,8);
+      const detailsList = await Promise.all(top.map(m => tmdb('/' + m.mediaType + '/' + m.item.id).catch(()=>m.item)));
+      el.innerHTML = '<div class="grid" id="recomendadosGrid"></div>';
+      const grid = $('#recomendadosGrid');
+      detailsList.forEach((d, i) => grid.appendChild(feedCard(d, top[i].mediaType)));
+    }catch(e){
+      el.innerHTML = `<div class="empty"><div class="icon">⚠️</div>Não foi possível carregar recomendações agora.</div>`;
+    }
+  }
+
+  function renderExplorar(){
+    const catalogoEl = $('#explorarCatalogo');
+    const otherEl = $('#explorarContent');
+    if(exploreSubTab === 'catalogo'){
+      catalogoEl.classList.remove('hidden');
+      otherEl.classList.add('hidden');
+      if(apiKey && !$('#catalogoGrid').children.length) loadCatalogHome();
+      return;
+    }
+    catalogoEl.classList.add('hidden');
+    otherEl.classList.remove('hidden');
+    if(exploreSubTab === 'descobrir') renderDescobrir(otherEl);
+    else renderRecomendados(otherEl);
+  }
+
+  // ---------------- episode progress helpers ----------------
+  function watchedEpisodesOf(item){
+    if(item && item.episodes) return Object.values(item.episodes).filter(Boolean).length;
+    return (item && item.episode_count) || 0; // legacy entries: treat as fully watched
+  }
+  function totalEpisodesOf(item){
+    return (item && item.total_episodes) || (item && item.episode_count) || 0;
+  }
+  function watchedMinutesOf(item){
+    if(item && item.episodes && item.avg_episode_minutes) return watchedEpisodesOf(item) * item.avg_episode_minutes;
+    return (item && item.runtime_minutes) || 0;
+  }
+  function seriesStatusOf(item){
+    const w = watchedEpisodesOf(item), t = totalEpisodesOf(item);
+    if(w <= 0) return 'notwatched';
+    if(t > 0 && w >= t) return 'watched';
+    return 'watching';
+  }
+
+  // ---------------- detail modal ----------------
+  async function openDetail(mediaType, id, listItem){
+    const key = mediaType + '-' + id;
+    let details = listItem;
+    if(apiKey){
+      try{ details = await tmdb('/' + mediaType + '/' + id, { append_to_response: 'credits,external_ids' }); }catch(e){ /* fallback */ }
+    }
+    const title = details.title || details.name || 'Sem título';
+    const date = details.release_date || details.first_air_date || '';
+    const year = date ? date.slice(0,4) : '—';
+    const overview = details.overview || 'Sem sinopse disponível.';
+    const genreNames = (details.genres || (details.genre_ids||[]).map(gid => ({name: genreMap[mediaType][gid]})))
+      .map(g => g.name).filter(Boolean).join(', ') || '—';
+    const runtime = mediaType === 'movie'
+      ? (details.runtime ? details.runtime + ' min' : '—')
+      : (details.number_of_episodes ? details.number_of_episodes + ' episódios' : '—');
+    const castList = (details.credits && details.credits.cast || []).slice(0, 12);
+    const LANG_MAP = { en:'Inglês', pt:'Português', es:'Espanhol', fr:'Francês', de:'Alemão', it:'Italiano', ja:'Japonês', ko:'Coreano', zh:'Chinês', ru:'Russo', hi:'Hindi', sv:'Sueco', nl:'Holandês' };
+    const langName = LANG_MAP[details.original_language] || (details.original_language||'—').toUpperCase();
+    const STATUS_MAP = { 'Released':'Lançado', 'In Production':'Em produção', 'Post Production':'Pós-produção', 'Planned':'Planejado', 'Returning Series':'Em exibição', 'Ended':'Encerrada', 'Canceled':'Cancelada', 'Rumored':'Rumor' };
+    const statusLabel = STATUS_MAP[details.status] || details.status || '—';
+    function fmtMoney(n){ return n ? 'US$ ' + n.toLocaleString('pt-BR') : '—'; }
+    const existing = myData.watched[key] || {};
+    const isWant = !!myData.watchlist[key];
+    const isFav = !!myData.favorites[key];
+
+    const totalEpisodes = mediaType === 'tv' ? (details.number_of_episodes || totalEpisodesOf(existing) || 0) : 0;
+    const avgEpMin = mediaType === 'tv' ? ((details.episode_run_time && details.episode_run_time[0]) || existing.avg_episode_minutes || 40) : 0;
+    let episodesState = mediaType === 'tv' ? Object.assign({}, existing.episodes || {}) : null;
+    const watchedCount = mediaType === 'tv' ? Object.values(episodesState).filter(Boolean).length : 0;
+    const isWatched = mediaType === 'tv' ? (watchedCount > 0) : !!myData.watched[key];
+
+    const seasons = mediaType === 'tv' ? (details.seasons || []).filter(s => s.episode_count > 0) : [];
+    let seasonEpisodesCache = {};
+
+    const root = $('#modalRoot');
+    root.innerHTML = `
+      <div class="overlay" id="overlay">
+        <div class="modal">
+          <div class="modal-hero" style="${details.backdrop_path ? `background-image:url('${BACKDROP + details.backdrop_path}')` : 'background:var(--bg-panel-alt)'}">
+            <button class="close-btn" id="closeModal">✕</button>
+          </div>
+          <div class="modal-body">
+            <h2>${title} <span class="mono" style="color:var(--slate);font-size:14px;">(${year})</span></h2>
+            <div class="modal-meta">${mediaType === 'movie' ? 'Filme' : 'Série'} · ${genreNames} · ${runtime}</div>
+            <div class="modal-overview">${overview}</div>
+            <div id="awardsBlock"></div>
+            <div class="detail-info-grid">
+              <div class="detail-info-item"><span class="dl">Situação</span><span class="dv">${statusLabel}</span></div>
+              <div class="detail-info-item"><span class="dl">Idioma original</span><span class="dv">${langName}</span></div>
+              ${mediaType === 'movie' ? `
+                <div class="detail-info-item"><span class="dl">Orçamento</span><span class="dv">${fmtMoney(details.budget)}</span></div>
+                <div class="detail-info-item"><span class="dl">Receita</span><span class="dv">${fmtMoney(details.revenue)}</span></div>
+              ` : ''}
+            </div>
+            ${castList.length ? `
+              <div class="section-title">Elenco principal</div>
+              <div class="cast-scroll">
+                ${castList.map(c => `
+                  <div class="cast-card">
+                    <div class="cast-photo ${c.profile_path?'':'noimg'}" style="${c.profile_path?`background-image:url('${IMG_SMALL+c.profile_path}')`:''}"></div>
+                    <div class="cast-name">${c.name}</div>
+                    <div class="cast-role">${c.character||''}</div>
+                  </div>
+                `).join('')}
+              </div>
+            ` : ''}
+            ${mediaType === 'tv' ? `<div class="progress-pill" id="progressPill">${watchedCount}/${totalEpisodes || '?'} episódios assistidos</div>` : ''}
+            <div class="btn-row">
+              ${mediaType === 'movie'
+                ? `<button class="btn ${isWatched ? 'on' : ''}" id="btnWatched">${isWatched ? '✓ Assistido' : 'Marcar como assistido'}</button>`
+                : `<button class="btn ${isWatched && watchedCount>=totalEpisodes && totalEpisodes>0 ? 'on' : ''}" id="btnWatchedAll">${(watchedCount>=totalEpisodes && totalEpisodes>0) ? '✓ Tudo assistido' : 'Marcar tudo assistido'}</button>
+                   ${(watchedCount>=totalEpisodes && totalEpisodes>0) ? `<button class="btn" id="btnRewatchSeries" title="Registrar que você assistiu a série de novo">🔁 Reassistir</button>` : ''}`}
+              <button class="btn ${isWant ? 'on want' : ''}" id="btnWant">${isWant ? '★ Na lista' : 'Quero assistir'}</button>
+              <button class="btn ${isFav ? 'on fav' : ''}" id="btnFav">${isFav ? 'Favorito' : 'Favoritar'}</button>
+            </div>
+            ${mediaType === 'tv' ? `
+              <div class="section-title">Episódios</div>
+              <div id="seasonsAccordion">
+                ${seasons.length ? seasons.map(s => `
+                  <div class="season-block">
+                    <div class="season-header">
+                      <span class="season-toggle" data-season="${s.season_number}">
+                        <span class="chev">${ICON_CHEVRON_DOWN}</span> ${s.season_number === 0 ? 'Especiais' : 'Temporada ' + s.season_number}
+                      </span>
+                      <span class="season-count" id="season-count-${s.season_number}">0/${s.episode_count}</span>
+                      <button class="season-mark-btn" id="season-mark-${s.season_number}" data-season="${s.season_number}" data-total="${s.episode_count}" title="Marcar/desmarcar temporada inteira">${ICON_CHECK}</button>
+                    </div>
+                    <div class="season-episodes hidden" id="season-eps-${s.season_number}"></div>
+                  </div>
+                `).join('') : '<p style="color:var(--slate);font-size:12.5px;">Configure a chave da TMDB para ver a lista de episódios.</p>'}
+              </div>
+            ` : ''}
+            <div id="ratingBlock" class="${isWatched ? '' : 'hidden'}" style="margin-top:16px;">
+              <div class="rating-section">
+                <label>Sua nota</label>
+                <div class="stars" id="starsRow"></div>
+                <div class="rating-numeric" id="ratingNumeric"></div>
+                <label>Como você se sentiu?</label>
+                <div class="feelings-grid" id="feelingsGrid"></div>
+              </div>
+              <label>Notas / comentários</label>
+              <textarea id="notesInput" placeholder="O que achou?">${existing.notes || ''}</textarea>
+              <div style="margin-top:12px;display:flex;gap:8px;">
+                <button class="btn primary" id="saveRatingBtn">Salvar avaliação</button>
+                <button class="btn danger" id="removeWatchedBtn">Remover dos assistidos</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    $('#closeModal').addEventListener('click', () => root.innerHTML = '');
+    $('#overlay').addEventListener('click', (e) => { if(e.target.id === 'overlay') root.innerHTML = ''; });
+    const castScrollEl = $('.cast-scroll');
+    if(castScrollEl) wireHScroll(castScrollEl);
+
+    // load awards summary from OMDb (TMDB has no awards data) — non-blocking
+    const imdbId = details.imdb_id || (details.external_ids && details.external_ids.imdb_id);
+    if(omdbKey && imdbId){
+      fetch(`https://www.omdbapi.com/?apikey=${omdbKey}&i=${imdbId}`)
+        .then(r => r.json())
+        .then(d => {
+          const block = $('#awardsBlock');
+          if(!block) return;
+          if(d && d.Awards && d.Awards !== 'N/A'){
+            block.innerHTML = `<div class="awards-pill">🏆 ${translateAwardsText(d.Awards)}</div>`;
+          }
+        })
+        .catch(() => {});
+    }
+
+    let currentRating = existing.rating || 0;
+    let currentFeelings = existing.feelings || (existing.feeling ? [existing.feeling] : []);
+
+    function renderStars(){
+      const row = $('#starsRow');
+      row.innerHTML = '';
+      for(let i=1;i<=5;i++){
+        const full = currentRating >= i;
+        const half = !full && currentRating >= i - 0.5;
+        const pct = full ? 100 : (half ? 50 : 0);
+        const wrap = document.createElement('span');
+        wrap.className = 'star-wrap';
+        wrap.innerHTML = `
+          <svg viewBox="0 0 24 24" width="42" height="42" fill="var(--border)"><path d="${STAR_PATH}"/></svg>
+          <span class="star-fill" style="width:${pct}%">
+            <svg viewBox="0 0 24 24" width="42" height="42" fill="var(--gold)"><path d="${STAR_PATH}"/></svg>
+          </span>
+        `;
+        wrap.addEventListener('click', (e) => {
+          const rect = wrap.getBoundingClientRect();
+          const clickX = e.clientX - rect.left;
+          currentRating = (clickX > rect.width/2) ? i : (i - 0.5);
+          renderStars();
+        });
+        row.appendChild(wrap);
+      }
+      $('#ratingNumeric').textContent = currentRating > 0 ? currentRating.toFixed(1).replace('.0','') + ' / 5' : '';
+    }
+
+    function renderFeelings(){
+      const grid = $('#feelingsGrid');
+      grid.innerHTML = '';
+      FEELINGS.forEach(f => {
+        const div = document.createElement('div');
+        div.className = 'feeling-option' + (currentFeelings.includes(f.id) ? ' selected' : '');
+        div.innerHTML = twemojiImg(f.code, f.label) + `<span>${f.label}</span>`;
+        div.addEventListener('click', () => {
+          if(currentFeelings.includes(f.id)) currentFeelings = currentFeelings.filter(x => x !== f.id);
+          else currentFeelings = [...currentFeelings, f.id];
+          renderFeelings();
+        });
+        grid.appendChild(div);
+      });
+    }
+    if(isWatched){ renderStars(); renderFeelings(); }
+
+    const dataForSave = {
+      id, media_type: mediaType, title, poster_path: details.poster_path || null,
+      backdrop_path: details.backdrop_path || null,
+      genre_ids: details.genres ? details.genres.map(g=>g.id) : (details.genre_ids||[]),
+      episode_count: mediaType === 'tv' ? totalEpisodes : null,
+      total_episodes: mediaType === 'tv' ? totalEpisodes : null,
+      avg_episode_minutes: mediaType === 'tv' ? avgEpMin : null,
+      runtime_minutes: mediaType === 'movie' ? (details.runtime||0) : (avgEpMin * totalEpisodes),
+      vote_average: details.vote_average || 0
+    };
+
+    // ---- movie flow (unchanged) ----
+    if(mediaType === 'movie'){
+      $('#btnWatched').addEventListener('click', async () => {
+        if(isWatched){
+          openWatchedChoiceMenu(
+            () => {
+              delete myData.watched[key];
+              saveMyProfile();
+              showToast('Removido dos assistidos');
+              openDetail(mediaType, id, details);
+            },
+            () => {
+              const prev = myData.watched[key] || {};
+              myData.watched[key] = Object.assign({}, prev, {
+                date_watched: new Date().toISOString().slice(0,10),
+                rewatch_count: (prev.rewatch_count || 0) + 1
+              });
+              saveMyProfile();
+              showToast('Marcado como reassistido 🔁');
+              openDetail(mediaType, id, details);
+            }
+          );
+          return;
+        }
+        myData.watched[key] = Object.assign({}, dataForSave, { rating: 0, notes: '', date_watched: new Date().toISOString().slice(0,10) });
+        delete myData.watchlist[key];
+        saveMyProfile();
+        showToast('Marcado como assistido ✓');
+        openDetail(mediaType, id, details);
+      });
+    }
+
+    // ---- tv: episode accordion logic ----
+    if(mediaType === 'tv'){
+      function countWatchedInSeason(seasonNum){
+        return Object.keys(episodesState).filter(k => k.startsWith('S'+seasonNum+'E') && episodesState[k]).length;
+      }
+      function updateSeasonCount(seasonNum, total){
+        const el = $('#season-count-' + seasonNum);
+        if(el) el.textContent = countWatchedInSeason(seasonNum) + '/' + total;
+      }
+      function updateTopProgress(){
+        const wc = Object.values(episodesState).filter(Boolean).length;
+        const pill = $('#progressPill');
+        if(pill) pill.textContent = wc + '/' + (totalEpisodes || '?') + ' episódios assistidos';
+        const btn = $('#btnWatchedAll');
+        if(btn){
+          const full = totalEpisodes > 0 && wc >= totalEpisodes;
+          btn.textContent = full ? '✓ Tudo assistido' : 'Marcar tudo assistido';
+          btn.classList.toggle('on', full);
+        }
+        const rb = $('#ratingBlock');
+        if(rb) rb.classList.toggle('hidden', wc <= 0);
+        if(wc > 0 && !$('#starsRow').hasChildNodes()){ renderStars(); renderFeelings(); }
+      }
+      async function persistEpisodes(){
+        const wc = Object.values(episodesState).filter(Boolean).length;
+        if(wc === 0){
+          delete myData.watched[key];
+        } else {
+          const prev = myData.watched[key] || {};
+          myData.watched[key] = Object.assign({}, prev, dataForSave, {
+            episodes: Object.assign({}, episodesState),
+            rating: prev.rating || 0,
+            notes: prev.notes || '',
+            date_watched: new Date().toISOString().slice(0,10)
+          });
+        }
+        await saveMyProfile();
+      }
+      async function renderSeasonEpisodes(seasonNum, total){
+        const container = $('#season-eps-' + seasonNum);
+        if(seasonEpisodesCache[seasonNum]){
+          container.classList.toggle('hidden');
+          return;
+        }
+        container.innerHTML = '<p style="color:var(--slate);font-size:12px;padding:8px 0;">Carregando...</p>';
+        container.classList.remove('hidden');
+        let episodes = [];
+        let failed = false;
+        try{
+          const data = await tmdb('/tv/' + id + '/season/' + seasonNum);
+          episodes = data.episodes || [];
+        }catch(e){
+          failed = true;
+          console.error('Falha ao carregar episódios da temporada', seasonNum, e);
+        }
+        if(failed){
+          container.innerHTML = '<p class="ep-retry" style="color:var(--slate);font-size:12px;padding:8px 0;cursor:pointer;text-decoration:underline;">Não foi possível carregar os episódios. Toque para tentar novamente.</p>';
+          const retryEl = container.querySelector('.ep-retry');
+          if(retryEl) retryEl.addEventListener('click', () => renderSeasonEpisodes(seasonNum, total));
+          return; // não cacheia, para permitir nova tentativa
+        }
+        seasonEpisodesCache[seasonNum] = episodes;
+        container.innerHTML = episodes.map(ep => {
+          const epKey = 'S'+seasonNum+'E'+ep.episode_number;
+          const epRating = (myData.watched[key] && myData.watched[key].episode_ratings && myData.watched[key].episode_ratings[epKey]);
+          const epFeelingsList = epRating ? (epRating.feelings || (epRating.feeling ? [epRating.feeling] : [])) : [];
+          const epEmojiStr = epFeelingsList.map(fid => (FEELINGS.find(f=>f.id===fid)||{}).emoji || '').join('');
+          const epBadgeText = epRating && epRating.rating ? ('★' + epRating.rating.toFixed(1).replace('.0','') + (epEmojiStr ? ' ' + epEmojiStr : '')) : epEmojiStr;
+          return `
+          <div class="episode-row">
+            <input type="checkbox" data-season="${seasonNum}" data-ep="${ep.episode_number}" ${episodesState[epKey] ? 'checked' : ''}>
+            <span class="ep-num">E${ep.episode_number}</span>
+            <span class="ep-name" data-season="${seasonNum}" data-ep="${ep.episode_number}" data-name="${(ep.name||'').replace(/"/g,'&quot;')}">${ep.name || ''}</span>
+            <span class="ep-rating-badge" id="ep-rating-${seasonNum}-${ep.episode_number}">${epBadgeText}</span>
+          </div>
+        `;
+        }).join('') || '<p style="color:var(--slate);font-size:12px;">Sem episódios listados.</p>';
+      }
+
+      function openEpisodeRatingModal(seasonNum, epNum, epName){
+        if(!myData.watched[key]){
+          myData.watched[key] = Object.assign({}, dataForSave, { episodes: Object.assign({}, episodesState), rating: 0, notes: '', episode_ratings: {}, date_watched: new Date().toISOString().slice(0,10) });
+        }
+        const entry = myData.watched[key];
+        entry.episode_ratings = entry.episode_ratings || {};
+        const epKey = 'S'+seasonNum+'E'+epNum;
+        const existingEp = entry.episode_ratings[epKey] || {};
+        let epRatingVal = existingEp.rating || 0;
+        let epFeelings = existingEp.feelings || (existingEp.feeling ? [existingEp.feeling] : []);
+
+        const root = $('#modalRoot');
+        root.innerHTML = `
+          <div class="overlay" id="overlay">
+            <div class="modal" style="max-width:420px;">
+              <div class="modal-body">
+                <div style="display:flex;align-items:center;justify-content:space-between;">
+                  <h2 style="margin:0;font-size:17px;">T${seasonNum} · E${epNum}</h2>
+                  <button class="close-btn" id="closeEpRating" style="position:static;">✕</button>
+                </div>
+                <p style="color:var(--slate);font-size:12.5px;margin:4px 0 14px;">${epName || ''}</p>
+                <div class="rating-section">
+                  <label>Sua nota</label>
+                  <div class="stars" id="epStarsRow"></div>
+                  <div class="rating-numeric" id="epRatingNumeric"></div>
+                  <label>Como você se sentiu? (pode escolher mais de um)</label>
+                  <div class="feelings-grid" id="epFeelingsGrid"></div>
+                </div>
+                <button class="btn primary" id="saveEpRating" style="margin-top:6px;width:100%;">Salvar avaliação do episódio</button>
+              </div>
+            </div>
+          </div>
+        `;
+        $('#closeEpRating').addEventListener('click', () => root.innerHTML = '');
+        $('#overlay').addEventListener('click', (e) => { if(e.target.id === 'overlay') root.innerHTML = ''; });
+
+        function renderEpStars(){
+          const row = $('#epStarsRow');
+          row.innerHTML = '';
+          for(let i=1;i<=5;i++){
+            const full = epRatingVal >= i;
+            const half = !full && epRatingVal >= i - 0.5;
+            const pct = full ? 100 : (half ? 50 : 0);
+            const wrap = document.createElement('span');
+            wrap.className = 'star-wrap';
+            wrap.innerHTML = `
+              <svg viewBox="0 0 24 24" width="42" height="42" fill="var(--border)"><path d="${STAR_PATH}"/></svg>
+              <span class="star-fill" style="width:${pct}%"><svg viewBox="0 0 24 24" width="42" height="42" fill="var(--gold)"><path d="${STAR_PATH}"/></svg></span>
+            `;
+            wrap.addEventListener('click', (e) => {
+              const rect = wrap.getBoundingClientRect();
+              epRatingVal = (e.clientX - rect.left > rect.width/2) ? i : (i - 0.5);
+              renderEpStars();
+            });
+            row.appendChild(wrap);
+          }
+          $('#epRatingNumeric').textContent = epRatingVal > 0 ? epRatingVal.toFixed(1).replace('.0','') + ' / 5' : '';
+        }
+        function renderEpFeelings(){
+          const grid = $('#epFeelingsGrid');
+          grid.innerHTML = '';
+          FEELINGS.forEach(f => {
+            const div = document.createElement('div');
+            div.className = 'feeling-option' + (epFeelings.includes(f.id) ? ' selected' : '');
+            div.innerHTML = twemojiImg(f.code, f.label) + `<span>${f.label}</span>`;
+            div.addEventListener('click', () => {
+              if(epFeelings.includes(f.id)) epFeelings = epFeelings.filter(x => x !== f.id);
+              else epFeelings = [...epFeelings, f.id];
+              renderEpFeelings();
+            });
+            grid.appendChild(div);
+          });
+        }
+        renderEpStars();
+        renderEpFeelings();
+
+        $('#saveEpRating').addEventListener('click', async () => {
+          entry.episode_ratings[epKey] = { rating: epRatingVal, feelings: epFeelings };
+          saveMyProfile();
+          showToast('Avaliação do episódio salva ✓');
+          root.innerHTML = '';
+          const badge = $('#ep-rating-' + seasonNum + '-' + epNum);
+          if(badge){
+            const emojiStr = epFeelings.map(id => (FEELINGS.find(f=>f.id===id)||{}).emoji || '').join('');
+            badge.textContent = (epRatingVal > 0 ? '★' + epRatingVal.toFixed(1).replace('.0','') + ' ' : '') + emojiStr;
+          }
+        });
+      }
+
+      seasons.forEach(s => updateSeasonCount(s.season_number, s.episode_count));
+
+      $all('.season-toggle').forEach(el => {
+        el.addEventListener('click', () => {
+          el.classList.toggle('open');
+          renderSeasonEpisodes(el.dataset.season, +el.dataset.season);
+        });
+      });
+      $all('.season-mark-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const seasonNum = btn.dataset.season, total = +btn.dataset.total;
+          const nowFull = countWatchedInSeason(seasonNum) >= total;
+          if(seasonEpisodesCache[seasonNum]){
+            seasonEpisodesCache[seasonNum].forEach(ep => { episodesState['S'+seasonNum+'E'+ep.episode_number] = !nowFull; });
+            $all('#season-eps-' + seasonNum + ' input[type=checkbox]').forEach(cb => cb.checked = !nowFull);
+          } else {
+            try{
+              const data = await tmdb('/tv/' + id + '/season/' + seasonNum);
+              (data.episodes||[]).forEach(ep => { episodesState['S'+seasonNum+'E'+ep.episode_number] = !nowFull; });
+            }catch(e){}
+          }
+          updateSeasonCount(seasonNum, total);
+          updateTopProgress();
+          await persistEpisodes();
+        });
+      });
+      $('#seasonsAccordion').addEventListener('change', async (e) => {
+        if(e.target.matches('input[type=checkbox][data-season]')){
+          const s = e.target.dataset.season, ep = e.target.dataset.ep;
+          episodesState['S'+s+'E'+ep] = e.target.checked;
+          const seasonMeta = seasons.find(x => String(x.season_number) === String(s));
+          updateSeasonCount(s, seasonMeta ? seasonMeta.episode_count : '?');
+          updateTopProgress();
+          await persistEpisodes();
+        }
+      });
+      $('#seasonsAccordion').addEventListener('click', (e) => {
+        const nameEl = e.target.closest('.ep-name');
+        if(nameEl) openEpisodeRatingModal(nameEl.dataset.season, nameEl.dataset.ep, nameEl.dataset.name);
+      });
+      $('#btnWatchedAll').addEventListener('click', async () => {
+        const wc = Object.values(episodesState).filter(Boolean).length;
+        const full = totalEpisodes > 0 && wc >= totalEpisodes;
+        if(full){
+          episodesState = {};
+        } else {
+          for(const s of seasons){
+            if(seasonEpisodesCache[s.season_number]){
+              seasonEpisodesCache[s.season_number].forEach(ep => { episodesState['S'+s.season_number+'E'+ep.episode_number] = true; });
+            } else {
+              try{
+                const data = await tmdb('/tv/' + id + '/season/' + s.season_number);
+                seasonEpisodesCache[s.season_number] = data.episodes || [];
+                (data.episodes||[]).forEach(ep => { episodesState['S'+s.season_number+'E'+ep.episode_number] = true; });
+              }catch(e){}
+            }
+          }
+        }
+        seasons.forEach(s => updateSeasonCount(s.season_number, s.episode_count));
+        $all('#seasonsAccordion input[type=checkbox]').forEach(cb => {
+          const s = cb.dataset.season, ep = cb.dataset.ep;
+          cb.checked = !!episodesState['S'+s+'E'+ep];
+        });
+        updateTopProgress();
+        await persistEpisodes();
+      });
+      const rewatchBtn = $('#btnRewatchSeries');
+      if(rewatchBtn){
+        rewatchBtn.addEventListener('click', async () => {
+          const prev = myData.watched[key] || {};
+          myData.watched[key] = Object.assign({}, prev, dataForSave, {
+            episodes: Object.assign({}, episodesState),
+            rewatch_count: (prev.rewatch_count || 0) + 1,
+            date_watched: new Date().toISOString().slice(0,10)
+          });
+          await saveMyProfile();
+          showToast('Marcado como reassistido 🔁');
+        });
+      }
+    }
+
+    $('#btnWant').addEventListener('click', async () => {
+      if(isWant){ delete myData.watchlist[key]; } else { myData.watchlist[key] = Object.assign({}, dataForSave, { added_at: new Date().toISOString().slice(0,10) }); }
+      saveMyProfile();
+      showToast(isWant ? 'Removido da lista' : 'Adicionado à lista ★');
+      openDetail(mediaType, id, details);
+    });
+    $('#btnFav').addEventListener('click', async () => {
+      if(isFav){ delete myData.favorites[key]; } else { myData.favorites[key] = Object.assign({}, dataForSave, { added_at: new Date().toISOString().slice(0,10) }); }
+      saveMyProfile();
+      showToast(isFav ? 'Removido dos favoritos' : 'Adicionado aos favoritos!');
+      openDetail(mediaType, id, details);
+    });
+    const saveBtn = $('#saveRatingBtn');
+    if(saveBtn){
+      saveBtn.addEventListener('click', async () => {
+        myData.watched[key] = Object.assign({}, myData.watched[key], dataForSave, {
+          rating: currentRating,
+          feelings: currentFeelings,
+          notes: $('#notesInput').value,
+          date_watched: (myData.watched[key] && myData.watched[key].date_watched) || new Date().toISOString().slice(0,10)
+        });
+        saveMyProfile();
+        showToast('Avaliação salva ✓');
+        root.innerHTML = '';
+        if(viewingNickname === myNickname) refreshListTabs(currentActiveTab());
+      });
+    }
+    const removeBtn = $('#removeWatchedBtn');
+    if(removeBtn){
+      removeBtn.addEventListener('click', async () => {
+        delete myData.watched[key];
+        saveMyProfile();
+        showToast('Removido dos assistidos');
+        root.innerHTML = '';
+        if(viewingNickname === myNickname) refreshListTabs(currentActiveTab());
+      });
+    }
+  }
+
+  // ---------------- perfil tab ----------------
+  let perfilView = { mode: 'main' };
+  let gridSort = 'recent';
+  let gridFilter = 'all';
+
+  function renderPerfilTab(){
+    const el = $('#perfilContent');
+    const isMine = viewingNickname === myNickname;
+    const profile = viewingData.profile || { avatar:null, cover:null };
+    const watchedCount = Object.keys(viewingData.watched||{}).length;
+    const char = findCharacter(profile.avatar);
+    el.innerHTML = `
+      <div class="profile-top">
+        <div class="cover-wrap">
+          <div class="cover-img ${profile.cover ? '' : 'noimg'}" style="${profile.cover ? `background-image:url('${profile.cover}')` : ''}"></div>
+        </div>
+        <div class="avatar-wrap">
+          <div class="avatar ${char ? '' : 'noimg'}" id="avatarCircle">
+            ${char ? characterSVG(char.bg, char.icon, 96) : ''}
+          </div>
+          ${isMine ? `<button class="avatar-edit-btn" id="editAvatarBtn" title="Escolher personagem">${ICON_PENCIL}</button>` : ''}
+        </div>
+      </div>
+      <div class="profile-header">
+        <p class="pname">${viewingNickname}</p>
+        <p class="ptag">${char ? char.name + ' · ' : ''}${watchedCount} título${watchedCount===1?'':'s'} assistido${watchedCount===1?'':'s'}</p>
+        ${isMine ? `<button class="btn cover-picker-btn" id="pickCoverBtn">Escolher capa</button>` : ''}
+      </div>
+      <div id="coverPickerArea"></div>
+    `;
+    if(isMine){
+      $('#editAvatarBtn').addEventListener('click', () => { showToast('Abrindo personagens...'); openAvatarPicker(); });
+      $('#pickCoverBtn').addEventListener('click', openCoverPicker);
+    }
+    perfilView = { mode: 'main' };
+    renderPerfilBody();
+  }
+
+  function openAvatarPicker(){
+    try{
+    const root = $('#modalRoot');
+    root.innerHTML = `
+      <div class="overlay" id="overlay">
+        <div class="modal" style="max-width:420px;">
+          <div class="modal-body">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+              <h2 style="margin:0;">Escolha seu personagem</h2>
+              <button class="close-btn" id="closeAvatarPicker" style="position:static;">${'✕'}</button>
+            </div>
+            <div class="char-grid" id="charGrid"></div>
+          </div>
+        </div>
+      </div>
+    `;
+    $('#closeAvatarPicker').addEventListener('click', () => root.innerHTML = '');
+    $('#overlay').addEventListener('click', (e) => { if(e.target.id === 'overlay') root.innerHTML = ''; });
+    const grid = $('#charGrid');
+    CHARACTERS.forEach(c => {
+      const div = document.createElement('div');
+      div.className = 'char-option';
+      div.innerHTML = characterSVG(c.bg, c.icon, 64) + `<span>${c.name}</span>`;
+      div.addEventListener('click', () => {
+        myData.profile = myData.profile || {};
+        myData.profile.avatar = 'char:' + c.id;
+        saveMyMedia();
+        showToast('Personagem escolhido ✓');
+        root.innerHTML = '';
+        renderPerfilTab();
+      });
+      grid.appendChild(div);
+    });
+    }catch(e){
+      console.error('avatar picker failed', e);
+      showToast('Erro ao abrir seletor: ' + e.message);
+    }
+  }
+
+  function renderPerfilBody(){
+    const el = $('#perfilBody');
+    if(perfilView.mode === 'grid'){ renderCollectionGrid(el); return; }
+
+    const tvWatched = Object.values(viewingData.watched).filter(i=>inferMediaType(i)==='tv');
+    const tvWatchlist = Object.values(viewingData.watchlist).filter(i=>inferMediaType(i)==='tv');
+    const movieWatched = Object.values(viewingData.watched).filter(i=>inferMediaType(i)==='movie');
+    const movieWatchlist = Object.values(viewingData.watchlist).filter(i=>inferMediaType(i)==='movie');
+    const tvFav = Object.values(viewingData.favorites).filter(i=>inferMediaType(i)==='tv').map(i=>({...i,_status:'fav'}));
+    const movieFav = Object.values(viewingData.favorites).filter(i=>inferMediaType(i)==='movie').map(i=>({...i,_status:'fav'}));
+    const seriesAll = mergeCollection(tvWatched, tvWatchlist);
+    const moviesAll = mergeCollection(movieWatched, movieWatchlist);
+
+    el.innerHTML = '';
+    el.appendChild(buildCollectionRow('Séries', seriesAll, 'series'));
+    el.appendChild(buildCollectionRow('Séries favoritas', tvFav, 'series-fav'));
+    el.appendChild(buildCollectionRow('Filmes', moviesAll, 'movies'));
+    el.appendChild(buildCollectionRow('Filmes favoritos', movieFav, 'movies-fav'));
+  }
+
+  function mergeCollection(watchedArr, watchlistArr){
+    return [
+      ...watchedArr.map(i => ({...i, _status: i.media_type==='tv' ? seriesStatusOf(i) : 'watched'})),
+      ...watchlistArr.map(i => ({...i, _status:'notwatched'}))
+    ];
+  }
+
+  function buildCollectionRow(title, items, kind){
+    const wrap = document.createElement('div');
+    wrap.className = 'collection-row';
+    const header = document.createElement('div');
+    header.className = 'collection-row-header';
+    header.innerHTML = `<h3>${title} <span>(${items.length})</span></h3><span class="collection-row-actions"><span class="chev">${ICON_CHEVRON}</span></span>`;
+    header.addEventListener('click', () => openCollectionGrid(kind, title, items));
+    wrap.appendChild(header);
+    if(!items.length){
+      const empty = document.createElement('p');
+      empty.className = 'empty-row';
+      empty.textContent = 'Nada por aqui ainda.';
+      wrap.appendChild(empty);
+      return wrap;
+    }
+    const scroll = document.createElement('div');
+    scroll.className = 'collection-scroll';
+    items.slice(0,10).forEach(it => scroll.appendChild(collectionPosterCard(it, true)));
+    wrap.appendChild(scroll);
+    wireHScroll(scroll);
+    return wrap;
+  }
+
+  function collectionPosterCard(item, hideBadge){
+    const div = document.createElement('div');
+    div.className = 'poster-card';
+    let badge = '';
+    if(!hideBadge){
+      if(item._status === 'watched') badge = `<span class="badge">${ICON_CHECK} visto</span>`;
+      else if(item._status === 'watching') badge = `<span class="badge watching">${watchedEpisodesOf(item)}/${totalEpisodesOf(item)}</span>`;
+      else if(item._status === 'notwatched') badge = '<span class="badge notwatched">não visto</span>';
+    }
+    div.innerHTML = `
+      <div class="poster-img ${item.poster_path?'':'noimg'}">
+        <div class="poster-img-inner" style="${item.poster_path?`background-image:url('${IMG_SMALL+item.poster_path}')`:''}"></div>
+        ${badge}
+      </div>
+      <div class="card-body"><div class="title">${item.title}</div></div>
+    `;
+    if(viewingNickname === myNickname){
+      div.addEventListener('click', () => openDetail(item.media_type, item.id, item));
+    }
+    return div;
+  }
+
+  function openCollectionGrid(kind, title, items){
+    perfilView = { mode:'grid', kind, title, items };
+    gridSort = 'recent'; gridFilter = 'all';
+    renderPerfilBody();
+  }
+
+  // ---------------- media tabs (séries / filmes) ----------------
+  let mediaViewMode = { tv: 'grid', movie: 'grid' };
+  let mediaSubTab = { tv: 'naoterminadas', movie: 'lista' };
+  let mediaFilter = { tv: 'all', movie: 'all' };
+
+  $all('.stat-subtab[data-mediasub]', $('#tab-series')).forEach(btn => {
+    btn.addEventListener('click', () => {
+      mediaSubTab.tv = btn.dataset.mediasub;
+      $all('.stat-subtab[data-mediasub]', $('#tab-series')).forEach(b => b.classList.toggle('active', b === btn));
+      renderMediaTab('tv');
+    });
+  });
+  $all('.stat-subtab[data-mediasub]', $('#tab-filmes')).forEach(btn => {
+    btn.addEventListener('click', () => {
+      mediaSubTab.movie = btn.dataset.mediasub;
+      $all('.stat-subtab[data-mediasub]', $('#tab-filmes')).forEach(b => b.classList.toggle('active', b === btn));
+      renderMediaTab('movie');
+    });
+  });
+  $('#filmesFilterSelect').addEventListener('change', (e) => { mediaFilter.movie = e.target.value; renderMediaTab('movie'); });
+  $('#seriesViewToggle').addEventListener('click', () => {
+    mediaViewMode.tv = mediaViewMode.tv === 'grid' ? 'list' : 'grid';
+    $('#seriesViewToggle').classList.toggle('active-list', mediaViewMode.tv === 'list');
+    $('#seriesViewToggle').textContent = mediaViewMode.tv === 'list' ? '☰' : '▦';
+    renderMediaTab('tv');
+  });
+  $('#filmesViewToggle').addEventListener('click', () => {
+    mediaViewMode.movie = mediaViewMode.movie === 'grid' ? 'list' : 'grid';
+    $('#filmesViewToggle').classList.toggle('active-list', mediaViewMode.movie === 'list');
+    $('#filmesViewToggle').textContent = mediaViewMode.movie === 'list' ? '☰' : '▦';
+    renderMediaTab('movie');
+  });
+
+  function renderMediaTab(mediaType){
+    const containerId = mediaType === 'tv' ? 'seriesContent' : 'filmesContent';
+    const el = $('#' + containerId);
+    try{
+      const sub = mediaType === 'tv' ? mediaSubTab.tv : mediaSubTab.movie;
+      if(sub === 'embreve'){ renderEmBreve(el, mediaType); return; }
+
+      const watchedArr = Object.values(viewingData.watched).filter(i => inferMediaType(i) === mediaType);
+      const watchlistArr = Object.values(viewingData.watchlist).filter(i => inferMediaType(i) === mediaType);
+      let items = mergeCollection(watchedArr, watchlistArr);
+
+      if(mediaType === 'tv'){
+        if(sub === 'assistidas') items = items.filter(i => i._status === 'watched');
+        else if(sub === 'naoterminadas') items = items.filter(i => i._status !== 'watched');
+      } else {
+        const filter = mediaFilter.movie;
+        if(filter === 'watched') items = items.filter(i => i._status === 'watched');
+        else if(filter === 'watching') items = items.filter(i => i._status === 'watching');
+        else if(filter === 'notwatched') items = items.filter(i => i._status === 'notwatched');
+        else if(filter === 'stale') items = items.filter(i => i._status !== 'notwatched' && !isWithinDays(i.date_watched, 21));
+      }
+
+      items.sort((a,b) => (b.date_watched||b.added_at||'').localeCompare(a.date_watched||a.added_at||''));
+
+      if(!items.length){
+        el.innerHTML = `<div class="empty"><div class="icon">🎟️</div>Nada por aqui com esse filtro ainda.</div>`;
+        return;
+      }
+
+      const view = mediaType === 'tv' ? mediaViewMode.tv : mediaViewMode.movie;
+      if(view === 'grid'){
+        el.innerHTML = '<div class="grid" id="mediaGrid"></div>';
+        const grid = $('#mediaGrid');
+        items.forEach(it => grid.appendChild(collectionPosterCard(it)));
+      } else {
+        el.innerHTML = '';
+        items.forEach(it => el.appendChild(mediaType === 'tv' ? seriesListRow(it) : movieListRow(it)));
+      }
+    }catch(err){
+      console.error('renderMediaTab failed', mediaType, err);
+      if(el) el.innerHTML = `<div class="empty"><div class="icon">⚠️</div>Deu erro ao montar essa lista.<br><span style="font-size:11px;color:var(--slate);">${(err && err.message) || err}</span></div>`;
+    }
+  }
+
+  function openWatchedChoiceMenu(onRemove, onRewatch){
+    const root = $('#modalRoot');
+    root.innerHTML = `
+      <div class="overlay" id="overlay">
+        <div class="badge-modal" style="max-width:320px;">
+          <h3 style="margin-top:0;">Já assistido</h3>
+          <p style="color:var(--slate);font-size:12.5px;margin-bottom:18px;">O que você quer fazer?</p>
+          <button class="btn primary" id="choiceRewatch" style="width:100%;margin-bottom:10px;">🔁 Marcar como reassistido</button>
+          <button class="btn danger" id="choiceRemove" style="width:100%;">Retirar dos assistidos</button>
+        </div>
+      </div>
+    `;
+    $('#overlay').addEventListener('click', (e) => { if(e.target.id === 'overlay') root.innerHTML = ''; });
+    $('#choiceRewatch').addEventListener('click', async () => { root.innerHTML = ''; await onRewatch(); });
+    $('#choiceRemove').addEventListener('click', async () => { root.innerHTML = ''; await onRemove(); });
+  }
+
+  function movieListRow(item){
+    const row = document.createElement('div');
+    row.className = 'media-row';
+    const isDone = item._status === 'watched';
+    const rw = item.rewatch_count ? ` · ${item.rewatch_count + 1}x` : '';
+    row.innerHTML = `
+      <div class="mr-poster" style="${item.poster_path?`background-image:url('${IMG_SMALL+item.poster_path}')`:''}"></div>
+      <div class="mr-body">
+        <div class="mr-pill">${item.title}</div>
+        <div class="mr-sub">${isDone ? 'Assistido' + rw : 'Na lista'}${item.date_watched ? ' · ' + item.date_watched : ''}</div>
+      </div>
+      <div class="mr-check ${isDone?'done':''}" title="Marcar/desmarcar assistido">${isDone?ICON_CHECK:''}</div>
+    `;
+    row.querySelector('.mr-check').addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const key = 'movie-' + item.id;
+      if(isDone){
+        openWatchedChoiceMenu(
+          () => {
+            delete myData.watched[key];
+            saveMyProfile();
+            showToast('Removido dos assistidos');
+            renderMediaTab('movie');
+          },
+          () => {
+            const prev = myData.watched[key] || {};
+            myData.watched[key] = Object.assign({}, prev, {
+              date_watched: new Date().toISOString().slice(0,10),
+              rewatch_count: (prev.rewatch_count || 0) + 1
+            });
+            saveMyProfile();
+            showToast('Marcado como reassistido 🔁');
+            renderMediaTab('movie');
+          }
+        );
+      } else {
+        myData.watched[key] = Object.assign({}, item, { rating: 0, notes: '', date_watched: new Date().toISOString().slice(0,10) });
+        delete myData.watchlist[key];
+        saveMyProfile();
+        showToast('Marcado como assistido ✓');
+        renderMediaTab('movie');
+      }
+    });
+    row.addEventListener('click', () => openDetail('movie', item.id, item));
+    return row;
+  }
+
+  function seriesListRow(item){
+    const row = document.createElement('div');
+    row.className = 'media-row';
+    const w = watchedEpisodesOf(item), t = totalEpisodesOf(item);
+    const isFull = item._status === 'watched';
+    row.innerHTML = `
+      <div class="mr-poster" style="${item.poster_path?`background-image:url('${IMG_SMALL+item.poster_path}')`:''}"></div>
+      <div class="mr-body">
+        <div class="mr-pill">${item.title}</div>
+        <div class="mr-meta">${w}/${t||'?'} episódios</div>
+        <div class="mr-sub">${item._status==='notwatched' ? 'Na lista' : item._status==='watching' ? 'Assistindo' : 'Completo'}</div>
+      </div>
+      <div class="mr-check ${isFull?'done':''}" title="Marcar próximo episódio assistido">${isFull?ICON_CHECK:'▶'}</div>
+    `;
+    const checkBtn = row.querySelector('.mr-check');
+    checkBtn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      if(isFull){ showToast('Você já assistiu tudo dessa série!'); return; }
+      checkBtn.innerHTML = '<span class="spinner" style="margin:0;width:11px;height:11px;"></span>';
+      await markNextEpisodeWatched(item);
+      renderMediaTab('tv');
+    });
+    row.addEventListener('click', () => openDetail('tv', item.id, item));
+    return row;
+  }
+
+  async function markNextEpisodeWatched(item){
+    if(!apiKey){ showToast('Configure a chave da TMDB primeiro.'); return false; }
+    try{
+      const detailsFull = await tmdb('/tv/' + item.id);
+      const seasons = (detailsFull.seasons || []).filter(s => s.episode_count > 0).sort((a,b) => a.season_number - b.season_number);
+      const episodesState = Object.assign({}, item.episodes || {});
+      const key = 'tv-' + item.id;
+      const total = detailsFull.number_of_episodes || 0;
+      const avgMin = (detailsFull.episode_run_time && detailsFull.episode_run_time[0]) || 40;
+      for(const s of seasons){
+        const seasonData = await tmdb('/tv/' + item.id + '/season/' + s.season_number);
+        for(const ep of (seasonData.episodes || [])){
+          const k = 'S' + s.season_number + 'E' + ep.episode_number;
+          if(!episodesState[k]){
+            episodesState[k] = true;
+            const prev = myData.watched[key] || {};
+            myData.watched[key] = Object.assign({}, prev, {
+              id: item.id, media_type: 'tv', title: item.title, poster_path: item.poster_path || detailsFull.poster_path || null,
+              backdrop_path: detailsFull.backdrop_path || null,
+              genre_ids: detailsFull.genres ? detailsFull.genres.map(g=>g.id) : (item.genre_ids || []),
+              episode_count: total, total_episodes: total, avg_episode_minutes: avgMin,
+              episodes: episodesState, rating: prev.rating || 0, notes: prev.notes || '',
+              date_watched: new Date().toISOString().slice(0,10)
+            });
+            delete myData.watchlist[key];
+            saveMyProfile();
+            showToast(`Marcado: ${s.season_number===0?'Especial':'T'+s.season_number} · E${ep.episode_number} — ${ep.name||''}`);
+            return true;
+          }
+        }
+      }
+      showToast('Você já assistiu tudo dessa série!');
+      return false;
+    }catch(e){
+      showToast('Não foi possível marcar o episódio agora.');
+      return false;
+    }
+  }
+
+  async function renderEmBreve(el, mediaType){
+    if(!apiKey){
+      el.innerHTML = `<div class="empty"><div class="icon">🔑</div>Configure sua chave da TMDB na aba Configurações.</div>`;
+      return;
+    }
+    const watchedArr = Object.values(viewingData.watched).filter(i => inferMediaType(i) === mediaType);
+    const watchlistArr = Object.values(viewingData.watchlist).filter(i => inferMediaType(i) === mediaType);
+    const candidates = mediaType === 'movie'
+      ? watchlistArr
+      : [...watchlistArr, ...watchedArr.filter(i => totalEpisodesOf(i) > watchedEpisodesOf(i))];
+    if(!candidates.length){
+      el.innerHTML = `<div class="empty"><div class="icon">📅</div>Nada previsto por aqui.</div>`;
+      return;
+    }
+    el.innerHTML = skeletonFeedHTML(2);
+    const today = new Date().toISOString().slice(0,10);
+    try{
+      const upcoming = [];
+      for(const c of candidates.slice(0,15)){
+        try{
+          const d = await tmdb('/' + mediaType + '/' + c.id);
+          if(mediaType === 'movie'){
+            if(d.release_date && d.release_date > today){
+              upcoming.push({ title: c.title, date: d.release_date, poster_path: d.poster_path, backdrop_path: d.backdrop_path, id: c.id, label: 'Estreia em' });
+            }
+          } else {
+            if(d.next_episode_to_air){
+              upcoming.push({
+                title: c.title, date: d.next_episode_to_air.air_date, poster_path: d.poster_path, backdrop_path: d.backdrop_path,
+                id: c.id, label: `Próximo: T${d.next_episode_to_air.season_number} · E${d.next_episode_to_air.episode_number}`
+              });
+            }
+          }
+        }catch(e){ /* skip */ }
+      }
+      upcoming.sort((a,b) => (a.date||'').localeCompare(b.date||''));
+      if(!upcoming.length){
+        el.innerHTML = `<div class="empty"><div class="icon">📅</div>Nada com data de estreia confirmada por enquanto.</div>`;
+        return;
+      }
+      el.innerHTML = '';
+      const nowMid = new Date(); nowMid.setHours(0,0,0,0);
+      upcoming.forEach(u => {
+        let countdownLabel = '';
+        if(u.date){
+          const target = new Date(u.date + 'T00:00:00');
+          const diffDays = Math.round((target - nowMid) / 86400000);
+          countdownLabel = diffDays <= 0 ? 'Lançado' : diffDays === 1 ? 'Amanhã' : diffDays + ' dias';
+        }
+        const row = document.createElement('div');
+        row.className = 'media-row';
+        row.innerHTML = `
+          <div class="mr-poster" style="${u.poster_path?`background-image:url('${IMG_SMALL+u.poster_path}')`:''}"></div>
+          <div class="mr-body">
+            <div class="mr-pill">${u.title}</div>
+            <div class="mr-meta">${u.label}</div>
+            <div class="mr-sub">${u.date ? new Date(u.date+'T00:00:00').toLocaleDateString('pt-BR') : ''}</div>
+          </div>
+          ${countdownLabel ? `<div class="mr-countdown">${countdownLabel}</div>` : ''}
+        `;
+        row.addEventListener('click', () => openDetail(mediaType, u.id, u));
+        el.appendChild(row);
+      });
+    }catch(e){
+      el.innerHTML = `<div class="empty"><div class="icon">⚠️</div>Não foi possível carregar.</div>`;
+    }
+  }
+
+  function renderCollectionGrid(el){
+    const { title, items, kind } = perfilView;
+    let list = [...items];
+    if(gridFilter === 'watched') list = list.filter(i=>i._status==='watched');
+    if(gridFilter === 'watching') list = list.filter(i=>i._status==='watching');
+    if(gridFilter === 'notwatched') list = list.filter(i=>i._status==='notwatched');
+    if(gridSort === 'az') list.sort((a,b)=>a.title.localeCompare(b.title));
+    else list.sort((a,b)=>(b.date_watched||b.added_at||'').localeCompare(a.date_watched||a.added_at||''));
+
+    const showProgressFilter = (kind === 'series' || kind === 'movies');
+    const isSeries = kind === 'series';
+    const recentLabel = kind.includes('fav') ? 'Últimos adicionados' : 'Últimos assistidos';
+
+    el.innerHTML = `
+      <div class="grid-view-header">
+        <button class="back-btn" id="gridBackBtn">‹</button>
+        <h2>${title}</h2>
+      </div>
+      <div class="sort-row">
+        <span>Ordenar por</span>
+        <select id="sortSelect">
+          <option value="recent">${recentLabel}</option>
+          <option value="az">Alfabética (A-Z)</option>
+        </select>
+      </div>
+      ${showProgressFilter ? `
+        <div class="filter-chip-row">
+          <button class="filter-chip ${gridFilter==='all'?'active':''}" data-filter="all">Tudo</button>
+          ${isSeries ? `<button class="filter-chip ${gridFilter==='watching'?'active':''}" data-filter="watching">Assistindo</button>` : ''}
+          <button class="filter-chip ${gridFilter==='watched'?'active':''}" data-filter="watched">Assistido</button>
+          <button class="filter-chip ${gridFilter==='notwatched'?'active':''}" data-filter="notwatched">Não assistido</button>
+        </div>
+      ` : ''}
+      <div class="grid" id="collectionGrid"></div>
+    `;
+    $('#gridBackBtn').addEventListener('click', () => { perfilView = { mode:'main' }; renderPerfilBody(); });
+    $('#sortSelect').value = gridSort;
+    $('#sortSelect').addEventListener('change', (e) => { gridSort = e.target.value; renderCollectionGrid(el); });
+    $all('.filter-chip', el).forEach(chip => {
+      chip.addEventListener('click', () => { gridFilter = chip.dataset.filter; renderCollectionGrid(el); });
+    });
+    const gridEl = $('#collectionGrid');
+    if(!list.length){
+      gridEl.innerHTML = `<div class="empty" style="grid-column:1/-1"><div class="icon">🎟️</div>Nada aqui ainda.</div>`;
+      return;
+    }
+    list.forEach(it => gridEl.appendChild(collectionPosterCard(it, true)));
+  }
+
+  function pickFromMiddle(arr, n){
+    if(!arr || arr.length <= n) return arr || [];
+    const mid = Math.floor(arr.length / 2);
+    let start = mid - Math.floor(n / 2);
+    if(start < 0) start = 0;
+    if(start + n > arr.length) start = arr.length - n;
+    return arr.slice(start, start + n);
+  }
+
+  async function gatherCoverOptions(){
+    if(!apiKey) return { tv: [], movie: [] };
+    const items = Object.values(myData.watched)
+      .sort((a,b) => (b.rating||0) - (a.rating||0) || (b.date_watched||'').localeCompare(a.date_watched||''));
+    const tvOptions = [];
+    const movieOptions = [];
+    const PER_ITEM = 5;
+    const MAX_ITEMS = 14;
+
+    let processed = 0;
+    for(const item of items){
+      if(processed >= MAX_ITEMS) break;
+      try{
+        const imgs = await tmdb('/' + item.media_type + '/' + item.id + '/images', { include_image_language: 'null' });
+        const allBackdrops = imgs.backdrops || [];
+        const textless = allBackdrops.filter(b => !b.iso_639_1); // no language = no text/logo baked in, real scene
+        const pool = textless.length ? textless : allBackdrops;
+        const chosen = pickFromMiddle(pool, PER_ITEM);
+        const bucket = item.media_type === 'tv' ? tvOptions : movieOptions;
+        chosen.forEach(b => bucket.push({ title: item.title, url: BACKDROP + b.file_path }));
+        if(!chosen.length && item.backdrop_path){
+          bucket.push({ title: item.title, url: BACKDROP + item.backdrop_path });
+        }
+      }catch(e){
+        if(item.backdrop_path){
+          const bucket = item.media_type === 'tv' ? tvOptions : movieOptions;
+          bucket.push({ title: item.title, url: BACKDROP + item.backdrop_path });
+        }
+      }
+      processed++;
+    }
+    return { tv: tvOptions, movie: movieOptions };
+  }
+
+  async function openCoverPicker(){
+    const area = $('#coverPickerArea');
+    area.innerHTML = `<p style="color:var(--slate);font-size:12.5px;margin-top:10px;">Buscando cenas reais dos seus títulos assistidos...</p>`;
+    const { tv, movie } = await gatherCoverOptions();
+    if(!tv.length && !movie.length){
+      area.innerHTML = `<p style="color:var(--slate);font-size:12.5px;margin-top:10px;">Marque filmes ou séries como assistidos primeiro — a capa é escolhida entre cenas reais deles (não a arte de divulgação).</p>`;
+      return;
+    }
+    function coverOptClick(opt){
+      return () => {
+        myData.profile = myData.profile || {};
+        myData.profile.cover = opt.url;
+        saveMyMedia();
+        showToast('Capa atualizada ✓');
+        renderPerfilTab();
+      };
+    }
+    area.innerHTML = `<p style="color:var(--slate);font-size:12.5px;margin-top:10px;">Escolha uma cena de algo que você assistiu:</p>`;
+    if(tv.length){
+      area.innerHTML += `<div class="section-title">Séries</div><div class="cover-grid" id="coverGridTv"></div>`;
+    }
+    if(movie.length){
+      area.innerHTML += `<div class="section-title">Filmes</div><div class="cover-grid" id="coverGridMovie"></div>`;
+    }
+    if(tv.length){
+      const grid = $('#coverGridTv');
+      tv.forEach(opt => {
+        const div = document.createElement('div');
+        div.className = 'cover-opt';
+        div.style.backgroundImage = `url('${opt.url}')`;
+        div.innerHTML = `<span class="cap">${opt.title}</span>`;
+        div.addEventListener('click', coverOptClick(opt));
+        grid.appendChild(div);
+      });
+    }
+    if(movie.length){
+      const grid = $('#coverGridMovie');
+      movie.forEach(opt => {
+        const div = document.createElement('div');
+        div.className = 'cover-opt';
+        div.style.backgroundImage = `url('${opt.url}')`;
+        div.innerHTML = `<span class="cap">${opt.title}</span>`;
+        div.addEventListener('click', coverOptClick(opt));
+        grid.appendChild(div);
+      });
+    }
+  }
+
+  // ---------------- list views ----------------
+  function favoritePosterCard(item, readOnly){
+    const mediaType = item.media_type, id = item.id, key = mediaType + '-' + id;
+    const div = document.createElement('div');
+    div.className = 'poster-card';
+    const date = item.release_date || item.first_air_date || item.added_at || '';
+    const year = date ? date.slice(0,4) : '';
+    const genreNames = (item.genre_ids||[]).map(gid => genreMap[mediaType] && genreMap[mediaType][gid]).filter(Boolean).slice(0,2);
+    div.innerHTML = `
+      <div class="poster-img ${item.poster_path ? '' : 'noimg'}">
+        <div class="poster-img-inner" style="${item.poster_path ? `background-image:url('${IMG_SMALL+item.poster_path}')` : ''}"></div>
+      </div>
+      <div class="card-body">
+        <div class="title">${item.title}</div>
+        <div class="year">${year ? year + ' · ' : ''}${mediaType==='movie'?'Filme':'Série'}</div>
+        ${genreNames.length ? `<div class="card-pills">${genreNames.map(g => `<span class="card-pill">${g}</span>`).join('')}</div>` : ''}
+      </div>
+    `;
+    if(!readOnly) div.addEventListener('click', () => openDetail(mediaType, id, item));
+    return div;
+  }
+
+  function renderList(containerId, dict, kind){
+    const el = $('#' + containerId);
+    const entries = Object.entries(dict).sort((a,b) => {
+      const da = a[1].date_watched || a[1].added_at || '';
+      const db = b[1].date_watched || b[1].added_at || '';
+      return db.localeCompare(da);
+    });
+    const readOnly = viewingNickname !== myNickname;
+    if(!entries.length){
+      el.innerHTML = `<div class="empty"><div class="icon">🎟️</div>Nenhum favorito ainda.</div>`;
+      return;
+    }
+    el.innerHTML = '';
+    const series = entries.filter(([,item]) => inferMediaType(item) === 'tv');
+    const movies = entries.filter(([,item]) => inferMediaType(item) === 'movie');
+    const addGroup = (title, list) => {
+      if(!list.length) return;
+      const heading = document.createElement('div');
+      heading.className = 'section-title';
+      heading.textContent = title;
+      el.appendChild(heading);
+      const grid = document.createElement('div');
+      grid.className = 'grid';
+      list.forEach(([key, item]) => grid.appendChild(favoritePosterCard(item, readOnly)));
+      el.appendChild(grid);
+    };
+    addGroup('Séries', series);
+    addGroup('Filmes', movies);
+  }
+
+  // ---------------- stats: helpers ----------------
+  let statsSubTab = 'series';
+  $all('.stat-subtab[data-substat]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      statsSubTab = btn.dataset.substat;
+      $all('.stat-subtab[data-substat]').forEach(b => b.classList.toggle('active', b === btn));
+      renderStats();
+    });
+  });
+
+  function isWithinDays(dateStr, days){
+    if(!dateStr) return false;
+    const d = new Date(dateStr + 'T00:00:00');
+    const diff = (Date.now() - d.getTime()) / 86400000;
+    return diff >= 0 && diff < days;
+  }
+  function fmtDuration(totalMinutes){
+    const totalHours = Math.floor(totalMinutes/60);
+    const months = Math.floor(totalHours/(24*30));
+    const days = Math.floor((totalHours - months*24*30)/24);
+    const hours = totalHours - months*24*30 - days*24;
+    return { months, days, hours, totalHours };
+  }
+  function startOfWeek(d){
+    const dt = new Date(d); const day = (dt.getDay()+6)%7;
+    dt.setDate(dt.getDate()-day); dt.setHours(0,0,0,0); return dt;
+  }
+  function lastNWeeks(n){
+    const weeks = []; const now = startOfWeek(new Date());
+    for(let i=n-1;i>=0;i--){ const d = new Date(now); d.setDate(d.getDate()-7*i); weeks.push(d); }
+    return weeks;
+  }
+  function fmtDM(d){ return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0'); }
+  function weeklyBuckets(items, n, valueFn){
+    const weeks = lastNWeeks(n);
+    const values = weeks.map(()=>0);
+    items.forEach(it => {
+      if(!it.date_watched) return;
+      const d = new Date(it.date_watched+'T00:00:00');
+      for(let i=weeks.length-1;i>=0;i--){
+        if(d >= weeks[i]){ values[i] += valueFn(it); break; }
+      }
+    });
+    return { labels: weeks.map(fmtDM), values };
+  }
+  function lastNMonths(n){
+    const months = []; const now = new Date(); now.setDate(1); now.setHours(0,0,0,0);
+    for(let i=n-1;i>=0;i--){ months.push(new Date(now.getFullYear(), now.getMonth()-i, 1)); }
+    return months;
+  }
+  function fmtMonLetter(d){ return ['J','F','M','A','M','J','J','A','S','O','N','D'][d.getMonth()]; }
+  function monthlyBuckets(items, n, valueFn){
+    const months = lastNMonths(n);
+    const values = months.map(()=>0);
+    items.forEach(it => {
+      if(!it.date_watched) return;
+      const d = new Date(it.date_watched+'T00:00:00');
+      const idx = months.findIndex(m => d.getFullYear()===m.getFullYear() && d.getMonth()===m.getMonth());
+      if(idx>=0) values[idx] += valueFn(it);
+    });
+    return { labels: months.map(fmtMonLetter), values };
+  }
+  function barChartHTML(labels, values, fmt){
+    const max = Math.max(1, ...values);
+    return `<div class="vbar-chart">${values.map((v,i)=>`
+      <div class="vbar-col">
+        <div class="vbar-val">${fmt ? fmt(v) : Math.round(v)}</div>
+        <div class="vbar ${i===values.length-1?'current':''}" style="height:${max?(v/max*100):0}%"></div>
+        <div class="vbar-lbl">${labels[i]}</div>
+      </div>`).join('')}</div>`;
+  }
+  function topGenreTable(items, mediaType, limit){
+    const counts = {};
+    items.forEach(i => {
+      const primaryGid = (i.genre_ids||[])[0];
+      const name = primaryGid != null ? ((genreMap[mediaType] && genreMap[mediaType][primaryGid]) || null) : null;
+      if(name) counts[name] = (counts[name]||0) + 1;
+    });
+    return Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,limit);
+  }
+
+  // ---------------- stats: badges ----------------
+  function computeBadges(kind){
+    const items = Object.values(viewingData.watched).filter(i => i.media_type === (kind==='series'?'tv':'movie'));
+    const rated = items.filter(i => i.rating > 0);
+    const badges = [];
+    if(kind === 'series'){
+      const marathon = items.filter(i => watchedEpisodesOf(i) >= 3).sort((a,b)=>watchedEpisodesOf(b)-watchedEpisodesOf(a))[0];
+      badges.push({
+        title: 'Maratonista', icon: '🏃',
+        unlocked: !!marathon,
+        art: marathon ? IMG_SMALL + marathon.poster_path : null,
+        desc: marathon ? `Você assistiu ${watchedEpisodesOf(marathon)} episódios de ${marathon.title}.` : 'Marque uma série com 3+ episódios assistidos para desbloquear.',
+        date: marathon ? marathon.date_watched : null
+      });
+      const tiers = [50,25,10];
+      const tier = tiers.find(t => items.length >= t);
+      badges.push({
+        title: 'Colecionador(a)', icon: '📺',
+        unlocked: items.length >= 10,
+        art: items[0] ? IMG_SMALL + items[0].poster_path : null,
+        desc: items.length >= 10 ? `Você já assistiu ${items.length} séries diferentes.` : `Assista 10 séries para desbloquear (${items.length}/10).`,
+        date: null
+      });
+      badges.push({
+        title: 'Crítico(a)', icon: '⭐',
+        unlocked: rated.length >= 5,
+        art: rated[0] ? IMG_SMALL + rated[0].poster_path : null,
+        desc: rated.length >= 5 ? `Você avaliou ${rated.length} séries.` : `Avalie 5 séries para desbloquear (${rated.length}/5).`,
+        date: null
+      });
+      const topG = topGenreTable(items, 'tv', 1)[0];
+      badges.push({
+        title: topG ? 'Fã de ' + topG[0] : 'Fã de Gênero', icon: '🎭',
+        unlocked: !!topG && topG[1] >= 5,
+        art: null,
+        desc: topG && topG[1] >= 5 ? `Você assistiu ${topG[1]} séries de ${topG[0]}.` : 'Assista 5 séries do mesmo gênero para desbloquear.',
+        date: null
+      });
+    } else {
+      const byDate = {};
+      items.forEach(i => { if(i.date_watched){ (byDate[i.date_watched]=byDate[i.date_watched]||[]).push(i); } });
+      const bestDay = Object.values(byDate).sort((a,b)=>b.length-a.length)[0];
+      badges.push({
+        title: 'Sessão Dupla', icon: '🎬',
+        unlocked: !!bestDay && bestDay.length >= 2,
+        art: bestDay ? IMG_SMALL + bestDay[0].poster_path : null,
+        desc: bestDay && bestDay.length >= 2 ? `Você assistiu ${bestDay.length} filmes no mesmo dia.` : 'Assista 2 filmes no mesmo dia para desbloquear.',
+        date: bestDay ? bestDay[0].date_watched : null
+      });
+      const tiers = [50,25,10];
+      badges.push({
+        title: 'Cinéfilo(a)', icon: '🍿',
+        unlocked: items.length >= 10,
+        art: items[0] ? IMG_SMALL + items[0].poster_path : null,
+        desc: items.length >= 10 ? `Você já assistiu ${items.length} filmes.` : `Assista 10 filmes para desbloquear (${items.length}/10).`,
+        date: null
+      });
+      badges.push({
+        title: 'Crítico(a)', icon: '⭐',
+        unlocked: rated.length >= 5,
+        art: rated[0] ? IMG_SMALL + rated[0].poster_path : null,
+        desc: rated.length >= 5 ? `Você avaliou ${rated.length} filmes.` : `Avalie 5 filmes para desbloquear (${rated.length}/5).`,
+        date: null
+      });
+      const topG = topGenreTable(items, 'movie', 1)[0];
+      badges.push({
+        title: topG ? 'Fã de ' + topG[0] : 'Fã de Gênero', icon: '🎭',
+        unlocked: !!topG && topG[1] >= 5,
+        art: null,
+        desc: topG && topG[1] >= 5 ? `Você assistiu ${topG[1]} filmes de ${topG[0]}.` : 'Assista 5 filmes do mesmo gênero para desbloquear.',
+        date: null
+      });
+    }
+    return badges;
+  }
+
+  function renderBadgeGrid(containerId, badges){
+    const el = $('#' + containerId);
+    el.innerHTML = `<div class="badge-grid">${badges.map((b,i) => `
+      <div class="badge-item ${b.unlocked?'':'locked'}" data-badge="${i}">
+        <div class="badge-hex" style="${b.unlocked && b.art ? `background-image:url('${b.art}')` : ''}">${b.art && b.unlocked ? '' : b.icon}</div>
+        <div class="b-title">${b.title}</div>
+      </div>
+    `).join('')}</div>`;
+    $all('.badge-item', el).forEach(item => {
+      item.addEventListener('click', () => openBadgeModal(badges[+item.dataset.badge]));
+    });
+  }
+
+  function openBadgeModal(b){
+    const root = $('#modalRoot');
+    root.innerHTML = `
+      <div class="overlay" id="overlay">
+        <div class="badge-modal">
+          <div class="badge-hex" style="${b.unlocked && b.art ? `background-image:url('${b.art}')` : ''}">${b.art && b.unlocked ? '' : b.icon}</div>
+          <h3>${b.title}${b.unlocked ? '' : ' 🔒'}</h3>
+          <p>${b.desc}</p>
+          ${b.date ? `<div class="b-date">${b.date}</div>` : ''}
+          <button class="btn primary" id="closeBadge">Fechar</button>
+        </div>
+      </div>
+    `;
+    $('#closeBadge').addEventListener('click', () => root.innerHTML = '');
+    $('#overlay').addEventListener('click', (e) => { if(e.target.id==='overlay') root.innerHTML=''; });
+  }
+
+  // ---------------- stats: main render ----------------
+  // ---------------- premiações (OMDb) ----------------
+  async function renderPremiacoes(){
+    const el = $('#premiacoesContent');
+    if(!omdbKey){
+      el.innerHTML = `<div class="empty"><div class="icon">🏆</div>Chave da OMDb não configurada.</div>`;
+      return;
+    }
+    const watched = Object.values(viewingData.watched);
+    const favs = Object.values(viewingData.favorites);
+    const seen = new Set();
+    const items = [];
+    [...watched, ...favs].forEach(it => {
+      const k = it.media_type + '-' + it.id;
+      if(seen.has(k)) return;
+      seen.add(k);
+      items.push(it);
+    });
+    if(!items.length){
+      el.innerHTML = `<div class="empty"><div class="icon">🏆</div>Assista ou favorite alguns títulos para ver quais têm premiações.</div>`;
+      return;
+    }
+
+    const BATCH_SIZE = 60;
+    const CHUNK = 8;
+    const totalBatches = Math.ceil(items.length / BATCH_SIZE);
+    const results = [];
+
+    for(let b = 0; b < items.length; b += BATCH_SIZE){
+      const batchNum = Math.floor(b / BATCH_SIZE) + 1;
+      const batchItems = items.slice(b, b + BATCH_SIZE);
+      const checkedSoFar = Math.min(b + batchItems.length, items.length);
+      el.innerHTML = `<p style="color:var(--slate);font-size:12px;margin-bottom:10px;">Verificando lote ${batchNum} de ${totalBatches} na OMDb (${checkedSoFar} de ${items.length} títulos) · ${results.length} com premiação encontrados até agora 🏆</p>` + skeletonFeedHTML(3);
+
+      for(let i=0;i<batchItems.length;i+=CHUNK){
+        const chunk = batchItems.slice(i, i+CHUNK);
+        const chunkResults = await Promise.all(chunk.map(async (it) => {
+          try{
+            const type = it.media_type === 'movie' ? 'movie' : 'series';
+            const r = await fetch(`https://www.omdbapi.com/?apikey=${omdbKey}&t=${encodeURIComponent(it.title)}&type=${type}`);
+            const d = await r.json();
+            if(d && d.Awards && d.Awards !== 'N/A') return { item: it, awards: translateAwardsText(d.Awards) };
+          }catch(e){ /* skip */ }
+          return null;
+        }));
+        chunkResults.forEach(r => { if(r) results.push(r); });
+      }
+    }
+
+    if(!results.length){
+      el.innerHTML = `<div class="empty"><div class="icon">🏆</div>Nenhum dos ${items.length} títulos verificados tem premiações registradas na OMDb.</div>`;
+      return;
+    }
+
+    results.sort((a,b) => (b.awards.match(/\d+/g)||[]).reduce((s,n)=>s+ +n,0) - (a.awards.match(/\d+/g)||[]).reduce((s,n)=>s+ +n,0));
+
+    el.innerHTML = `<p style="color:var(--slate);font-size:12px;margin-bottom:14px;">${results.length} de ${items.length} títulos verificados têm premiações 🏆</p><div class="grid" id="premiacoesGrid"></div>`;
+    const grid = $('#premiacoesGrid');
+    results.forEach(r => grid.appendChild(awardPosterCard(r.item, r.awards)));
+  }
+
+  function translateAwardsText(text){
+    if(!text) return text;
+    let t = text;
+    t = t.replace(/\bWon\b/g, 'Venceu');
+    t = t.replace(/\bNominated for\b/g, 'Indicado a');
+    t = t.replace(/(\d+)\s+wins?/gi, '$1 vitórias');
+    t = t.replace(/(\d+)\s+nominations?/gi, '$1 indicações');
+    t = t.replace(/\btotal\b/gi, 'no total');
+    t = t.replace(/&/g, 'e');
+    t = t.replace(/\bin total\b/gi, 'no total');
+    return t;
+  }
+
+  function awardsPills(awardsText){
+    const pills = [];
+    const won = awardsText.match(/Venceu (\d+) ([A-Za-zÀ-ú\s]+?)(?:\.|,|$)/);
+    if(won) pills.push(`🏆 ${won[1]} ${won[2].trim()}`);
+    const nom = awardsText.match(/Indicado a (\d+) ([A-Za-zÀ-ú\s]+?)(?:\.|,|$)/);
+    if(nom) pills.push(`Indicado: ${nom[1]} ${nom[2].trim()}`);
+    const totals = awardsText.match(/(\d+) vitórias e (\d+) indicações/i);
+    if(totals) pills.push(`${totals[1]} vitórias · ${totals[2]} indicações`);
+    if(!pills.length) pills.push('🏆 Premiado');
+    return pills.slice(0,2);
+  }
+
+  function awardPosterCard(item, awardsText){
+    const div = document.createElement('div');
+    div.className = 'poster-card';
+    div.title = awardsText;
+    const isMovie = item.media_type === 'movie';
+    div.innerHTML = `
+      <div class="poster-img ${item.poster_path?'':'noimg'}">
+        <div class="poster-img-inner" style="${item.poster_path?`background-image:url('${IMG_SMALL+item.poster_path}')`:''}"></div>
+        <span class="card-tag">🏆 ${isMovie ? 'Filme premiado' : 'Série premiada'}</span>
+      </div>
+      <div class="card-body">
+        <div class="title">${item.title}</div>
+        <div class="year">${isMovie ? 'Filme' : 'Série'}</div>
+        <div class="card-pills">${awardsPills(awardsText).map(p => `<span class="card-pill">${p}</span>`).join('')}</div>
+      </div>
+    `;
+    div.addEventListener('click', () => openDetail(item.media_type, item.id, item));
+    return div;
+  }
+
+  function renderStats(){
+    const el = $('#statsContent');
+    const allWatched = Object.values(viewingData.watched);
+    if(!allWatched.length){
+      el.innerHTML = `<div class="empty"><div class="icon">📊</div>Nenhum título assistido ainda para gerar estatísticas.</div>`;
+      return;
+    }
+    if(statsSubTab === 'series') renderSeriesStats(el); else renderMovieStats(el);
+  }
+
+  function renderSeriesStats(el){
+    const items = Object.values(viewingData.watched).filter(i => inferMediaType(i) === 'tv');
+    const watchlistItems = Object.values(viewingData.watchlist).filter(i => inferMediaType(i) === 'tv');
+    if(!items.length){
+      el.innerHTML = `<div class="empty"><div class="icon">📺</div>Nenhuma série assistida ainda.</div>`;
+      return;
+    }
+    const totalMinutes = items.reduce((s,i)=>s+watchedMinutesOf(i),0);
+    const dur = fmtDuration(totalMinutes);
+    const last7Min = items.filter(i=>isWithinDays(i.date_watched,7)).reduce((s,i)=>s+watchedMinutesOf(i),0);
+    const totalEpisodes = items.reduce((s,i)=>s+watchedEpisodesOf(i),0);
+    const last7Ep = items.filter(i=>isWithinDays(i.date_watched,7)).reduce((s,i)=>s+watchedEpisodesOf(i),0);
+
+    const weeksHours = weeklyBuckets(items, 12, i => watchedMinutesOf(i)/60);
+    const weeksEpisodes = weeklyBuckets(items, 12, i => watchedEpisodesOf(i));
+
+    const last60 = items.filter(i=>isWithinDays(i.date_watched,60));
+    const paceEpWeek = (last60.reduce((s,i)=>s+watchedEpisodesOf(i),0) / (60/7)) || 0;
+
+    const inProgress = items.filter(i => totalEpisodesOf(i) > watchedEpisodesOf(i));
+    const epsRemaining = watchlistItems.reduce((s,i)=>s+totalEpisodesOf(i),0) + inProgress.reduce((s,i)=>s+(totalEpisodesOf(i)-watchedEpisodesOf(i)),0);
+    const hoursRemaining = (watchlistItems.reduce((s,i)=>s+(i.runtime_minutes||0),0) + inProgress.reduce((s,i)=>s+((totalEpisodesOf(i)-watchedEpisodesOf(i))*(i.avg_episode_minutes||40)),0))/60;
+    const weeksToFinish = paceEpWeek > 0 ? epsRemaining/paceEpWeek : null;
+    const finishDate = weeksToFinish!=null ? new Date(Date.now() + weeksToFinish*7*86400000) : null;
+
+    el.innerHTML = `
+      <div class="big-stat-card">
+        <div class="bs-title">Tempo gasto assistindo episódios</div>
+        <div class="bs-num">${dur.months>0?`<span class="unit">${dur.months} meses</span>`:''}${dur.days} <span class="unit">dias</span> ${dur.hours} <span class="unit">horas</span></div>
+        <div class="bs-sub">${Math.round(last7Min/60)}h nos últimos 7 dias</div>
+        ${barChartHTML(weeksHours.labels, weeksHours.values, v=>v.toFixed(0))}
+      </div>
+
+      <div class="big-stat-card">
+        <div class="bs-title">Total de episódios assistidos</div>
+        <div class="bs-num">${totalEpisodes}</div>
+        <div class="bs-sub">${last7Ep} nos últimos 7 dias</div>
+        ${barChartHTML(weeksEpisodes.labels, weeksEpisodes.values)}
+      </div>
+
+      <div class="stat-cards" style="margin-top:22px;">
+        <div class="stat-card"><div class="num">${items.length + watchlistItems.length}</div><div class="lbl">Séries adicionadas</div></div>
+        <div class="stat-card"><div class="num">${watchlistItems.length}</div><div class="lbl">Ainda não assistidas</div></div>
+        <div class="stat-card"><div class="num">${epsRemaining}</div><div class="lbl">Episódios restantes</div></div>
+      </div>
+
+      <div class="big-stat-card" style="margin-top:22px;">
+        <div class="bs-title">Com que velocidade você está assistindo?</div>
+        <div class="bs-num">${paceEpWeek.toFixed(2)} <span class="unit">episódios/semana</span></div>
+        <div class="bs-sub">Com base nos episódios assistidos nos últimos 2 meses</div>
+      </div>
+      <div class="big-stat-card">
+        <div class="bs-title">Tempo para terminar a lista</div>
+        <div class="bs-num">${Math.round(hoursRemaining)} <span class="unit">horas</span></div>
+      </div>
+      <div class="big-stat-card">
+        <div class="bs-title">Previsão para terminar a lista</div>
+        <div class="bs-num">${finishDate ? finishDate.toLocaleDateString('pt-BR') : '—'}</div>
+        <div class="bs-sub">Com base no seu ritmo atual</div>
+      </div>
+    `;
+  }
+
+  function renderMovieStats(el){
+    const items = Object.values(viewingData.watched).filter(i => inferMediaType(i) === 'movie');
+    const watchlistItems = Object.values(viewingData.watchlist).filter(i => inferMediaType(i) === 'movie');
+    if(!items.length){
+      el.innerHTML = `<div class="empty"><div class="icon">🎬</div>Nenhum filme assistido ainda.</div>`;
+      return;
+    }
+    const totalMinutes = items.reduce((s,i)=>s+(i.runtime_minutes||0),0);
+    const dur = fmtDuration(totalMinutes);
+    const last7Min = items.filter(i=>isWithinDays(i.date_watched,7)).reduce((s,i)=>s+(i.runtime_minutes||0),0);
+
+    const weeksHours = weeklyBuckets(items, 12, i => (i.runtime_minutes||0)/60);
+    const monthsMovies = monthlyBuckets(items, 12, () => 1);
+
+    const rated = items.filter(i => i.rating > 0);
+    const topGenres = topGenreTable(items, 'movie', 5);
+    const maxGenre = topGenres.length ? topGenres[0][1] : 1;
+
+    const last60 = items.filter(i=>isWithinDays(i.date_watched,60));
+    const paceMovieWeek = (last60.length / (60/7)) || 0;
+    const hoursRemaining = watchlistItems.reduce((s,i)=>s+(i.runtime_minutes||0),0)/60;
+    const weeksToFinish = paceMovieWeek > 0 ? watchlistItems.length/paceMovieWeek : null;
+    const finishDate = weeksToFinish!=null ? new Date(Date.now() + weeksToFinish*7*86400000) : null;
+
+    el.innerHTML = `
+      <div class="big-stat-card">
+        <div class="bs-title">Tempo total assistindo filmes</div>
+        <div class="bs-num">${dur.months>0?`<span class="unit">${dur.months} meses</span>`:''}${dur.days} <span class="unit">dias</span> ${dur.hours} <span class="unit">horas</span></div>
+        <div class="bs-sub">${Math.round(last7Min/60)}h nos últimos 7 dias</div>
+        ${barChartHTML(weeksHours.labels, weeksHours.values, v=>v.toFixed(0))}
+      </div>
+
+      <div class="big-stat-card">
+        <div class="bs-title">Total de filmes assistidos</div>
+        <div class="bs-num">${items.length}</div>
+        <div class="bs-sub">${items.filter(i=>isWithinDays(i.date_watched,7)).length} nos últimos 7 dias</div>
+        ${barChartHTML(monthsMovies.labels, monthsMovies.values)}
+      </div>
+
+      <div class="stat-cards">
+        <div class="stat-card"><div class="num">${items.length + watchlistItems.length}</div><div class="lbl">Filmes adicionados</div></div>
+        <div class="stat-card"><div class="num">${watchlistItems.length}</div><div class="lbl">Na lista</div></div>
+        <div class="stat-card"><div class="num">${rated.length}</div><div class="lbl">Avaliações dadas</div></div>
+      </div>
+
+      <div class="section-title">Principais gêneros</div>
+      <table class="stat-table">
+        <tr><th>Gênero</th><th>Filmes</th></tr>
+        ${topGenres.map(([n,c]) => `<tr><td>${n}</td><td>${c}</td></tr>`).join('') || '<tr><td colspan="2" style="color:var(--slate)">Sem dados ainda</td></tr>'}
+      </table>
+
+      <div class="big-stat-card" style="margin-top:22px;">
+        <div class="bs-title">Com que velocidade você está assistindo?</div>
+        <div class="bs-num">${paceMovieWeek.toFixed(2)} <span class="unit">filmes/semana</span></div>
+        <div class="bs-sub">Com base nos filmes assistidos nos últimos 2 meses</div>
+      </div>
+      <div class="big-stat-card">
+        <div class="bs-title">Tempo para assistir a lista toda</div>
+        <div class="bs-num">${Math.round(hoursRemaining)} <span class="unit">horas</span></div>
+      </div>
+      <div class="big-stat-card">
+        <div class="bs-title">Previsão para terminar a lista</div>
+        <div class="bs-num">${finishDate ? finishDate.toLocaleDateString('pt-BR') : '—'}</div>
+        <div class="bs-sub">Com base no seu ritmo atual</div>
+      </div>
+    `;
+  }
+
+  // ---------------- config: nickname ----------------
+  $('#saveNicknameBtn').addEventListener('click', async () => {
+    const raw = $('#nicknameInput').value;
+    const norm = normalizeNick(raw);
+    const statusEl = $('#nicknameStatus');
+    const btn = $('#saveNicknameBtn');
+    if(!norm){ statusEl.textContent = 'Digite um apelido.'; statusEl.className = 'status-msg status-err'; return; }
+    btn.disabled = true; const origLabel = btn.textContent; btn.innerHTML = '<span class="spinner"></span>Salvando...';
+    myNickname = norm;
+    viewingNickname = norm;
+    saveLocal('nickname', norm);
+    statusEl.textContent = '✓ Apelido salvo: ' + norm; statusEl.className = 'status-msg status-ok';
+    $('#brandSub').textContent = 'olá, ' + norm;
+    if(fsRefs){
+      myData = await loadProfile(myNickname);
+    }
+    showToast('Apelido salvo ✓');
+    btn.disabled = false; btn.textContent = origLabel;
+  });
+
+  // ---------------- init ----------------
+  async function init(){
+    myNickname = loadLocal('nickname', null);
+    apiKey = BUILTIN_TMDB_KEY;
+    omdbKey = BUILTIN_OMDB_KEY;
+
+    if(myNickname){ $('#nicknameInput').value = myNickname; $('#brandSub').textContent = 'olá, ' + myNickname; viewingNickname = myNickname; }
+
+    try{
+      const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js');
+      const { getFirestore, doc, getDoc, setDoc } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js');
+      const app = initializeApp(BUILTIN_FIREBASE_CONFIG);
+      const db = getFirestore(app);
+      fsRefs = { db, doc, getDoc, setDoc };
+    }catch(e){
+      console.error('firebase connect failed', e);
+      $('#nicknameStatus').textContent = 'Não foi possível conectar ao banco de dados agora (' + e.message + '). Recarregue a página.';
+      $('#nicknameStatus').className = 'status-msg status-err';
+    }
+
+    if(myNickname && fsRefs) myData = await loadProfile(myNickname);
+
+    await loadGenres();
+    loadCatalogHome();
+
+    if(!myNickname){
+      switchTab('config');
+    } else {
+      const savedTab = loadLocal('activeTab', 'explorar');
+      switchTab(savedTab);
+    }
+  }
+  init();
+})();
+</script>
+</body>
+</html>
