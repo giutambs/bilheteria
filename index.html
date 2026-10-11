@@ -1017,7 +1017,7 @@
       </div>
     </div>
 
-    <p style="color:var(--slate);font-size:11px;margin-top:10px;">Versão do app: <strong>2026-07-14 — build sinopse-episodio-v149</strong><br>Se essa versão não bater com a mais recente que o Claude te mandou, feche a aba inteira e abra o link de novo.</p>
+    <p style="color:var(--slate);font-size:11px;margin-top:10px;">Versão do app: <strong>2026-10-11 — build qa-navegacao-v150</strong><br>Se essa versão não bater com a mais recente que o Claude te mandou, feche a aba inteira e abra o link de novo.</p>
   </section>
 
 </main>
@@ -1119,15 +1119,18 @@
   // Fecha TODAS as camadas abertas de uma vez (usado pelo "X" de fechar),
   // "desenrolando" exatamente a quantidade certa de estados no histórico do
   // navegador para o botão físico de voltar continuar funcionando depois.
-  function closeEverything(){
+  // extraSteps: entradas de histórico fora do navStack que também devem ser
+  // desfeitas (ex.: a tela de detalhe de uma lista que acabou de ser excluída).
+  function closeEverything(extraSteps){
     const root = $('#modalRoot');
     const hasContent = root && root.innerHTML.trim();
-    const steps = navStack.length;
+    const steps = navStack.length + (extraSteps || 0);
     modalStack = [];
     navStack = [];
     if(hasContent) root.classList.add('closing-out');
     if(steps > 0){
-      bulkClosePending = steps;
+      // history.go(-n) gera UM único popstate, não n — por isso o contador é 1.
+      bulkClosePending = 1;
       setTimeout(() => history.go(-steps), hasContent ? 140 : 0);
     } else {
       closeAllOverlaysImmediate();
@@ -1147,6 +1150,7 @@
   }
   function modalGoBack(){ goBack(); }
   let viewingData = null; // cache of whichever profile is being viewed
+  let viewingDataNick = null; // de quem é o viewingData quando não é o meu perfil
 
   let searchTimer = null;
   let fsRefs = null; // { db, doc, getDoc, setDoc }
@@ -1556,6 +1560,8 @@
   const PEEKABLE_TABS = ['series','filmes','favoritos','listas','perfil','stats'];
   function switchTab(name, opts){
     opts = opts || {};
+    // clicar na aba Listas abre sempre a grade (a entrada de histórico criada abaixo é a da grade)
+    if(name === 'listas' && opts.pushHistory !== false) listasView = { mode:'grid' };
     $all('.tab').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
     ['explorar','series','filmes','favoritos','listas','perfil','stats','config'].forEach(t => {
       $('#tab-' + t).classList.toggle('hidden', t !== name);
@@ -1596,6 +1602,8 @@
       return;
     }
     const tab = (e.state && e.state.tevelisaoTab) || loadLocal('activeTab', 'explorar');
+    // a tela de detalhe de uma lista também é uma entrada no histórico
+    if(tab === 'listas') listasView = (e.state && e.state.tevelisaoList) ? { mode:'detail', listId: e.state.tevelisaoList } : { mode:'grid' };
     switchTab(tab, { pushHistory: false });
   });
 
@@ -1616,7 +1624,10 @@
   async function refreshListTabs(activeName){
     if(!myNickname || !fsRefs){ renderMissingSetup(); return; }
     if(!viewingNickname) viewingNickname = myNickname;
-    viewingData = viewingNickname === myNickname ? myData : await loadProfile(viewingNickname);
+    // perfil de outra pessoa: reaproveita o que já foi carregado (recarrega só ao clicar em "Ver"),
+    // senão a aba nova mostraria por ~1s o conteúdo anterior — editável — enquanto busca na rede
+    if(viewingNickname === myNickname){ viewingData = myData; viewingDataNick = null; }
+    else if(viewingDataNick !== viewingNickname){ viewingData = await loadProfile(viewingNickname); viewingDataNick = viewingNickname; }
     if(activeName === 'config') renderProfileBar('configProfileBar');
     if(activeName === 'series') renderMediaTab('tv');
     if(activeName === 'filmes') renderMediaTab('movie');
@@ -1653,6 +1664,7 @@
       const val = normalizeNick($('#peekInput').value);
       if(!val) return;
       viewingNickname = val;
+      viewingDataNick = null; // "Ver" sempre busca a versão mais recente
       refreshListTabs(currentActiveTab());
     });
     $('#peekInput').addEventListener('keydown', (e) => { if(e.key === 'Enter') $('#peekBtn').click(); });
@@ -1743,10 +1755,12 @@
   let lastCatalogError = null;
   async function loadNextCatalogBatch(count){
     if(!apiKey || catalogState.loading) return;
-    catalogState.loading = true;
+    const gen = catalogState; // se o catálogo for reiniciado (filtro/busca) no meio, esta leva para
+    gen.loading = true;
     const grid = $('#catalogoGrid');
     try{
       for(let i=0;i<count;i++){
+        if(catalogState !== gen) return;
         let cat, page;
         try{ ({ cat, page } = nextCatalogCategory()); }
         catch(e){ continue; }
@@ -1759,6 +1773,7 @@
           if(cat.keyword) discoverParams.with_keywords = cat.keyword;
           else discoverParams.with_genres = cat.genre;
           const data = await tmdb('/discover/' + cat.type, discoverParams);
+          if(catalogState !== gen){ rowWrap.remove(); return; }
           const scroll = rowWrap.querySelector('.trend-scroll');
           scroll.innerHTML = '';
           const fresh = (data.results||[]).filter(it => !catalogState.seen.has(cat.type + '-' + it.id) && !isInMyLists(cat.type, it.id));
@@ -1775,7 +1790,7 @@
         }
       }
     } finally {
-      catalogState.loading = false;
+      gen.loading = false;
     }
   }
 
@@ -1810,18 +1825,22 @@
     setupCatalogObserver();
   }
 
+  let searchSeq = 0;
   async function doSearch(query){
-    if(!query){ loadCatalogHome(); return; }
+    if(!query){ searchSeq++; loadCatalogHome(); return; }
     if(!apiKey){ showNoKeyState(); return; }
     if(catalogObserver) catalogObserver.disconnect();
+    catalogState = { index: 0, loading: false, seen: new Set() }; // interrompe leva do catálogo em andamento
+    const mySearch = ++searchSeq;
     $('#catalogoTitle').classList.remove('hidden');
     $('#catalogoTitle').textContent = 'Resultados para "' + query + '"';
     $('#catalogoGrid').className = 'grid';
     $('#catalogoGrid').innerHTML = skeletonPostersHTML(8);
     try{
       const data = await tmdb('/search/multi', { query });
+      if(mySearch !== searchSeq) return; // resposta de uma busca antiga chegou depois
       renderGrid('catalogoGrid', (data.results||[]).filter(r => r.media_type === 'movie' || r.media_type === 'tv'));
-    }catch(e){ renderGrid('catalogoGrid', []); }
+    }catch(e){ if(mySearch === searchSeq) renderGrid('catalogoGrid', []); }
   }
 
   $('#searchInput').addEventListener('input', (e) => {
@@ -1904,6 +1923,11 @@
       <button class="qam-option" id="qamWatched"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> ${isWatched ? 'Remover dos assistidos' : 'Assistido'}</button>
     `;
     document.body.appendChild(menu);
+    // sem espaço abaixo do botão (card perto do fim da tela): abre para cima
+    const menuH = menu.offsetHeight;
+    if(rect.bottom + 6 + menuH > window.innerHeight && rect.top - 6 - menuH >= 0){
+      menu.style.top = (rect.top - 6 - menuH) + 'px';
+    }
     function closeMenu(){
       menu.remove();
       document.removeEventListener('click', outsideHandler);
@@ -2210,6 +2234,7 @@
   }
 
   // ---------------- detail modal ----------------
+  let detailRenderSeq = 0;
   async function openDetail(mediaType, id, listItem, keepStack){
     if(!keepStack){
       modalStack = [];
@@ -2223,7 +2248,11 @@
     // TMDB — evita uma viagem de rede inteira a cada toque em um botão.
     const alreadyFull = keepStack && listItem && listItem.credits;
     if(apiKey && !alreadyFull){
+      const mySeq = ++detailRenderSeq;
+      const depthAtStart = navStack.length;
       try{ details = await tmdb('/' + mediaType + '/' + id, { append_to_response: 'credits,external_ids' }); }catch(e){ /* fallback */ }
+      // usuário voltou/fechou (ou abriu outro título) enquanto carregava: não redesenha por cima
+      if(mySeq !== detailRenderSeq || navStack.length < depthAtStart) return;
     }
     const title = details.title || details.name || 'Sem título';
     const date = details.release_date || details.first_air_date || '';
@@ -2844,7 +2873,7 @@
           const seasonMeta = seasons.find(x => String(x.season_number) === String(s));
           updateSeasonCount(s, seasonMeta ? seasonMeta.episode_count : '?');
           updateTopProgress();
-          await persistEpisodes();
+          persistEpisodes(); // sem await: a pergunta abaixo aparece na hora
 
           if(wasChecked){
             const epNum = parseInt(ep, 10);
@@ -2862,8 +2891,8 @@
                   });
                   updateSeasonCount(s, seasonMeta ? seasonMeta.episode_count : '?');
                   updateTopProgress();
-                  await persistEpisodes();
                   showToast('Episódios anteriores marcados ✓');
+                  persistEpisodes(); // sem await: o popup fecha na hora
                 },
                 { title: 'Marcar episódios anteriores?', confirmLabel: 'Sim, marcar', confirmClass: 'primary' }
               );
@@ -3167,6 +3196,16 @@
     `;
     $('#backFromCustomize').addEventListener('click', () => modalGoBack());
     $('#overlay').addEventListener('click', (e) => { if(e.target.id === 'overlay') modalGoBack(); });
+    // anexado antes do carregamento: se o usuário voltar enquanto as imagens
+    // carregam, o botão já não existe mais e não há o que ligar depois
+    $('#saveCustomArt').addEventListener('click', async () => {
+      myData.customArt = myData.customArt || {};
+      if(!selectedPoster && !selectedBackdrop) delete myData.customArt[key];
+      else myData.customArt[key] = { poster: selectedPoster, backdrop: selectedBackdrop };
+      showToast('Personalização salva ✓');
+      modalGoBack();
+      saveMyProfile();
+    });
     try{
       const imgData = await tmdb('/' + mediaType + '/' + id + '/images', { include_image_language: 'pt,en,null' });
       const posters = (imgData.posters||[]).slice(0, 19);
@@ -3197,14 +3236,6 @@
       const body = $('#customizeBody');
       if(body) body.innerHTML = `<div class="empty"><div class="icon">⚠️</div>Não foi possível carregar as imagens.</div>`;
     }
-    $('#saveCustomArt').addEventListener('click', async () => {
-      myData.customArt = myData.customArt || {};
-      if(!selectedPoster && !selectedBackdrop) delete myData.customArt[key];
-      else myData.customArt[key] = { poster: selectedPoster, backdrop: selectedBackdrop };
-      showToast('Personalização salva ✓');
-      modalGoBack();
-      saveMyProfile();
-    });
   }
 
   // ---------------- perfil tab ----------------
@@ -3269,11 +3300,12 @@
             </div>
           `;
           root.appendChild(popup);
-          function closeChoice(){ popup.remove(); }
-          popup.addEventListener('click', (e) => { if(e.target === popup) closeChoice(); });
-          popup.querySelector('#closeProfileEditChoice').addEventListener('click', closeChoice);
-          popup.querySelector('#choiceEditCover').addEventListener('click', () => { closeChoice(); toggleCoverPicker(); });
-          popup.querySelector('#choiceEditAvatar').addEventListener('click', () => { closeChoice(); openAvatarPicker(); });
+          registerPopup(popup);
+          popup.addEventListener('click', (e) => { if(e.target === popup) goBack(); });
+          popup.querySelector('#closeProfileEditChoice').addEventListener('click', () => goBack());
+          popup.querySelector('#choiceEditCover').addEventListener('click', () => { goBack(); toggleCoverPicker(); });
+          // o seletor de personagem ocupa a mesma camada do popup (troca, não navegação nova)
+          popup.querySelector('#choiceEditAvatar').addEventListener('click', () => { popup.remove(); openAvatarPicker({ replaceNav: true }); });
         });
       }
       const posSlider = $('#coverPosSlider');
@@ -3305,10 +3337,11 @@
     if(isMine && apiKey) syncMissingReleaseDates();
   }
 
-  function openAvatarPicker(){
+  function openAvatarPicker(opts){
     try{
     const root = $('#modalRoot');
-    pushNav(() => closeModalRootAnimated(() => document.body.classList.remove('bg-blurred')));
+    const onBack = () => closeModalRootAnimated(() => document.body.classList.remove('bg-blurred'));
+    if(opts && opts.replaceNav) replaceTopNav(onBack); else pushNav(onBack);
     root.innerHTML = `
       <div class="overlay" id="overlay">
         <div class="modal" style="max-width:420px;">
@@ -3544,7 +3577,7 @@
         if(mediaType === 'movie') filmesQueroGenreFilter = currentGenreFilter; else seriesGenreFilter = currentGenreFilter;
         if(genreNames.length){
           genreChipsHTML = `
-            <div class="filter-chip-row" id="mediaGenreFilterRow">
+            <div class="filter-chip-row" id="mediaGenreFilterRow-${mediaType}">
               <span class="filter-chip ${currentGenreFilter==='all'?'active':''}" data-gfilter="all">Todos</span>
               ${genreNames.map(g => `<span class="filter-chip ${currentGenreFilter===g?'active':''}" data-gfilter="${g}">${g} (${genreCount[g]})</span>`).join('')}
             </div>
@@ -3565,8 +3598,8 @@
       } else {
         const view = mediaType === 'tv' ? mediaViewMode.tv : mediaViewMode.movie;
         if(view === 'grid'){
-          el.innerHTML += '<div class="grid" id="mediaGrid"></div>';
-          const grid = $('#mediaGrid');
+          el.innerHTML += `<div class="grid" id="mediaGrid-${mediaType}"></div>`;
+          const grid = $('#mediaGrid-' + mediaType, el); // id por tipo: Séries e Filmes ficam no DOM ao mesmo tempo
           items.forEach(it => grid.appendChild(collectionPosterCard(it)));
         } else {
           const listWrap = document.createElement('div');
@@ -3574,7 +3607,7 @@
           el.appendChild(listWrap);
         }
       }
-      const genreRow = $('#mediaGenreFilterRow');
+      const genreRow = $('#mediaGenreFilterRow-' + mediaType, el);
       if(genreRow){
         $all('.filter-chip', genreRow).forEach(chip => {
           chip.addEventListener('click', () => {
@@ -3759,6 +3792,7 @@
     const row = document.createElement('div');
     row.className = 'media-row';
     const isDone = item._status === 'watched';
+    const readOnly = viewingNickname !== myNickname;
     const rw = item.rewatch_count ? ` · ${item.rewatch_count + 1}x` : '';
     row.innerHTML = `
       <div class="mr-poster" style="${item.poster_path?`background-image:url('${resolvePosterUrl(item.poster_path)}')`:''}"></div>
@@ -3766,8 +3800,10 @@
         <div class="mr-pill">${item.title}</div>
         <div class="mr-sub">${isDone ? 'Assistido' + rw : 'Na lista'}${item.date_watched ? ' · ' + item.date_watched : ''}</div>
       </div>
-      <div class="mr-check ${isDone?'done':''}" title="Marcar/desmarcar assistido">${isDone?ICON_CHECK:''}</div>
+      ${readOnly ? '' : `<div class="mr-check ${isDone?'done':''}" title="Marcar/desmarcar assistido">${isDone?ICON_CHECK:''}</div>`}
     `;
+    // perfil de outra pessoa (somente leitura): sem marcar nem abrir detalhe editável
+    if(readOnly) return row;
     row.querySelector('.mr-check').addEventListener('click', async (e) => {
       e.stopPropagation();
       const key = 'movie-' + item.id;
@@ -3807,6 +3843,7 @@
     row.className = 'media-row';
     const w = watchedEpisodesOf(item), t = totalEpisodesOf(item);
     const isFull = item._status === 'watched';
+    const readOnly = viewingNickname !== myNickname;
     const statusLabel = item._status==='notwatched' ? 'Na lista' : item._status==='watching' ? 'Assistindo' : item._status==='interrupted' ? 'Interrompida' : 'Completo';
     const progressInfo = seriesProgressInfo(item);
     row.innerHTML = `
@@ -3817,8 +3854,10 @@
         <div class="mr-sub">${statusLabel}</div>
       </div>
       ${progressInfo ? `<div class="mr-progress-strip"><div class="mr-progress-strip-fill ${progressInfo.color}" style="height:${progressInfo.percent}%"></div></div>` : ''}
-      <div class="mr-check ${isFull?'done':''}" title="Marcar próximo episódio assistido">${isFull?ICON_CHECK:ICON_PLAY}</div>
+      ${readOnly ? '' : `<div class="mr-check ${isFull?'done':''}" title="Marcar próximo episódio assistido">${isFull?ICON_CHECK:ICON_PLAY}</div>`}
     `;
+    // perfil de outra pessoa (somente leitura): sem marcar nem abrir detalhe editável
+    if(readOnly) return row;
     const checkBtn = row.querySelector('.mr-check');
     checkBtn.addEventListener('click', async (e) => {
       e.stopPropagation();
@@ -3835,10 +3874,11 @@
     if(!apiKey){ showToast('Configure a chave da TMDB primeiro.'); return false; }
     try{
       const detailsFull = await tmdb('/tv/' + item.id);
-      const seasons = (detailsFull.seasons || []).filter(s => s.episode_count > 0).sort((a,b) => a.season_number - b.season_number);
+      // especiais (temporada 0) ficam de fora, como no resto do app (contagens, modal, progresso)
+      const seasons = (detailsFull.seasons || []).filter(s => s.episode_count > 0 && s.season_number !== 0).sort((a,b) => a.season_number - b.season_number);
       const episodesState = Object.assign({}, item.episodes || {});
       const key = 'tv-' + item.id;
-      const total = detailsFull.number_of_episodes || 0;
+      const total = seasons.reduce((sum, se) => sum + se.episode_count, 0) || detailsFull.number_of_episodes || 0;
       const avgMin = (detailsFull.episode_run_time && detailsFull.episode_run_time[0]) || 40;
       for(const s of seasons){
         const seasonData = await tmdb('/tv/' + item.id + '/season/' + s.season_number);
@@ -4228,6 +4268,7 @@
     div.addEventListener('click', () => {
       listasView = { mode:'detail', listId: list.id };
       listDetailState = { subtab: 'watched', filter: 'all' };
+      history.pushState({ tevelisaoTab: 'listas', tevelisaoList: list.id }, '', '#listas');
       renderListasTab();
     });
     return div;
@@ -4278,8 +4319,17 @@
         myData.lists[newId] = { id: newId, title, description, created_at: new Date().toISOString(), items: {} };
       }
       showToast(isEdit ? 'Lista atualizada ✓' : 'Lista criada ✓');
-      if(newId) listasView = { mode:'detail', listId: newId };
-      goBack();
+      if(newId){
+        // troca a entrada do popup pela entrada do detalhe da lista nova
+        // (não é um "voltar": a tela seguinte é a lista recém-criada)
+        listasView = { mode:'detail', listId: newId };
+        listDetailState = { subtab: 'watched', filter: 'all' };
+        if(navStack.length) navStack.pop();
+        history.replaceState({ tevelisaoTab: 'listas', tevelisaoList: newId }, '', '#listas');
+        animatePopupClose(popup, closePopupVisual);
+      } else {
+        goBack();
+      }
       renderListasTab();
       saveMyProfile();
     });
@@ -4293,6 +4343,8 @@
           listasView = { mode:'grid' };
           renderListasTab();
           saveMyProfile();
+          // fecha a confirmação E desfaz a entrada de histórico da tela da lista excluída
+          closeEverything(1);
         }, { title: 'Excluir lista?', confirmLabel: 'Sim, excluir', replaceNav: true });
       });
     }
@@ -4322,7 +4374,12 @@
       ${isMine ? `<button class="btn primary" id="listAddBtn" style="width:100%;margin-bottom:14px;">${ICON_PLUS} Adicionar título</button>` : ''}
       <div id="listItemsGrid"></div>
     `;
-    $('#listBackBtn').addEventListener('click', () => { listasView = { mode:'grid' }; renderListasTab(); });
+    $('#listBackBtn').addEventListener('click', () => {
+      // o detalhe sempre tem uma entrada própria no histórico: voltar por ela
+      // mantém o botão do app e o gesto do celular em sincronia
+      if(history.state && history.state.tevelisaoList === listId) goBack();
+      else { listasView = { mode:'grid' }; renderListasTab(); }
+    });
     if(isMine){
       $('#listEditBtn').addEventListener('click', () => openListFormModal(listId));
       $('#listAddBtn').addEventListener('click', () => openAddToListModal(listId, listDetailState.subtab));
