@@ -10,7 +10,10 @@
 <meta name="theme-color" content="#0d1526">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- fontes sem bloquear a primeira pintura (display=swap: o texto aparece já e troca de fonte quando ela chega) -->
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@400;500;600;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
 <style>
   /* =====================================================================
      TEVELISÃO — SISTEMA DE DESIGN  ("repaginacao-ui-v1")
@@ -274,8 +277,10 @@
   }
   .modal.blurred{filter:blur(3px);pointer-events:none;}
   .choice-overlay{background:rgba(3,6,14,.45);}
-  .topbar, .perf, .app-shell{transition:filter .25s ease;}
-  body.bg-blurred .topbar, body.bg-blurred .perf, body.bg-blurred .app-shell{filter:blur(3px);}
+  /* popup sobre a página: véu mais escuro em vez de filter:blur no app inteiro
+     (o desfoque repintava a página toda — centenas de pôsteres — a cada popup) */
+  body.bg-blurred .choice-overlay{background:rgba(3,6,14,.62);}
+  body.bg-blurred .overlay:not(.choice-overlay) ~ .choice-overlay{background:rgba(3,6,14,.45);}
   .choice-close-btn{position:absolute;top:var(--s3);right:var(--s3);background:var(--bg-panel-alt);color:var(--cream);border:1px solid var(--border);}
   .modal-hero{width:100%;aspect-ratio:16/7;background:var(--bg-panel-alt) center/cover no-repeat;position:relative;}
   .modal-hero::after{content:'';position:absolute;left:0;right:0;bottom:0;height:45%;background:linear-gradient(to top, var(--bg-panel), transparent);pointer-events:none;}
@@ -745,7 +750,6 @@
   @keyframes modalIn{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
   @keyframes overlayOut{from{opacity:1;}to{opacity:0;}}
   @keyframes modalOut{from{opacity:1;transform:translateY(0);}to{opacity:0;transform:translateY(12px);}}
-  @keyframes shimmer{0%{background-position:120% 0;}100%{background-position:-20% 0;}}
   @keyframes spin{to{transform:rotate(360deg);}}
   @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
   .tab-fade-in{animation:none;}
@@ -757,7 +761,10 @@
 
   .searchbar{position:sticky;top:calc(var(--topbar-h, 56px) + 6px);z-index:15;background:var(--bg-deep);padding:var(--s2) 0 var(--s3);margin:calc(var(--s2) * -1) 0 var(--s2);}
 
-  .skeleton{background:linear-gradient(100deg, var(--bg-panel-alt) 30%, var(--bg-panel) 50%, var(--bg-panel-alt) 70%);background-size:250% 100%;animation:shimmer 1.3s ease infinite;}
+  /* brilho do esqueleto com transform (composição na GPU) em vez de background-position (repintura a cada quadro) */
+  .skeleton{background-color:var(--bg-panel-alt);position:relative;overflow:hidden;}
+  .skeleton::before{content:'';position:absolute;inset:0;background:linear-gradient(100deg, transparent 20%, color-mix(in srgb, var(--bg-panel) 70%, transparent) 50%, transparent 80%);transform:translateX(-100%);animation:shimmerX 1.3s ease infinite;}
+  @keyframes shimmerX{to{transform:translateX(100%);}}
   .skel-poster{border-radius:var(--r-box);aspect-ratio:2/3;}
   .trend-scroll .skel-poster{width:140px;}
   .skel-line{height:11px;border-radius:2px;margin-top:var(--s2);}
@@ -805,18 +812,13 @@
   @keyframes swapIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
   @keyframes cardIn{from{opacity:0;transform:translateY(10px) scale(.98);}to{opacity:1;transform:none;}}
   .swap-in{animation:swapIn var(--t-swap) var(--ease-out);}
-  .stagger :is(.grid, .list-cards-grid, .modal-mini-grid) > :nth-child(-n+8),
-  .stagger .trend-scroll > .poster-card:nth-child(-n+5),
-  .stagger .media-row:nth-child(-n+8),
-  .stagger .collection-row:nth-child(-n+4),
-  .stagger .combo-chart-card{animation:cardIn 260ms var(--ease-out) both;}
-  .stagger :nth-child(2):is(.poster-card, .list-card, .media-row, .collection-row){animation-delay:30ms;}
-  .stagger :nth-child(3):is(.poster-card, .list-card, .media-row, .collection-row){animation-delay:60ms;}
-  .stagger :nth-child(4):is(.poster-card, .list-card, .media-row, .collection-row){animation-delay:90ms;}
-  .stagger :nth-child(5):is(.poster-card, .list-card, .media-row){animation-delay:120ms;}
-  .stagger :nth-child(6):is(.poster-card, .list-card, .media-row){animation-delay:150ms;}
-  .stagger :nth-child(7):is(.poster-card, .list-card, .media-row){animation-delay:180ms;}
-  .stagger :nth-child(8):is(.poster-card, .list-card, .media-row){animation-delay:210ms;}
+  .card-in{animation:cardIn 260ms var(--ease-out) both;} /* aplicada pelo JS só nos itens visíveis */
+  /* itens de grades longas fora da tela não passam por layout/pintura (o navegador
+     guarda o tamanho real depois do 1º desenho). Reexibir Filmes com 250 pôsteres
+     deixa de recalcular todos de uma vez. */
+  .grid > .poster-card{content-visibility:auto;contain-intrinsic-size:auto 240px;padding-bottom:12px;margin-bottom:-12px;} /* a sombra da caixa de fita cabe sem mudar o layout */
+  .media-row{content-visibility:auto;contain-intrinsic-size:auto 90px;}
+  .list-cards-grid > .list-card{content-visibility:auto;contain-intrinsic-size:auto 230px;}
   .season-episodes:not(.hidden){animation:swapIn var(--t-swap) var(--ease-out);}
 
   /* toque: tudo que é tocável afunda um pouco e "assenta" (como tirar a fita da prateleira) */
@@ -1128,7 +1130,7 @@
       </div>
     </div>
 
-    <p class="version-note">Versão do app: <strong>2026-10-15 — build refinamento-ux-v1</strong><br>Se essa versão não bater com a mais recente que o Claude te mandou, feche a aba inteira e abra o link de novo.</p>
+    <p class="version-note">Versão do app: <strong>2026-10-15 — build performance-fix-v1</strong><br>Se essa versão não bater com a mais recente que o Claude te mandou, feche a aba inteira e abra o link de novo.</p>
   </section>
 
 </main>
@@ -1143,6 +1145,7 @@
   const BACKDROP = 'https://image.tmdb.org/t/p/w780';
   const BACKDROP_HQ = 'https://image.tmdb.org/t/p/original';
   const PROFILE_HQ = 'https://image.tmdb.org/t/p/h632';
+  const THUMB_W = 'https://image.tmdb.org/t/p/w300'; // miniaturas de banner/capa (antes: original, vários MB cada)
   function escHtml(str){
     return String(str == null ? '' : str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
@@ -1158,9 +1161,10 @@
     if(!pathOrUrl) return '';
     return /^https?:\/\//.test(pathOrUrl) ? pathOrUrl : PROFILE_HQ + pathOrUrl;
   }
+  // capa do perfil: w1280 já é nítida na largura de qualquer celular; "original" pesava vários MB
   function upgradeTmdbImageQuality(url){
     if(!url) return url;
-    return url.replace(/\/t\/p\/(w\d+|h\d+)\//, '/t/p/original/');
+    return url.replace(/\/t\/p\/(w\d+|h\d+|original)\//, '/t/p/w1280/');
   }
 
   // ---------------- embedded shared credentials (so no one has to paste these in) ----------------
@@ -1222,6 +1226,7 @@
   function closeAllOverlaysImmediate(){
     const root = $('#modalRoot');
     if(root){ root.innerHTML = ''; root.classList.remove('closing-out'); }
+    if(closeActiveQuickMenu) closeActiveQuickMenu();
     document.querySelectorAll('.quick-add-menu').forEach(m => m.remove());
     modalStack = [];
     navStack = [];
@@ -1276,20 +1281,40 @@
   }
   const $all = (sel, el=document) => Array.from(el.querySelectorAll(sel));
 
-  const ICON_HEART = '<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" style="vertical-align:-2px"><path d="M12 20.6l-1.4-1.3C5.6 14.9 2 11.6 2 7.7 2 4.9 4.2 2.7 7 2.7c1.6 0 3.1.8 4 2 .9-1.2 2.4-2 4-2 2.8 0 5 2.2 5 5 0 3.9-3.6 7.2-8.6 11.6L12 20.6z"/></svg>';
   const ICON_PENCIL = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" style="display:block"><path d="M17 3a2.83 2.83 0 0 1 4 4L7 21l-4 1 1-4Z"/></svg>';
   const ICON_CHEVRON = '<svg class="icon-chevron" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>';
   const ICON_CHEVRON_LEFT = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg>';
-  const ICON_CHEVRON_RIGHT = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>';
   const ICON_GRID = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>';
   const ICON_LIST = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>';
   const ICON_CLOSE = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>';
-  const ICON_SUN = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><circle cx="12" cy="12" r="4.5"/><line x1="12" y1="1.5" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22.5"/><line x1="1.5" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22.5" y2="12"/><line x1="4.5" y1="4.5" x2="6.2" y2="6.2"/><line x1="17.8" y1="17.8" x2="19.5" y2="19.5"/><line x1="4.5" y1="19.5" x2="6.2" y2="17.8"/><line x1="17.8" y1="6.2" x2="19.5" y2="4.5"/></svg>';
-  const ICON_MOON = '<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" style="vertical-align:-3px"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5Z"/></svg>';
   const ICON_PERSON_SMALL = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.5 3-6 7-6s7 2.5 7 6"/></svg>';
   const ICON_REFRESH = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.5 9a8.5 8.5 0 0 1 14-3.5L23 10M1 14l5.5 4.5A8.5 8.5 0 0 0 20.5 15"/></svg>';
   const ICON_PLUS = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>';
   const ICON_PLAY = '<svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
+
+  // ---------------- imagens sob demanda ----------------
+  // Pôsteres e miniaturas são <div> com background-image (loading="lazy" não se aplica).
+  // Eles nascem com data-bg e só recebem a imagem quando chegam perto da tela —
+  // antes, abrir Filmes com 250 títulos disparava 250 downloads de uma vez.
+  const lazyBgIO = 'IntersectionObserver' in window ? new IntersectionObserver((entries) => {
+    entries.forEach(en => {
+      const el = en.target;
+      if(!el.isConnected){ lazyBgIO.unobserve(el); return; }
+      if(!en.isIntersecting) return;
+      lazyBgIO.unobserve(el);
+      if(el.dataset.bg){ el.style.backgroundImage = `url('${el.dataset.bg}')`; delete el.dataset.bg; }
+    });
+  }, { rootMargin: '600px 400px' }) : null;
+  function watchLazyBg(node){
+    if(node.nodeType !== 1) return;
+    const list = node.hasAttribute('data-bg') ? [node] : [];
+    node.querySelectorAll('[data-bg]').forEach(el => list.push(el));
+    list.forEach(el => {
+      if(lazyBgIO) lazyBgIO.observe(el);
+      else { el.style.backgroundImage = `url('${el.dataset.bg}')`; delete el.dataset.bg; }
+    });
+  }
+  new MutationObserver((muts) => { muts.forEach(m => m.addedNodes.forEach(watchLazyBg)); }).observe(document.body, { childList: true, subtree: true });
 
   function wireHScroll(scrollEl){
     if(!scrollEl || scrollEl.dataset.hscrollWired) return;
@@ -1315,16 +1340,22 @@
     }
     leftBtn.addEventListener('click', (e) => { e.stopPropagation(); scrollEl.scrollBy({ left: -Math.round(scrollEl.clientWidth * 0.82), behavior: 'smooth' }); });
     rightBtn.addEventListener('click', (e) => { e.stopPropagation(); scrollEl.scrollBy({ left: Math.round(scrollEl.clientWidth * 0.82), behavior: 'smooth' }); });
-    scrollEl.addEventListener('scroll', update);
-    window.addEventListener('resize', update);
+    scrollEl.addEventListener('scroll', update, { passive: true });
+    // um único ResizeObserver para todas as fileiras (cobre também o redimensionar da
+    // janela). Antes cada fileira registrava um listener "resize" no window que nunca
+    // saía: a cada modal/aba redesenhada, os nós antigos ficavam presos na memória.
+    scrollEl._hsUpdate = update;
+    if(hScrollRO) hScrollRO.observe(scrollEl);
     update();
     requestAnimationFrame(() => requestAnimationFrame(update));
-    setTimeout(update, 200);
-    setTimeout(update, 800);
-    if(typeof ResizeObserver !== 'undefined'){
-      new ResizeObserver(update).observe(scrollEl);
-    }
   }
+  const hScrollRO = typeof ResizeObserver !== 'undefined' ? new ResizeObserver((entries) => {
+    entries.forEach(en => {
+      const el = en.target;
+      if(!el.isConnected){ hScrollRO.unobserve(el); el._hsUpdate = null; return; } // fileira saiu da tela: solta
+      if(el._hsUpdate) el._hsUpdate();
+    });
+  }) : null;
   const ICON_CHEVRON_DOWN = '<svg class="season-chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
   const ICON_CHECK = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><polyline points="4 12 10 18 20 6"/></svg>';
   const STAR_PATH = 'M12 2.3l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z';
@@ -1522,12 +1553,33 @@
     setTimeout(() => el.classList.remove(cls), 400);
   }
   // troca de conteúdo (aba/subaba/filtro): entrada curta + cascata nos primeiros itens
+  // A cascata é aplicada só nos (até 8) itens visíveis, direto neles. Antes uma classe
+  // .stagger na seção inteira fazia o navegador recalcular o estilo de todos os
+  // cards (centenas) ao entrar e de novo ao sair da animação.
+  const STAGGER_ITEMS = '.poster-card, .list-card, .media-row, .collection-row, .combo-chart-card';
   function swapIn(el){
     if(!el) return;
-    el.classList.remove('swap-in', 'stagger'); void el.offsetWidth;
-    el.classList.add('swap-in', 'stagger');
+    el.classList.remove('swap-in'); void el.offsetWidth;
+    el.classList.add('swap-in');
     clearTimeout(el._swapTimer);
-    el._swapTimer = setTimeout(() => el.classList.remove('swap-in', 'stagger'), 600);
+    const picked = [];
+    if(!prefersReducedMotion()){
+      const vh = window.innerHeight;
+      for(const it of el.querySelectorAll(STAGGER_ITEMS)){
+        if(picked.length >= 8) break;
+        const r = it.getBoundingClientRect();
+        if(r.top > vh * 1.2) break; // daqui pra baixo já está fora da tela
+        if(r.bottom > 0 && r.right > 0 && r.left < window.innerWidth && r.height){
+          it.style.animationDelay = (picked.length * 30) + 'ms';
+          it.classList.add('card-in');
+          picked.push(it);
+        }
+      }
+    }
+    el._swapTimer = setTimeout(() => {
+      el.classList.remove('swap-in');
+      picked.forEach(it => { it.classList.remove('card-in'); it.style.animationDelay = ''; });
+    }, 600);
   }
   // números contam até o valor final (estatísticas, contagens)
   function countUp(root){
@@ -1581,13 +1633,7 @@
     }
     return out;
   }
-  function skeletonFeedHTML(n){
-    let out = '';
-    for(let i=0;i<n;i++){
-      out += `<div class="skeleton" style="aspect-ratio:16/9;border-radius:12px;margin-bottom:18px;border:1px solid var(--border);"></div>`;
-    }
-    return out;
-  }
+
 
   function normalizeNick(n){
     return (n||'').trim().toLowerCase().replace(/[^a-z0-9_-]/g,'-').slice(0,60);
@@ -1655,6 +1701,8 @@
     const { db, doc, getDoc, setDoc } = fsRefs;
     let base = { watched:{}, watchlist:{}, favorites:{}, customArt:{}, lists:{} };
     let profile = { avatar:null, cover:null };
+    // os dois documentos (dados e mídia) são lidos ao mesmo tempo
+    const mediaRead = getDoc(doc(db, 'bilheteria_profiles', nickname + '--media')).catch(() => null);
     try{
       const snap = await getDoc(doc(db, 'bilheteria_profiles', nickname));
       if(snap.exists()){
@@ -1663,10 +1711,8 @@
         if(d.profile) profile = Object.assign(profile, d.profile); // legacy fallback for older saves
       }
     }catch(e){ console.error('load profile failed', e); }
-    try{
-      const mediaSnap = await getDoc(doc(db, 'bilheteria_profiles', nickname + '--media'));
-      if(mediaSnap.exists()) profile = Object.assign(profile, mediaSnap.data());
-    }catch(e){ /* no media doc yet, fine */ }
+    const mediaSnap = await mediaRead; // sem documento de mídia ainda (ou falhou): segue sem avatar/capa
+    if(mediaSnap && mediaSnap.exists()) profile = Object.assign(profile, mediaSnap.data());
     // self-heal: an item marked watched should never linger in the watchlist too
     let neededResave = false;
     Object.keys(base.watched).forEach(k => {
@@ -1679,22 +1725,45 @@
     return Object.assign({}, base, { profile });
   }
 
-  async function saveMyProfile(){
-    if(!fsRefs || !myNickname) return false;
+  // Cada setDoc serializa o documento inteiro na thread principal. Toques em
+  // sequência (ex.: marcar vários episódios) são agrupados numa escrita só, 350ms
+  // depois do último toque. A interface já mudou antes (atualização otimista); ao
+  // ir para segundo plano/fechar, o que estiver pendente é gravado na hora.
+  let dataVersion = 0; // muda a cada alteração nos meus dados (usado p/ não redesenhar abas à toa)
+  let profileSaveTimer = null, profileSavePending = null;
+  function saveMyProfile(){
+    dataVersion++;
+    if(!fsRefs || !myNickname) return Promise.resolve(false);
+    if(!profileSavePending){
+      let resolve; const promise = new Promise(r => { resolve = r; });
+      profileSavePending = { promise, resolve };
+    }
+    clearTimeout(profileSaveTimer);
+    profileSaveTimer = setTimeout(flushProfileSave, 350);
+    return profileSavePending.promise;
+  }
+  async function flushProfileSave(){
+    clearTimeout(profileSaveTimer); profileSaveTimer = null;
+    const pending = profileSavePending; profileSavePending = null;
+    if(!pending) return;
+    if(!fsRefs || !myNickname){ pending.resolve(false); return; }
     const { db, doc, setDoc } = fsRefs;
     try{
       await setDoc(doc(db, 'bilheteria_profiles', myNickname), {
         watched: myData.watched, watchlist: myData.watchlist, favorites: myData.favorites, customArt: myData.customArt || {}, lists: myData.lists || {}
       });
-      return true;
+      pending.resolve(true);
     }catch(e){
       console.error('save profile failed', e);
       showToast('Erro ao salvar: ' + e.message);
-      return false;
+      pending.resolve(false);
     }
   }
+  document.addEventListener('visibilitychange', () => { if(document.visibilityState === 'hidden') flushProfileSave(); });
+  window.addEventListener('pagehide', () => flushProfileSave());
 
   async function saveMyMedia(){
+    dataVersion++;
     if(!fsRefs || !myNickname){ showToast('Conecte o Firebase na aba Configurações primeiro.'); return false; }
     const { db, doc, setDoc } = fsRefs;
     try{
@@ -1722,6 +1791,19 @@
     if(!res.ok) throw new Error('tmdb-error-' + res.status);
     return res.json();
   }
+
+  // memória curta de respostas que não mudam durante a sessão (recomendações,
+  // comentários, premiações). Guarda a própria promessa: dois pedidos iguais em
+  // sequência viram uma requisição só. Falha não fica guardada.
+  const responseCache = new Map();
+  function cachedFetch(key, fetcher){
+    if(responseCache.has(key)){ const v = responseCache.get(key); responseCache.delete(key); responseCache.set(key, v); return v; }
+    const pr = fetcher().catch(err => { responseCache.delete(key); throw err; });
+    responseCache.set(key, pr);
+    if(responseCache.size > 80) responseCache.delete(responseCache.keys().next().value);
+    return pr;
+  }
+  const tmdbCached = (path, params) => cachedFetch('tmdb:' + path + '?' + JSON.stringify(params || {}), () => tmdb(path, params));
 
   async function loadGenres(){
     try{
@@ -1811,14 +1893,23 @@
     // perfil de outra pessoa: reaproveita o que já foi carregado (recarrega só ao clicar em "Ver"),
     // senão a aba nova mostraria por ~1s o conteúdo anterior — editável — enquanto busca na rede
     if(viewingNickname === myNickname){ viewingData = myData; viewingDataNick = null; }
-    else if(viewingDataNick !== viewingNickname){ viewingData = await loadProfile(viewingNickname); viewingDataNick = viewingNickname; }
+    else if(viewingDataNick !== viewingNickname){ viewingData = await loadProfile(viewingNickname); viewingDataNick = viewingNickname; dataVersion++; }
     if(activeName === 'config') renderProfileBar('configProfileBar');
     if(activeName === 'series') renderMediaTab('tv');
     if(activeName === 'filmes') renderMediaTab('movie');
-    if(activeName === 'favoritos') renderList('favoritosList', viewingData.favorites, 'favorito');
-    if(activeName === 'listas') renderListasTab();
-    if(activeName === 'perfil') renderPerfilTab();
-    if(activeName === 'stats') renderStats();
+    // cada função de desenho registra a assinatura do que acabou de desenhar
+    // (markRendered); aqui só se compara — se nada mudou, a aba é só exibida
+    const sameAsLast = (k) => {
+      const el = $('#' + ({ favoritos:'favoritosList', listas:'listasContent', perfil:'perfilContent', stats:'statsContent' })[k]);
+      return !!(el && el.children.length && tabRenderSig[k] === currentTabSig(k));
+    };
+    if(activeName === 'favoritos' && !sameAsLast('favoritos')) renderList('favoritosList', viewingData.favorites, 'favorito');
+    if(activeName === 'listas' && !sameAsLast('listas')) renderListasTab();
+    if(activeName === 'perfil' && !sameAsLast('perfil')) renderPerfilTab();
+    if(activeName === 'stats'){
+      if(!sameAsLast('stats')) renderStats();
+      else if(statsCountUpNext){ statsCountUpNext = false; countUp($('#statsContent')); }
+    }
   }
 
   function renderMissingSetup(){
@@ -1888,7 +1979,7 @@
     const genreNames = (item.genre_ids||[]).map(gid => genreMap[mediaType] && genreMap[mediaType][gid]).filter(Boolean).slice(0,2);
     div.innerHTML = `
       <div class="poster-img ${item.poster_path ? '' : 'noimg'}">
-        <div class="poster-img-inner" style="${item.poster_path ? `background-image:url('${resolvePosterUrl(item.poster_path)}')` : ''}"></div>
+        <div class="poster-img-inner" ${item.poster_path ? `data-bg="${resolvePosterUrl(item.poster_path)}"` : ''}></div>
         ${progressInfo ? `<div class="progress-strip"><div class="progress-strip-fill ${progressInfo.color}" style="width:${progressInfo.percent}%"></div></div>` : ''}
         <div class="card-gradient"></div>
         <div class="card-body">
@@ -2112,7 +2203,9 @@
     return btn;
   }
 
+  let closeActiveQuickMenu = null; // fecha (e solta os listeners do) menu rápido aberto
   function openQuickAddMenu(anchorBtn, item, mediaType){
+    if(closeActiveQuickMenu) closeActiveQuickMenu();
     document.querySelectorAll('.quick-add-menu').forEach(m => m.remove());
     const key = mediaType + '-' + item.id;
     const rect = anchorBtn.getBoundingClientRect();
@@ -2132,15 +2225,20 @@
     if(rect.bottom + 6 + menuH > window.innerHeight && rect.top - 6 - menuH >= 0){
       menu.style.top = (rect.top - 6 - menuH) + 'px';
     }
+    let closed = false;
     function closeMenu(){
+      if(closed) return;
+      closed = true;
+      if(closeActiveQuickMenu === closeMenu) closeActiveQuickMenu = null;
       menu.classList.add('closing');
       setTimeout(() => menu.remove(), prefersReducedMotion() ? 0 : 120);
       document.removeEventListener('click', outsideHandler);
       window.removeEventListener('scroll', closeMenu, true);
     }
     function outsideHandler(e){ if(!menu.contains(e.target) && e.target !== anchorBtn) closeMenu(); }
-    setTimeout(() => document.addEventListener('click', outsideHandler), 0);
-    window.addEventListener('scroll', closeMenu, true);
+    setTimeout(() => { if(!closed) document.addEventListener('click', outsideHandler); }, 0);
+    window.addEventListener('scroll', closeMenu, { capture: true, passive: true });
+    closeActiveQuickMenu = closeMenu;
 
     function refreshAnchorIcon(){
       const nowSet = !!myData.watched[key] || !!myData.watchlist[key];
@@ -2216,7 +2314,7 @@
     const genreNames = (item.genre_ids||[]).map(gid => genreMap[mt] && genreMap[mt][gid]).filter(Boolean).slice(0,2);
     div.innerHTML = `
       <div class="poster-img ${item.poster_path?'':'noimg'}">
-        <div class="poster-img-inner" style="${item.poster_path?`background-image:url('${resolvePosterUrl(item.poster_path)}')`:''}"></div>
+        <div class="poster-img-inner" ${item.poster_path ? `data-bg="${resolvePosterUrl(item.poster_path)}"` : ''}></div>
         <div class="card-gradient"></div>
         <div class="card-body">
           <div class="title">${title}</div>
@@ -2334,7 +2432,7 @@
     div.className = 'poster-card';
     div.innerHTML = `
       <div class="poster-img ${details.poster_path ? '' : 'noimg'}">
-        <div class="poster-img-inner" style="${details.poster_path ? `background-image:url('${resolvePosterUrl(details.poster_path)}')` : ''}"></div>
+        <div class="poster-img-inner" ${details.poster_path ? `data-bg="${resolvePosterUrl(details.poster_path)}"` : ''}></div>
         <div class="card-gradient"></div>
         <div class="card-body">
           <div class="title">${title}</div>
@@ -2600,7 +2698,7 @@
               <div class="cast-scroll">
                 ${castList.map(c => `
                   <div class="cast-card" data-person-id="${c.id}" data-person-name="${(c.name||'').replace(/"/g,'&quot;')}" data-person-photo="${c.profile_path||''}">
-                    <div class="cast-photo ${c.profile_path?'':'noimg'}" style="${c.profile_path?`background-image:url('${resolvePosterUrl(c.profile_path)}')`:''}"></div>
+                    <div class="cast-photo ${c.profile_path?'':'noimg'}" ${c.profile_path ? `data-bg="${resolvePosterUrl(c.profile_path)}"` : ''}></div>
                     <div class="cast-name">${c.name}</div>
                     <div class="cast-role">${c.character||''}</div>
                   </div>
@@ -2772,8 +2870,7 @@
     // load awards summary from OMDb (TMDB has no awards data) — non-blocking
     const imdbId = details.imdb_id || (details.external_ids && details.external_ids.imdb_id);
     if(omdbKey && imdbId){
-      fetch(`https://www.omdbapi.com/?apikey=${omdbKey}&i=${imdbId}`)
-        .then(r => r.json())
+      cachedFetch('omdb:' + imdbId, () => fetch(`https://www.omdbapi.com/?apikey=${omdbKey}&i=${imdbId}`).then(r => r.json()))
         .then(d => {
           const block = $('#awardsBlock');
           if(!block) return;
@@ -3115,7 +3212,7 @@
             try{
               const data = await tmdb('/tv/' + id + '/season/' + seasonNum);
               (data.episodes||[]).forEach(ep => { episodesState['S'+seasonNum+'E'+ep.episode_number] = !nowFull; });
-            }catch(e){}
+            }catch(e){ showToast('Não foi possível carregar a temporada ' + seasonNum + '. Tente de novo.'); }
           }
           btn.classList.remove('busy');
           updateSeasonCount(seasonNum, total);
@@ -3194,17 +3291,18 @@
         }
         const allBtn = $('#btnWatchedAll');
         if(allBtn) allBtn.classList.add('busy');
-        for(const s of seasons){
-          if(seasonEpisodesCache[s.season_number]){
-            seasonEpisodesCache[s.season_number].forEach(ep => { episodesState['S'+s.season_number+'E'+ep.episode_number] = true; });
-          } else {
+        // temporadas que faltam são buscadas todas ao mesmo tempo (antes: uma por vez)
+        let failedSeasons = 0;
+        await Promise.all(seasons.map(async (s) => {
+          if(!seasonEpisodesCache[s.season_number]){
             try{
               const data = await tmdb('/tv/' + id + '/season/' + s.season_number);
               seasonEpisodesCache[s.season_number] = data.episodes || [];
-              (data.episodes||[]).forEach(ep => { episodesState['S'+s.season_number+'E'+ep.episode_number] = true; });
-            }catch(e){}
+            }catch(e){ failedSeasons++; return; }
           }
-        }
+          seasonEpisodesCache[s.season_number].forEach(ep => { episodesState['S'+s.season_number+'E'+ep.episode_number] = true; });
+        }));
+        if(failedSeasons) showToast(failedSeasons === 1 ? 'Uma temporada não carregou e ficou sem marcar. Tente de novo.' : failedSeasons + ' temporadas não carregaram e ficaram sem marcar. Tente de novo.');
         seasons.forEach(s => updateSeasonCount(s.season_number, s.episode_count));
         $all('#seasonsAccordion input[type=checkbox]').forEach(cb => {
           const s = cb.dataset.season, ep = cb.dataset.ep;
@@ -3212,7 +3310,7 @@
         });
         if(allBtn) allBtn.classList.remove('busy');
         updateTopProgress();
-        stampWatched($('.btn-row-main'), 'Tudo assistido');
+        if(!failedSeasons) stampWatched($('.btn-row-main'), 'Tudo assistido');
         await persistEpisodes();
       });
       const interruptBtn = $('#btnInterrupt');
@@ -3228,19 +3326,42 @@
       }
     }
 
-    $('#btnWant').addEventListener('click', async () => {
-      if(isWant){ delete myData.watchlist[key]; } else { myData.watchlist[key] = Object.assign({}, dataForSave, { added_at: new Date().toISOString().slice(0,10) }); }
+    // ♥ e "Quero assistir" só mudam os próprios botões (e os rótulos espelhados no
+    // menu ⋮): redesenhar o modal inteiro custava ~85ms por toque num celular médio
+    function applyWantFavState(){
+      const want = !!myData.watchlist[key], fav = !!myData.favorites[key];
+      const heart = $('#btnFavHeart');
+      if(heart){
+        heart.classList.toggle('active', fav);
+        heart.title = fav ? 'Remover dos favoritos' : 'Favoritar';
+        const hs = heart.querySelector('svg'); if(hs) hs.setAttribute('fill', fav ? 'currentColor' : 'none');
+      }
+      const favLbl = $('#menuAddFavLabel'); if(favLbl) favLbl.textContent = fav ? 'Remover dos favoritos' : 'Adicionar aos favoritos';
+      const favIco = $('#menuAddFav svg'); if(favIco) favIco.setAttribute('fill', fav ? 'currentColor' : 'none');
+      const wb = $('#btnWant');
+      if(wb){
+        wb.classList.toggle('on', want); wb.classList.toggle('want', want);
+        wb.innerHTML = `<svg viewBox="0 0 24 24" fill="${want?'currentColor':'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-6-4-6 4V3z"/></svg> ${want ? 'Na lista' : 'Quero assistir'}`;
+      }
+      const wLbl = $('#menuWatchLaterLabel'); if(wLbl) wLbl.textContent = want ? 'Remover do Quero assistir' : 'Quero assistir';
+      const wIco = $('#menuWatchLater svg'); if(wIco) wIco.setAttribute('fill', want ? 'currentColor' : 'none');
+      const sheetTitle = $('.actions-sheet-title'); if(sheetTitle) sheetTitle.textContent = isWatched ? 'Assistindo' : (want ? 'Na lista' : title);
+    }
+    $('#btnWant').addEventListener('click', () => {
+      const wasWant = !!myData.watchlist[key];
+      if(wasWant){ delete myData.watchlist[key]; } else { myData.watchlist[key] = Object.assign({}, dataForSave, { added_at: new Date().toISOString().slice(0,10) }); }
+      applyWantFavState();
+      pulse($('#btnWant'));
+      showToast(wasWant ? 'Removido do Quero assistir' : 'Adicionado ao Quero assistir ★');
       saveMyProfile();
-      showToast(isWant ? 'Removido do Quero assistir' : 'Adicionado ao Quero assistir ★');
-      detailAfterRender = (m) => pulse($('#btnWant', m));
-      openDetail(mediaType, id, details, true);
     });
-    $('#btnFavHeart').addEventListener('click', async () => {
-      if(isFav){ delete myData.favorites[key]; } else { myData.favorites[key] = Object.assign({}, dataForSave, { added_at: new Date().toISOString().slice(0,10) }); }
+    $('#btnFavHeart').addEventListener('click', () => {
+      const wasFav = !!myData.favorites[key];
+      if(wasFav){ delete myData.favorites[key]; } else { myData.favorites[key] = Object.assign({}, dataForSave, { added_at: new Date().toISOString().slice(0,10) }); }
+      applyWantFavState();
+      pulse($('#btnFavHeart'), wasFav ? 'pulse' : 'pop');
+      showToast(wasFav ? 'Removido dos favoritos' : 'Adicionado aos favoritos!');
       saveMyProfile();
-      showToast(isFav ? 'Removido dos favoritos' : 'Adicionado aos favoritos!');
-      detailAfterRender = (m) => pulse($('#btnFavHeart', m), isFav ? 'pulse' : 'pop');
-      openDetail(mediaType, id, details, true);
     });
     const saveBtn = $('#saveRatingBtn');
     if(saveBtn){
@@ -3280,7 +3401,8 @@
     // reserva o espaço da fileira enquanto carrega (sem salto de layout no fim do modal)
     el.innerHTML = `<div class="section-title">Você também pode gostar</div><div class="trend-scroll">${skeletonPostersHTML(4)}</div>`;
     try{
-      const data = await tmdb('/' + mediaType + '/' + id + '/recommendations');
+      const data = await tmdbCached('/' + mediaType + '/' + id + '/recommendations');
+      if(!el.isConnected) return; // o modal foi redesenhado/fechado enquanto carregava
       const results = (data.results||[]).filter(r => r.poster_path).slice(0, 12);
       if(!results.length){ el.innerHTML = ''; return; }
       el.innerHTML = `<div class="section-title">Você também pode gostar</div><div class="trend-scroll" id="modalRecScroll"></div>`;
@@ -3354,7 +3476,8 @@
 
     async function loadPage(p){
       try{
-        const data = await tmdb('/' + mediaType + '/' + id + '/reviews', { page: p });
+        const data = await tmdbCached('/' + mediaType + '/' + id + '/reviews', { page: p });
+        if(!el.isConnected) return;
         totalPages = data.total_pages || 1;
         const results = data.results || [];
         if(p === 1) listEl.innerHTML = '';
@@ -3490,13 +3613,13 @@
       body.innerHTML = `
         <div class="section-title">Pôster</div>
         <div class="customize-grid" id="posterChoices">
-          <div class="customize-thumb poster-thumb ${!selectedPoster?'selected':''}" data-url="" style="${details.poster_path?`background-image:url('${resolvePosterUrl(details.poster_path)}')`:''}">${details.poster_path?'':'<span class="thumb-label">Original</span>'}</div>
-          ${posters.map(p => `<div class="customize-thumb poster-thumb ${selectedPoster===resolvePosterUrl(p.file_path)?'selected':''}" data-url="${resolvePosterUrl(p.file_path)}" style="background-image:url('${resolvePosterUrl(p.file_path)}')"></div>`).join('')}
+          <div class="customize-thumb poster-thumb ${!selectedPoster?'selected':''}" data-url="" ${details.poster_path ? `data-bg="${resolvePosterUrl(details.poster_path)}"` : ''}>${details.poster_path?'':'<span class="thumb-label">Original</span>'}</div>
+          ${posters.map(p => `<div class="customize-thumb poster-thumb ${selectedPoster===resolvePosterUrl(p.file_path)?'selected':''}" data-url="${resolvePosterUrl(p.file_path)}" data-bg="${resolvePosterUrl(p.file_path)}"></div>`).join('')}
         </div>
         <div class="section-title">Banner</div>
         <div class="customize-grid" id="backdropChoices">
-          <div class="customize-thumb backdrop-thumb ${!selectedBackdrop?'selected':''}" data-url="" style="${details.backdrop_path?`background-image:url('${resolveBackdropUrl(details.backdrop_path)}')`:''}">${details.backdrop_path?'':'<span class="thumb-label">Original</span>'}</div>
-          ${backdrops.map(b => `<div class="customize-thumb backdrop-thumb ${selectedBackdrop===resolveBackdropUrl(b.file_path)?'selected':''}" data-url="${resolveBackdropUrl(b.file_path)}" style="background-image:url('${resolveBackdropUrl(b.file_path)}')"></div>`).join('')}
+          <div class="customize-thumb backdrop-thumb ${!selectedBackdrop?'selected':''}" data-url="" ${details.backdrop_path ? `data-bg="${THUMB_W + details.backdrop_path}"` : ''}>${details.backdrop_path?'':'<span class="thumb-label">Original</span>'}</div>
+          ${backdrops.map(b => `<div class="customize-thumb backdrop-thumb ${selectedBackdrop===resolveBackdropUrl(b.file_path)?'selected':''}" data-url="${resolveBackdropUrl(b.file_path)}" data-bg="${THUMB_W + b.file_path}"></div>`).join('')}
         </div>
       `;
       $all('.poster-thumb', body).forEach(t => t.addEventListener('click', () => {
@@ -3609,6 +3732,7 @@
     }
     perfilView = { mode: 'main' };
     renderPerfilBody();
+    markRendered('perfil');
     if(isMine && apiKey) syncMissingReleaseDates();
   }
 
@@ -3715,7 +3839,7 @@
     const genreNames = (item.genre_ids||[]).map(gid => genreMap[item.media_type] && genreMap[item.media_type][gid]).filter(Boolean).slice(0,2);
     div.innerHTML = `
       <div class="poster-img ${item.poster_path?'':'noimg'}">
-        <div class="poster-img-inner" style="${item.poster_path?`background-image:url('${resolvePosterUrl(item.poster_path)}')`:''}"></div>
+        <div class="poster-img-inner" ${item.poster_path ? `data-bg="${resolvePosterUrl(item.poster_path)}"` : ''}></div>
         ${progressInfo ? `<div class="progress-strip"><div class="progress-strip-fill ${progressInfo.color}" style="width:${progressInfo.percent}%"></div></div>` : ''}
         <div class="card-gradient"></div>
         <div class="card-body">
@@ -3740,7 +3864,6 @@
   // ---------------- media tabs (séries / filmes) ----------------
   let mediaViewMode = { tv: 'grid', movie: 'grid' };
   let mediaSubTab = { tv: 'naoterminadas', movie: 'quero' };
-  let mediaFilter = { tv: 'all', movie: 'all' };
   let mediaSort = { tv: 'recent', movie: 'added' };
   let filmesQueroGenreFilter = 'all';
   let seriesGenreFilter = 'all';
@@ -3804,9 +3927,21 @@
     renderMediaTab('movie');
   });
 
+  // assinatura do que cada aba mostra: se nada mudou desde o último desenho, a troca
+  // de aba só mostra a seção (antes reconstruía centenas de pôsteres a cada visita)
+  const tabRenderSig = {};
+  function viewSig(){ return dataVersion + '|' + viewingNickname + '|' + (viewingDataNick || ''); }
+  function currentTabSig(k){
+    const extra = k === 'listas' ? JSON.stringify([listasView, listDetailState]) : k === 'perfil' ? perfilView.mode : k === 'stats' ? statsSubTab : '';
+    return viewSig() + '|' + extra;
+  }
+  function markRendered(k){ tabRenderSig[k] = currentTabSig(k); }
   function renderMediaTab(mediaType){
     const containerId = mediaType === 'tv' ? 'seriesContent' : 'filmesContent';
     const el = $('#' + containerId);
+    const sig = [viewSig(), mediaType === 'tv' ? mediaSubTab.tv : mediaSubTab.movie, mediaSort[mediaType], mediaViewMode[mediaType], mediaType === 'tv' ? seriesGenreFilter : filmesQueroGenreFilter].join('|');
+    if(el && el.children.length && tabRenderSig[mediaType] === sig) return;
+    tabRenderSig[mediaType] = sig;
     try{
       const sub = mediaType === 'tv' ? mediaSubTab.tv : mediaSubTab.movie;
       if(sub === 'embreve'){ renderEmBreve(el, mediaType); return; }
@@ -3905,20 +4040,26 @@
   }
 
   let syncingShowStatuses = false;
+  // títulos para os quais a TMDB já foi consultada nesta sessão (sem isso, cada
+  // redesenho de aba refazia as buscas e regravava o documento inteiro)
+  const syncAttempted = new Set();
   async function syncMissingShowStatuses(){
     if(syncingShowStatuses) return;
     const pending = Object.entries(myData.watched)
-      .filter(([k, i]) => i.media_type === 'tv' && seriesStatusOf(i) === 'watched' && !i.show_status)
+      .filter(([k, i]) => i.media_type === 'tv' && seriesStatusOf(i) === 'watched' && !i.show_status && !syncAttempted.has('status:' + k))
       .slice(0, 50);
     if(!pending.length) return;
     syncingShowStatuses = true;
+    let changed = false;
     try{
       await Promise.all(pending.map(async ([key, item]) => {
+        syncAttempted.add('status:' + key); // a TMDB não tem o dado: não tenta de novo nesta sessão
         try{
           const full = await tmdb('/tv/' + item.id);
-          if(full.status) myData.watched[key].show_status = full.status;
+          if(full.status && myData.watched[key]){ myData.watched[key].show_status = full.status; changed = true; }
         }catch(e){ /* ignora esse título e segue */ }
       }));
+      if(!changed) return;
       await saveMyProfile();
       if(currentActiveTab() === 'series') renderMediaTab('tv');
     }finally{
@@ -3935,18 +4076,22 @@
         const missing = item.media_type === 'movie' ? !item.release_date : !item.first_air_date;
         if(!missing) return;
         const k = item.media_type + '-' + item.id;
+        if(syncAttempted.has('date:' + k)) return;
         if(!targets[k]) targets[k] = { mediaType: item.media_type, id: item.id };
       });
     });
     const list = Object.values(targets).slice(0, 50);
     if(!list.length) return;
     syncingReleaseDates = true;
+    let changed = false;
     try{
       await Promise.all(list.map(async (t) => {
+        syncAttempted.add('date:' + t.mediaType + '-' + t.id);
         try{
           const full = await tmdb('/' + t.mediaType + '/' + t.id);
           const val = t.mediaType === 'movie' ? full.release_date : full.first_air_date;
           if(!val) return;
+          changed = true;
           const key = t.mediaType + '-' + t.id;
           [myData.watched[key], myData.watchlist[key], myData.favorites[key]].forEach(rec => {
             if(!rec) return;
@@ -3955,6 +4100,7 @@
           });
         }catch(e){ /* ignora esse título e segue */ }
       }));
+      if(!changed) return;
       await saveMyProfile();
       const active = currentActiveTab();
       if(['series','filmes','favoritos','perfil'].includes(active)) refreshListTabs(active);
@@ -3967,13 +4113,14 @@
   async function syncEpisodeCounts(){
     if(syncingEpisodeCounts || viewingNickname !== myNickname || !apiKey) return;
     const pending = Object.entries(myData.watched)
-      .filter(([k, i]) => i.media_type === 'tv' && !i.specials_excluded)
+      .filter(([k, i]) => i.media_type === 'tv' && !i.specials_excluded && !syncAttempted.has('eps:' + k))
       .slice(0, 30);
     if(!pending.length) return;
     syncingEpisodeCounts = true;
     try{
       await Promise.all(pending.map(async ([key, item]) => {
         try{
+          syncAttempted.add('eps:' + key);
           const full = await tmdb('/tv/' + item.id);
           const seasonsClean = (full.seasons||[]).filter(s => s.episode_count > 0 && s.season_number !== 0);
           const totalClean = seasonsClean.reduce((s,se)=>s+se.episode_count,0);
@@ -4071,7 +4218,7 @@
     const readOnly = viewingNickname !== myNickname;
     const rw = item.rewatch_count ? ` · ${item.rewatch_count + 1}x` : '';
     row.innerHTML = `
-      <div class="mr-poster" style="${item.poster_path?`background-image:url('${resolvePosterUrl(item.poster_path)}')`:''}"></div>
+      <div class="mr-poster" ${item.poster_path ? `data-bg="${resolvePosterUrl(item.poster_path)}"` : ''}></div>
       <div class="mr-body">
         <div class="mr-pill">${item.title}</div>
         <div class="mr-sub">${isDone ? 'Assistido' + rw : 'Na lista'}${item.date_watched ? ' · ' + item.date_watched : ''}</div>
@@ -4128,7 +4275,7 @@
     const statusLabel = item._status==='notwatched' ? 'Na lista' : item._status==='watching' ? 'Assistindo' : item._status==='interrupted' ? 'Interrompida' : 'Completo';
     const progressInfo = seriesProgressInfo(item);
     row.innerHTML = `
-      <div class="mr-poster" style="${item.poster_path?`background-image:url('${resolvePosterUrl(item.poster_path)}')`:''}"></div>
+      <div class="mr-poster" ${item.poster_path ? `data-bg="${resolvePosterUrl(item.poster_path)}"` : ''}></div>
       <div class="mr-body">
         <div class="mr-pill">${item.title}</div>
         <div class="mr-meta">${w}/${t||'?'} episódios</div>
@@ -4243,7 +4390,7 @@
         const row = document.createElement('div');
         row.className = 'media-row';
         row.innerHTML = `
-          <div class="mr-poster" style="${u.poster_path?`background-image:url('${resolvePosterUrl(u.poster_path)}')`:''}"></div>
+          <div class="mr-poster" ${u.poster_path ? `data-bg="${resolvePosterUrl(u.poster_path)}"` : ''}></div>
           <div class="mr-body">
             <div class="mr-pill">${u.title}</div>
             <div class="mr-meta">${u.label}</div>
@@ -4326,9 +4473,9 @@
   function coverTitleRow(item){
     const div = document.createElement('div');
     div.className = 'cover-title-row';
-    const thumb = item.poster_path ? resolvePosterUrl(item.poster_path) : (item.backdrop_path ? (BACKDROP_HQ + item.backdrop_path) : '');
+    const thumb = item.poster_path ? resolvePosterUrl(item.poster_path) : (item.backdrop_path ? (THUMB_W + item.backdrop_path) : '');
     div.innerHTML = `
-      <div class="cover-title-thumb ${thumb?'':'noimg'}" style="${thumb?`background-image:url('${thumb}')`:''}"></div>
+      <div class="cover-title-thumb ${thumb?'':'noimg'}" ${thumb ? `data-bg="${thumb}"` : ''}></div>
       <span class="cover-title-name">${item.title}</span>
     `;
     div.addEventListener('click', () => openCoverImagesForTitle(item));
@@ -4410,7 +4557,7 @@
         const url = BACKDROP_HQ + b.file_path;
         const opt = document.createElement('div');
         opt.className = 'cover-opt';
-        opt.style.backgroundImage = `url('${url}')`;
+        opt.dataset.bg = THUMB_W + b.file_path; // miniatura leve; a capa salva continua sendo a imagem grande
         opt.addEventListener('click', () => {
           myData.profile = myData.profile || {};
           myData.profile.cover = url;
@@ -4439,7 +4586,7 @@
     const genreNames = (item.genre_ids||[]).map(gid => genreMap[mediaType] && genreMap[mediaType][gid]).filter(Boolean).slice(0,2);
     div.innerHTML = `
       <div class="poster-img ${item.poster_path ? '' : 'noimg'}">
-        <div class="poster-img-inner" style="${item.poster_path ? `background-image:url('${resolvePosterUrl(item.poster_path)}')` : ''}"></div>
+        <div class="poster-img-inner" ${item.poster_path ? `data-bg="${resolvePosterUrl(item.poster_path)}"` : ''}></div>
         <div class="card-gradient"></div>
         <div class="card-body">
           <div class="title">${item.title}</div>
@@ -4480,6 +4627,7 @@
     };
     addGroup('Séries', series);
     addGroup('Filmes', movies);
+    if(containerId === 'favoritosList') markRendered('favoritos');
     if(!readOnly && apiKey) syncMissingReleaseDates();
   }
 
@@ -4497,6 +4645,7 @@
       if(listasView.mode === 'detail') listasView = { mode: 'grid' }; // lista sumiu (excluída) — volta pra grade
       renderListasGrid(el);
     }
+    markRendered('listas');
   }
 
   function renderListasGrid(el){
@@ -4536,7 +4685,7 @@
     div.innerHTML = `
       <div class="list-card-covers">
         ${covers.length
-          ? covers.map(i => `<div class="list-card-cover" style="background-image:url('${resolvePosterUrl(i.poster_path)}')"></div>`).join('')
+          ? covers.map(i => `<div class="list-card-cover" data-bg="${resolvePosterUrl(i.poster_path)}"></div>`).join('')
           : `<div class="list-card-cover noimg">🎬</div>`
         }
       </div>
@@ -4705,7 +4854,7 @@
     const genreNames = (item.genre_ids||[]).map(gid => genreMap[item.media_type] && genreMap[item.media_type][gid]).filter(Boolean).slice(0,2);
     div.innerHTML = `
       <div class="poster-img ${item.poster_path?'':'noimg'}" style="position:relative;">
-        <div class="poster-img-inner" style="${item.poster_path?`background-image:url('${resolvePosterUrl(item.poster_path)}')`:''}"></div>
+        <div class="poster-img-inner" ${item.poster_path ? `data-bg="${resolvePosterUrl(item.poster_path)}"` : ''}></div>
         <div class="card-gradient"></div>
         <div class="card-body">
           <div class="title">${escHtml(item.title)}</div>
@@ -4826,7 +4975,7 @@
     const key = mt + '-' + item.id;
     div.innerHTML = `
       <div class="poster-img" style="position:relative;">
-        <div class="poster-img-inner" style="background-image:url('${resolvePosterUrl(item.poster_path)}')"></div>
+        <div class="poster-img-inner" data-bg="${resolvePosterUrl(item.poster_path)}"></div>
         <div class="card-gradient"></div>
         <div class="card-body">
           <div class="title">${escHtml(title)}</div>
@@ -5046,14 +5195,7 @@
     return { day: days[counts.indexOf(max)], count: max };
   }
 
-  function topRatedItem(items){
-    const rated = items.filter(i => i.rating > 0);
-    if(!rated.length) return null;
-    return rated.slice().sort((a,b) =>
-      b.rating - a.rating ||
-      (a.title||'').localeCompare(b.title||'', 'pt-BR', { sensitivity: 'base' })
-    )[0];
-  }
+
 
   function avgRating(items){
     const rated = items.filter(i => i.rating > 0);
@@ -5086,6 +5228,7 @@
       return;
     }
     if(statsSubTab === 'series') renderSeriesStats(el); else renderMovieStats(el);
+    markRendered('stats');
     if(statsCountUpNext){ statsCountUpNext = false; countUp(el); }
     if(viewingNickname === myNickname && apiKey) syncEpisodeCounts();
   }
@@ -5119,7 +5262,6 @@
 
     const topGenres = topGenreTable(items, 'tv', 5);
     const avgR = avgRating(items);
-    const bestRated = topRatedItem(items);
     const activeDay = mostActiveWeekday(items);
     const rewatchedCount = items.filter(i => i.rewatch_count > 0).length;
 
@@ -5211,9 +5353,7 @@
 
     const rated = items.filter(i => i.rating > 0);
     const topGenres = topGenreTable(items, 'movie', 5);
-    const maxGenre = topGenres.length ? topGenres[0][1] : 1;
     const avgR = avgRating(items);
-    const bestRated = topRatedItem(items);
     const activeDay = mostActiveWeekday(items);
     const rewatchedCount = items.filter(i => i.rewatch_count > 0).length;
 
@@ -5300,7 +5440,7 @@
     const year = date ? date.slice(0,4) : '';
     div.innerHTML = `
       <div class="poster-img ${item.poster_path?'':'noimg'}">
-        <div class="poster-img-inner" style="${item.poster_path?`background-image:url('${resolvePosterUrl(item.poster_path)}')`:''}"></div>
+        <div class="poster-img-inner" ${item.poster_path ? `data-bg="${resolvePosterUrl(item.poster_path)}"` : ''}></div>
         <div class="card-gradient"></div>
         <div class="card-body">
           <span class="card-tag">${ICON_REFRESH} ${item.rewatch_count + 1}x</span>
@@ -5349,6 +5489,7 @@
     const btn = $('#saveNicknameBtn');
     if(!norm){ statusEl.textContent = 'Digite um apelido.'; statusEl.className = 'status-msg status-err'; return; }
     btn.disabled = true; const origLabel = btn.textContent; btn.innerHTML = '<span class="spinner"></span>Salvando...';
+    await flushProfileSave(); // grava o que estiver pendente no apelido anterior antes de trocar
     myNickname = norm;
     viewingNickname = norm;
     saveLocal('nickname', norm);
@@ -5356,6 +5497,7 @@
     $('#brandSub').textContent = 'olá, ' + norm;
     if(fsRefs){
       myData = await loadProfile(myNickname);
+      dataVersion++;
     }
     showToast('Apelido salvo ✓');
     btn.disabled = false; btn.textContent = origLabel;
@@ -5369,9 +5511,14 @@
 
     if(myNickname){ $('#nicknameInput').value = myNickname; $('#brandSub').textContent = 'olá, ' + myNickname; viewingNickname = myNickname; }
 
+    // inicialização em paralelo: gêneros (TMDB), os dois módulos do Firebase e, depois,
+    // os dois documentos do perfil — antes era tudo em fila, um esperando o outro
+    const genresReady = loadGenres();
     try{
-      const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js');
-      const { getFirestore, doc, getDoc, setDoc } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js');
+      const [{ initializeApp }, { getFirestore, doc, getDoc, setDoc }] = await Promise.all([
+        import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js'),
+        import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js')
+      ]);
       const app = initializeApp(BUILTIN_FIREBASE_CONFIG);
       const db = getFirestore(app);
       fsRefs = { db, doc, getDoc, setDoc };
@@ -5383,7 +5530,7 @@
 
     if(myNickname && fsRefs) myData = await loadProfile(myNickname);
 
-    await loadGenres();
+    await genresReady;
     $all('.filter-chip[data-catfilter]').forEach(chip => {
       chip.addEventListener('click', () => {
         catalogTypeFilter = chip.dataset.catfilter;
