@@ -56,10 +56,18 @@
        e2 modal: sombra longa e difusa + véu escuro
        Botões não flutuam: têm "curso" (sombra sólida embaixo que some ao apertar).
 
-     MOVIMENTO — só como resposta a uma ação: abrir/fechar modal e bandeja,
-       expandir temporada, apertar tecla (afunda 2px), toast, girar chevron.
-       Sem fade/slide decorativo ao renderizar listas e cards.
-       prefers-reduced-motion: tudo vira instantâneo.
+     MOVIMENTO (refinamento-ux-v1) — sempre resposta a uma ação, nunca enfeite.
+       Durações: --t-press 100ms (afundar no toque) · --t-toggle 160ms (marcar/
+       desmarcar) · --t-swap 220ms (troca de aba/subaba/filtro) · --t-enter 280ms
+       (abrir modal/folha) · --t-exit 160ms (fechar; sempre mais curto que abrir).
+       Curvas: entrada --ease-out, saída --ease-in, confirmação --spring (leve
+       ultrapassagem, só em ícones pequenos: ♥, estrela, "+", emoção).
+       Classes reutilizáveis: .pop/.pulse (confirmação de toggle), .tick (número
+       mudou), .swap-in + .stagger (conteúdo trocou; só os 8 primeiros itens
+       entram em cascata de 30ms), .busy (esperando rede), .skeleton (lugar do
+       conteúdo final), .rental-stamp (carimbo do cartão de aluguel).
+       A ação nunca espera a animação: o estado muda no mesmo quadro do toque.
+       prefers-reduced-motion: tudo vira instantâneo; o feedback de estado fica.
      ===================================================================== */
   :root{
     --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px; --s7:48px;
@@ -74,6 +82,8 @@
     --e1:0 1px 0 rgba(255,255,255,.04) inset, 0 6px 12px -6px rgba(4,8,18,.55);
     --e2:0 24px 60px -12px rgba(4,8,18,.6);
     --ease:cubic-bezier(.2,.8,.2,1);
+    --ease-out:cubic-bezier(0,0,.2,1); --ease-in:cubic-bezier(.4,0,1,1); --spring:cubic-bezier(.34,1.56,.64,1);
+    --t-press:100ms; --t-toggle:160ms; --t-swap:220ms; --t-enter:280ms; --t-exit:160ms;
     /* tema claro: balcão da locadora */
     --bg-deep:#eceef2;
     --bg-panel:#ffffff;
@@ -762,12 +772,138 @@
     background:#0b1220;color:#eef3e6;border-left:4px solid var(--gold);
     padding:var(--s3) var(--s4);border-radius:var(--r-key);font-size:var(--fs-base);font-weight:500;box-shadow:var(--e2);
     z-index:300;opacity:0;pointer-events:none;transition:opacity .2s ease, transform .2s var(--ease);
-    max-width:min(88vw, 420px);text-align:left;
+    width:max-content;max-width:min(88vw, 420px);text-align:left;
   }
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
   ::-webkit-scrollbar{width:8px;height:8px;}
   ::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+
+
+  /* =================== refinamento-ux-v1: toque, troca, carregamento =================== */
+  /* abrir/fechar: entrada mais longa que a saída; no celular a folha sobe do rodapé */
+  .overlay{animation:overlayIn var(--t-enter) var(--ease-out);}
+  .modal, .badge-modal{animation:modalIn var(--t-enter) var(--ease-out);}
+  .overlay.closing{animation:overlayOut var(--t-exit) var(--ease-in) forwards;}
+  .overlay.closing .modal, .overlay.closing .badge-modal{animation:modalOut var(--t-exit) var(--ease-in) forwards;}
+  @keyframes popupIn{from{opacity:0;transform:scale(.94);}to{opacity:1;transform:scale(1);}}
+  @keyframes popupOut{from{opacity:1;transform:scale(1);}to{opacity:0;transform:scale(.96);}}
+  .choice-overlay > .badge-modal, .choice-overlay > .modal{animation-name:popupIn;}
+  .choice-overlay.closing > .badge-modal, .choice-overlay.closing > .modal{animation-name:popupOut;}
+  @keyframes sheetIn{from{transform:translateY(48px);opacity:.6;}to{transform:translateY(0);opacity:1;}}
+  @keyframes sheetOut{from{transform:translateY(0);opacity:1;}to{transform:translateY(40px);opacity:0;}}
+  @media (max-width:600px){
+    .overlay:not(.choice-overlay) > .modal{animation-name:sheetIn;}
+    .overlay.closing:not(.choice-overlay) > .modal{animation-name:sheetOut;}
+  }
+  /* redesenho do mesmo modal (após ♥, Quero assistir…): sem reentrada nem piscada */
+  .overlay.no-enter, .overlay.no-enter > .modal{animation:none;}
+  @keyframes contentSwap{from{opacity:.35;transform:translateY(6px);}to{opacity:1;transform:none;}}
+  .overlay.no-enter > .modal.swap-in{animation:contentSwap var(--t-swap) var(--ease-out);}
+
+  /* troca de aba/subaba/filtro + cascata curta nos primeiros itens */
+  @keyframes swapIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+  @keyframes cardIn{from{opacity:0;transform:translateY(10px) scale(.98);}to{opacity:1;transform:none;}}
+  .swap-in{animation:swapIn var(--t-swap) var(--ease-out);}
+  .stagger :is(.grid, .list-cards-grid, .modal-mini-grid) > :nth-child(-n+8),
+  .stagger .trend-scroll > .poster-card:nth-child(-n+5),
+  .stagger .media-row:nth-child(-n+8),
+  .stagger .collection-row:nth-child(-n+4),
+  .stagger .combo-chart-card{animation:cardIn 260ms var(--ease-out) both;}
+  .stagger :nth-child(2):is(.poster-card, .list-card, .media-row, .collection-row){animation-delay:30ms;}
+  .stagger :nth-child(3):is(.poster-card, .list-card, .media-row, .collection-row){animation-delay:60ms;}
+  .stagger :nth-child(4):is(.poster-card, .list-card, .media-row, .collection-row){animation-delay:90ms;}
+  .stagger :nth-child(5):is(.poster-card, .list-card, .media-row){animation-delay:120ms;}
+  .stagger :nth-child(6):is(.poster-card, .list-card, .media-row){animation-delay:150ms;}
+  .stagger :nth-child(7):is(.poster-card, .list-card, .media-row){animation-delay:180ms;}
+  .stagger :nth-child(8):is(.poster-card, .list-card, .media-row){animation-delay:210ms;}
+  .season-episodes:not(.hidden){animation:swapIn var(--t-swap) var(--ease-out);}
+
+  /* toque: tudo que é tocável afunda um pouco e "assenta" (como tirar a fita da prateleira) */
+  .poster-card .poster-img, .list-card, .cast-photo, .media-row, .feeling-option, .star-wrap, .filter-chip,
+  .stat-subtab, .tab, .char-option, .cover-opt, .customize-thumb, .collection-row-header, .season-toggle, .qam-option, .period-toggle-btn{
+    transition:transform var(--t-press) var(--ease-out), box-shadow var(--t-press) var(--ease-out), background-color var(--t-toggle) ease, color var(--t-toggle) ease, border-color var(--t-toggle) ease;
+  }
+  .poster-card:active{transform:none;}
+  .poster-card:active .poster-img{transform:scale(.97);box-shadow:0 2px 4px -2px rgba(4,8,18,.6);}
+  .list-card:active, .cast-card:active .cast-photo, .char-option:active, .cover-opt:active, .customize-thumb:active{transform:scale(.97);}
+  .media-row:active{transform:scale(.985);}
+  .filter-chip:active, .period-toggle-btn:active, .feeling-option:active{transform:scale(.95);}
+  .star-wrap:active{transform:scale(.88);}
+  .stat-subtab:active, .tab:active, .qam-option:active, .collection-row-header:active, .season-toggle:active{background-color:var(--bg-panel-alt);}
+  .btn, .btn-main, .theme-btn, .season-mark-btn, .mr-check, .stat-card.clickable{transition-duration:var(--t-press);}
+
+  /* confirmação de toggle: o estado já mudou; isto só dá o "clique" visual */
+  @keyframes pop{0%{transform:scale(1);}45%{transform:scale(1.22);}100%{transform:scale(1);}}
+  @keyframes pulseKey{0%{transform:scale(.94);}100%{transform:scale(1);}}
+  @keyframes tick{0%{transform:scale(1);}40%{transform:scale(1.12);color:var(--gold-text);}100%{transform:scale(1);}}
+  .pop{animation:pop 240ms var(--spring);}
+  .pulse{animation:pulseKey 200ms var(--spring);}
+  .tick{animation:tick 260ms var(--ease-out);display:inline-block;}
+  .feeling-option.pop{animation-duration:220ms;}
+  @keyframes checkIn{from{transform:translate(-50%,-50%) rotate(45deg) scale(0);}to{transform:translate(-50%,-50%) rotate(45deg) scale(1);}}
+  .episode-row input[type=checkbox]:checked::after{animation:checkIn var(--t-toggle) var(--spring);}
+  @keyframes cardOut{to{opacity:0;transform:scale(.9);}}
+  .poster-card.leaving{animation:cardOut var(--t-exit) var(--ease-in) forwards;pointer-events:none;}
+
+  /* menu rápido (+): abre do canto do botão, fecha mais rápido */
+  @keyframes menuIn{from{opacity:0;transform:scale(.92) translateY(-4px);}to{opacity:1;transform:none;}}
+  @keyframes menuOut{to{opacity:0;transform:scale(.96);}}
+  .quick-add-menu{transform-origin:top right;animation:menuIn var(--t-toggle) var(--ease-out);}
+  .quick-add-menu.closing{animation:menuOut 120ms var(--ease-in) forwards;pointer-events:none;}
+
+  /* esperando a rede: o botão mostra que recebeu o toque */
+  .busy{position:relative;pointer-events:none;color:transparent !important;}
+  .busy > *{visibility:hidden;}
+  .busy::after{content:'';position:absolute;left:50%;top:50%;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;border:2px solid color-mix(in srgb, var(--cream) 30%, transparent);border-top-color:var(--gold);animation:spin .6s linear infinite;}
+  .btn.primary.busy::after{border-color:color-mix(in srgb, var(--on-gold) 30%, transparent);border-top-color:var(--on-gold);}
+
+  /* esqueletos com a forma do conteúdo final */
+  .detail-skeleton .modal-hero.skeleton{border-radius:0;}
+  .review-avatar.skeleton{border:none;}
+  .customize-thumb.skeleton, .cover-opt.skeleton{cursor:default;}
+  .media-row .mr-poster.skeleton{background-image:none;}
+  .trend-scroll > div:has(> .skel-poster){flex:0 0 140px;}
+
+  /* carimbo do cartão de aluguel ao marcar como assistido */
+  .btn-row-main{position:relative;}
+  .rental-stamp{
+    position:absolute;left:50%;top:50%;z-index:4;pointer-events:none;
+    display:flex;flex-direction:column;align-items:center;gap:2px;
+    padding:6px 16px 4px;border:3px solid #e5483c;border-radius:6px;color:#e5483c;background:rgba(255,250,240,.9);
+    font-family:var(--font-sign);font-size:30px;line-height:1;letter-spacing:.04em;white-space:nowrap;
+    box-shadow:0 0 0 2px rgba(255,250,240,.9);
+    animation:stamp 1.6s var(--ease-out) forwards;
+  }
+  .rental-stamp small{font-family:var(--font-ui);font-size:var(--fs-xs);font-weight:700;letter-spacing:.06em;}
+  @keyframes stamp{
+    0%{opacity:0;transform:translate(-50%,-50%) rotate(-14deg) scale(1.9);}
+    14%{opacity:1;transform:translate(-50%,-50%) rotate(-9deg) scale(.94);}
+    22%{transform:translate(-50%,-50%) rotate(-9deg) scale(1);}
+    78%{opacity:1;transform:translate(-50%,-50%) rotate(-9deg) scale(1);}
+    100%{opacity:0;transform:translate(-50%,-50%) rotate(-9deg) scale(1);}
+  }
+
+  /* toast com ação (Desfazer = rebobinar) */
+  .toast.has-action{pointer-events:auto;display:flex;align-items:center;gap:var(--s3);padding-right:var(--s2);}
+  .toast-msg{flex:1;min-width:0;}
+  .toast-action{flex-shrink:0;background:none;border:none;color:var(--gold);font-weight:700;font-size:var(--fs-base);min-height:40px;padding:0 var(--s3);border-radius:var(--r-key);cursor:pointer;display:inline-flex;align-items:center;gap:6px;}
+  .toast-action::before{content:'◀◀';font-size:9px;letter-spacing:-2px;}
+  .toast-action:active{background:rgba(255,255,255,.08);}
+
+  /* estados vazios: o próximo passo é um botão, não só texto */
+  .empty .empty-cta{margin-top:var(--s4);}
+
+  /* alvos de toque ≥ 40px sem engordar o visual */
+  .filter-chip, .quick-add-btn, .modal-icon-btn, .review-toggle-btn{position:relative;}
+  .filter-chip::after{content:'';position:absolute;inset:-6px 0;}
+  .quick-add-btn::after{content:'';position:absolute;inset:-6px;}
+  .modal-icon-btn{width:40px;height:40px;}
+  .combo-dot{width:40px;height:40px;}
+  .collection-row-header{min-height:44px;}
+  .btn.small{min-height:40px;}
+  .review-toggle-btn{min-height:40px;padding-top:0;}
+  .discuss-link-btn, .review-source-link{display:inline-block;padding:11px 0;margin:-11px 0;}
 
   @media (prefers-reduced-motion: reduce){
     html{scroll-behavior:auto;}
@@ -992,7 +1128,7 @@
       </div>
     </div>
 
-    <p class="version-note">Versão do app: <strong>2026-10-15 — build repaginacao-ui-v1</strong><br>Se essa versão não bater com a mais recente que o Claude te mandou, feche a aba inteira e abra o link de novo.</p>
+    <p class="version-note">Versão do app: <strong>2026-10-15 — build refinamento-ux-v1</strong><br>Se essa versão não bater com a mais recente que o Claude te mandou, feche a aba inteira e abra o link de novo.</p>
   </section>
 
 </main>
@@ -1337,14 +1473,80 @@
   }
 
   let toastTimer = null;
-  function showToast(msg){
+  // opts.actionLabel + opts.onAction: botão no toast (ex.: "Desfazer"), em vez de
+  // um popup de confirmação bloqueando o fluxo para ações reversíveis
+  function showToast(msg, opts){
     const el = $('#toastEl');
     if(!el) return;
-    el.textContent = msg;
+    opts = opts || {};
+    el.innerHTML = '';
+    const text = document.createElement('span');
+    text.className = 'toast-msg';
+    text.textContent = msg;
+    el.appendChild(text);
+    if(opts.actionLabel && opts.onAction){
+      const act = document.createElement('button');
+      act.type = 'button';
+      act.className = 'toast-action';
+      act.textContent = opts.actionLabel;
+      act.addEventListener('click', () => {
+        el.classList.remove('show', 'has-action');
+        clearTimeout(toastTimer);
+        opts.onAction();
+      });
+      el.appendChild(act);
+    }
+    el.classList.toggle('has-action', !!(opts.actionLabel && opts.onAction));
+    el.classList.remove('show'); void el.offsetWidth; // reinicia a entrada se já estava visível
     el.classList.add('show');
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
+    toastTimer = setTimeout(() => el.classList.remove('show', 'has-action'), opts.actionLabel ? 5000 : 2200);
   }
+  function undoToast(msg, onUndo){ showToast(msg, { actionLabel: 'Desfazer', onAction: onUndo }); }
+  const prefersReducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // carimbo de cartão de aluguel ao marcar como assistido (só um sorriso, não bloqueia nada)
+  function stampWatched(container, label){
+    if(!container) return;
+    const st = document.createElement('div');
+    st.className = 'rental-stamp';
+    const d = new Date();
+    st.innerHTML = `<span>${label || 'Assistido'}</span><small>${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}</small>`;
+    container.appendChild(st);
+    setTimeout(() => st.remove(), 1600);
+  }
+  // reinicia uma animação de "toque confirmado" num elemento
+  function pulse(el, cls){
+    if(!el) return;
+    cls = cls || 'pulse';
+    el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls);
+    setTimeout(() => el.classList.remove(cls), 400);
+  }
+  // troca de conteúdo (aba/subaba/filtro): entrada curta + cascata nos primeiros itens
+  function swapIn(el){
+    if(!el) return;
+    el.classList.remove('swap-in', 'stagger'); void el.offsetWidth;
+    el.classList.add('swap-in', 'stagger');
+    clearTimeout(el._swapTimer);
+    el._swapTimer = setTimeout(() => el.classList.remove('swap-in', 'stagger'), 600);
+  }
+  // números contam até o valor final (estatísticas, contagens)
+  function countUp(root){
+    if(!root || prefersReducedMotion()) return;
+    $all('[data-countup]', root).forEach(el => {
+      const target = parseFloat(el.dataset.countup);
+      if(!isFinite(target) || target <= 0) return;
+      const dec = (String(el.dataset.countup).split('.')[1] || '').length;
+      const t0 = performance.now(), dur = 520;
+      const fmt = (v) => dec ? v.toFixed(dec) : String(Math.round(v));
+      el.textContent = fmt(0);
+      (function frame(t){
+        const k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+        el.textContent = fmt(target * e);
+        if(k < 1) requestAnimationFrame(frame);
+      })(t0);
+    });
+  }
+  document.addEventListener('touchstart', () => {}, { passive: true }); // habilita :active em toque no iOS
 
   window.addEventListener('error', (e) => {
     console.error('Erro não tratado:', e.error || e.message);
@@ -1534,8 +1736,11 @@
   $('#brandHome').addEventListener('click', () => switchTab('explorar'));
 
   const PEEKABLE_TABS = ['series','filmes','favoritos','listas','perfil','stats'];
+  const tabScroll = {}; // cada aba lembra onde a rolagem parou
   function switchTab(name, opts){
     opts = opts || {};
+    const prevTab = document.querySelector('.tab.active') ? currentActiveTab() : null;
+    if(prevTab && prevTab !== name) tabScroll[prevTab] = window.scrollY;
     // clicar na aba Listas abre sempre a grade (a entrada de histórico criada abaixo é a da grade)
     if(name === 'listas' && opts.pushHistory !== false) listasView = { mode:'grid' };
     $all('.tab').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
@@ -1543,11 +1748,9 @@
       $('#tab-' + t).classList.toggle('hidden', t !== name);
     });
     const activeSection = $('#tab-' + name);
-    if(activeSection){
-      activeSection.classList.remove('tab-fade-in');
-      void activeSection.offsetWidth; // força reflow para reiniciar a animação
-      activeSection.classList.add('tab-fade-in');
-    }
+    if(activeSection && prevTab !== name) swapIn(activeSection);
+    if(prevTab !== name) window.scrollTo({ top: tabScroll[name] || 0, behavior: 'instant' });
+    if(name === 'stats' && prevTab !== name) statsCountUpNext = true;
     if(PEEKABLE_TABS.includes(name)) refreshListTabs(name);
     if(name === 'config' && myNickname && fsRefs){
       if(!viewingNickname) viewingNickname = myNickname;
@@ -1646,11 +1849,30 @@
       if(!val) return;
       viewingNickname = val;
       viewingDataNick = null; // "Ver" sempre busca a versão mais recente
+      const btn = $('#peekBtn');
+      btn.classList.add('busy'); btn.disabled = true; // a busca do perfil leva um instante
       refreshListTabs(currentActiveTab());
     });
     $('#peekInput').addEventListener('keydown', (e) => { if(e.key === 'Enter') $('#peekBtn').click(); });
   }
   function currentActiveTab(){ return $('.tab.active').dataset.tab; }
+  // botões dos estados vazios (um listener só, para todos)
+  document.addEventListener('click', (e) => {
+    const cta = e.target.closest('[data-empty-action]');
+    if(!cta) return;
+    const action = cta.dataset.emptyAction;
+    if(action === 'search'){
+      if(currentActiveTab() !== 'explorar') switchTab('explorar');
+      if(exploreSubTab !== 'catalogo') switchExploreSub('catalogo');
+      setTimeout(() => { const i = $('#searchInput'); if(i){ i.focus(); i.select(); } }, 60);
+    } else if(action === 'clear-search'){
+      $('#searchInput').value = ''; $('#globalTitleSearch').value = '';
+      doSearch('');
+      $('#searchInput').focus();
+    } else if(action === 'list-add'){
+      const b = $('#listAddBtn'); if(b) b.click();
+    }
+  });
 
   // ---------------- catalogo rendering ----------------
   function posterCard(item){
@@ -1685,7 +1907,7 @@
     const el = $('#' + containerId);
     el.innerHTML = '';
     if(!items.length){
-      el.innerHTML = `<div class="empty" style="grid-column:1/-1"><div class="icon">🎬</div>Nenhum resultado encontrado. Confira a grafia ou tente pelo título original.</div>`;
+      el.innerHTML = `<div class="empty" style="grid-column:1/-1"><div class="icon">🎬</div>Nenhum resultado encontrado. Confira a grafia ou tente pelo título original.<button type="button" class="btn  empty-cta" data-empty-action="clear-search">Limpar busca</button></div>`;
       return;
     }
     items.forEach(it => el.appendChild(posterCard(it)));
@@ -1864,6 +2086,7 @@
     exploreSubTab = name;
     $all('.stat-subtab[data-exploresub]').forEach(b => b.classList.toggle('active', b.dataset.exploresub === name));
     renderExplorar();
+    swapIn(name === 'catalogo' ? $('#explorarCatalogo') : $('#explorarContent'));
   }
   $all('.stat-subtab[data-exploresub]').forEach(btn => {
     btn.addEventListener('click', () => switchExploreSub(btn.dataset.exploresub));
@@ -1910,7 +2133,8 @@
       menu.style.top = (rect.top - 6 - menuH) + 'px';
     }
     function closeMenu(){
-      menu.remove();
+      menu.classList.add('closing');
+      setTimeout(() => menu.remove(), prefersReducedMotion() ? 0 : 120);
       document.removeEventListener('click', outsideHandler);
       window.removeEventListener('scroll', closeMenu, true);
     }
@@ -1922,6 +2146,7 @@
       const nowSet = !!myData.watched[key] || !!myData.watchlist[key];
       anchorBtn.classList.toggle('added', nowSet);
       anchorBtn.innerHTML = myData.watched[key] ? ICON_CHECK : ICON_PLUS;
+      pulse(anchorBtn, 'pop');
     }
 
     menu.querySelector('#qamWant').addEventListener('click', (e) => {
@@ -2216,6 +2441,31 @@
 
   // ---------------- detail modal ----------------
   let detailRenderSeq = 0;
+  let detailAfterRender = null; // efeito de confirmação a aplicar após redesenhar o modal (pulse/carimbo)
+  function renderDetailSkeleton(mediaType, id, item){
+    const root = $('#modalRoot');
+    const hadModal = !!root.querySelector(':scope > .overlay > .modal');
+    item = item || {};
+    const back = item.backdrop_path ? `background-image:url('${resolveBackdropUrl(item.backdrop_path)}')` : '';
+    root.innerHTML = `
+      <div class="overlay ${hadModal ? 'no-enter' : ''}" id="overlay">
+        <div class="modal detail-skeleton ${hadModal ? 'swap-in' : ''}" data-key="${mediaType}-${id}" aria-busy="true">
+          <div class="modal-hero ${back ? '' : 'skeleton'}" style="${back}">
+            <div class="modal-hero-actions"><button class="modal-icon-btn" id="closeModal" title="Fechar">${ICON_CLOSE}</button></div>
+          </div>
+          <div class="modal-body">
+            <h2>${escHtml(item.title || item.name || '')}</h2>
+            <div class="skeleton skel-line" style="width:45%;"></div>
+            <div class="skeleton skel-line" style="width:100%;margin-top:18px;"></div>
+            <div class="skeleton skel-line" style="width:92%;"></div>
+            <div class="skeleton skel-line" style="width:70%;"></div>
+            <div style="display:flex;gap:12px;margin-top:24px;"><div class="skeleton" style="flex:1;height:48px;border-radius:var(--r-key);"></div><div class="skeleton" style="flex:1;height:48px;border-radius:var(--r-key);"></div></div>
+          </div>
+        </div>
+      </div>`;
+    $('#closeModal').addEventListener('click', () => closeEverything());
+    $('#overlay').addEventListener('click', (e) => { if(e.target.id === 'overlay') closeEverything(); });
+  }
   async function openDetail(mediaType, id, listItem, keepStack){
     if(!keepStack){
       modalStack = [];
@@ -2231,6 +2481,8 @@
     if(apiKey && !alreadyFull){
       const mySeq = ++detailRenderSeq;
       const depthAtStart = navStack.length;
+      // resposta imediata ao toque: o modal já abre com o esqueleto do layout final
+      renderDetailSkeleton(mediaType, id, listItem);
       try{ details = await tmdb('/' + mediaType + '/' + id, { append_to_response: 'credits,external_ids' }); }catch(e){ /* fallback */ }
       // usuário voltou/fechou (ou abriu outro título) enquanto carregava: não redesenha por cima
       if(mySeq !== detailRenderSeq || navStack.length < depthAtStart) return;
@@ -2288,9 +2540,13 @@
       : null;
 
     const root = $('#modalRoot');
+    const prevModalEl = root.querySelector(':scope > .overlay > .modal');
+    const fromSkeleton = !!(prevModalEl && prevModalEl.classList.contains('detail-skeleton'));
+    const sameTitle = !!(prevModalEl && prevModalEl.dataset.key === key && !fromSkeleton);
+    const prevScroll = sameTitle ? prevModalEl.scrollTop : 0;
     root.innerHTML = `
-      <div class="overlay" id="overlay">
-        <div class="modal">
+      <div class="overlay ${prevModalEl ? 'no-enter' : ''}" id="overlay">
+        <div class="modal ${prevModalEl && !sameTitle ? 'swap-in' : ''}" data-key="${key}">
           <div class="modal-hero" style="${(customArtEntry.backdrop || details.backdrop_path) ? `background-image:url('${resolveBackdropUrl(customArtEntry.backdrop || details.backdrop_path)}')` : 'background:var(--bg-panel-alt)'}">
             <div class="modal-hero-left-actions">
               ${modalStack.length ? `<button class="modal-icon-btn" id="modalBackBtn" title="Voltar"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>` : ''}
@@ -2420,6 +2676,8 @@
       </div>
     `;
     const mainModalEl = root.querySelector('.modal');
+    if(sameTitle) mainModalEl.scrollTop = prevScroll;
+    if(detailAfterRender){ const fx = detailAfterRender; detailAfterRender = null; requestAnimationFrame(() => fx(mainModalEl)); }
     $('#closeModal').addEventListener('click', () => closeEverything());
     $('#overlay').addEventListener('click', (e) => { if(e.target.id === 'overlay') closeEverything(); });
     $all('.detail-tab-btn').forEach(btn => {
@@ -2549,6 +2807,7 @@
           const clickX = e.clientX - rect.left;
           currentRating = (clickX > rect.width/2) ? i : (i - 0.5);
           renderStars();
+          pulse($('#starsRow').children[i-1], 'pop');
         });
         row.appendChild(wrap);
       }
@@ -2566,6 +2825,7 @@
           if(currentFeelings.includes(f.id)) currentFeelings = currentFeelings.filter(x => x !== f.id);
           else currentFeelings = [...currentFeelings, f.id];
           renderFeelings();
+          pulse($('#feelingsGrid').children[FEELINGS.indexOf(f)], 'pop');
         });
         grid.appendChild(div);
       });
@@ -2593,10 +2853,15 @@
         if(isWatched){
           openWatchedChoiceMenu(
             () => {
+              const before = myData.watched[key];
               delete myData.watched[key];
               saveMyProfile();
-              showToast('Removido dos assistidos');
               openDetail(mediaType, id, details, true);
+              undoToast('Removido dos assistidos', () => {
+                myData.watched[key] = before;
+                saveMyProfile();
+                if($('#modalRoot .modal[data-key="' + key + '"]')) openDetail(mediaType, id, details, true);
+              });
             },
             () => {
               const prev = myData.watched[key] || {};
@@ -2615,6 +2880,7 @@
         delete myData.watchlist[key];
         saveMyProfile();
         showToast('Marcado como assistido ✓');
+        detailAfterRender = (m) => { pulse($('#btnWatched', m)); stampWatched($('.btn-row-main', m)); };
         openDetail(mediaType, id, details, true);
       });
     }
@@ -2626,12 +2892,18 @@
       }
       function updateSeasonCount(seasonNum, total){
         const el = $('#season-count-' + seasonNum);
-        if(el) el.textContent = countWatchedInSeason(seasonNum) + '/' + total;
+        if(el){
+          const txt = countWatchedInSeason(seasonNum) + '/' + total;
+          if(el.textContent !== txt){ el.textContent = txt; pulse(el, 'tick'); }
+        }
       }
       function updateTopProgress(){
         const wc = Object.values(episodesState).filter(Boolean).length;
         const pill = $('#progressPill');
-        if(pill) pill.textContent = wc + '/' + (totalEpisodes || '?') + ' episódios assistidos';
+        if(pill){
+          const txt = wc + '/' + (totalEpisodes || '?') + ' episódios assistidos';
+          if(pill.textContent !== txt){ pill.textContent = txt; pulse(pill, 'tick'); }
+        }
         const btn = $('#btnWatchedAll');
         if(btn){
           const full = totalEpisodes > 0 && wc >= totalEpisodes;
@@ -2673,7 +2945,7 @@
           container.classList.toggle('hidden');
           return;
         }
-        container.innerHTML = '<p style="color:var(--slate);font-size:12px;padding:8px 0;">Carregando...</p>';
+        container.innerHTML = '<div class="episode-row"><div class="skeleton" style="width:24px;height:24px;border-radius:6px;"></div><div class="skeleton skel-line" style="flex:1;margin:0;"></div></div>'.repeat(Math.min(+total || 3, 4));
         container.classList.remove('hidden');
         let episodes = [];
         let failed = false;
@@ -2784,6 +3056,7 @@
               const rect = wrap.getBoundingClientRect();
               epRatingVal = (e.clientX - rect.left > rect.width/2) ? i : (i - 0.5);
               renderEpStars();
+              pulse($('#epStarsRow').children[i-1], 'pop');
             });
             row.appendChild(wrap);
           }
@@ -2800,6 +3073,7 @@
               if(epFeelings.includes(f.id)) epFeelings = epFeelings.filter(x => x !== f.id);
               else epFeelings = [...epFeelings, f.id];
               renderEpFeelings();
+              pulse($('#epFeelingsGrid').children[FEELINGS.indexOf(f)], 'pop');
             });
             grid.appendChild(div);
           });
@@ -2825,13 +3099,15 @@
       $all('.season-toggle').forEach(el => {
         el.addEventListener('click', () => {
           el.classList.toggle('open');
-          renderSeasonEpisodes(el.dataset.season, +el.dataset.season);
+          const meta = seasons.find(x => String(x.season_number) === el.dataset.season);
+          renderSeasonEpisodes(el.dataset.season, meta ? meta.episode_count : 3);
         });
       });
       $all('.season-mark-btn').forEach(btn => {
         btn.addEventListener('click', async () => {
           const seasonNum = btn.dataset.season, total = +btn.dataset.total;
           const nowFull = countWatchedInSeason(seasonNum) >= total;
+          btn.classList.add('busy');
           if(seasonEpisodesCache[seasonNum]){
             seasonEpisodesCache[seasonNum].forEach(ep => { episodesState['S'+seasonNum+'E'+ep.episode_number] = !nowFull; });
             $all('#season-eps-' + seasonNum + ' input[type=checkbox]').forEach(cb => cb.checked = !nowFull);
@@ -2841,6 +3117,7 @@
               (data.episodes||[]).forEach(ep => { episodesState['S'+seasonNum+'E'+ep.episode_number] = !nowFull; });
             }catch(e){}
           }
+          btn.classList.remove('busy');
           updateSeasonCount(seasonNum, total);
           updateTopProgress();
           await persistEpisodes();
@@ -2863,9 +3140,9 @@
               if(!episodesState['S'+s+'E'+i]) missing.push(i);
             }
             if(missing.length){
-              confirmAction(
-                `Você marcou o episódio ${epNum} sem assistir ${missing.length===1 ? 'ao anterior' : 'aos anteriores'} desta temporada. Deseja marcar ${missing.length===1 ? 'o episódio anterior' : 'os episódios anteriores'} como assistidos também?`,
-                async () => {
+              showToast(`E${epNum} marcado. ${missing.length===1 ? 'O anterior ficou' : missing.length + ' anteriores ficaram'} sem marcar.`, {
+                actionLabel: missing.length===1 ? 'Marcar anterior' : 'Marcar anteriores',
+                onAction: () => {
                   missing.forEach(i => { episodesState['S'+s+'E'+i] = true; });
                   $all('#season-eps-' + s + ' input[type=checkbox]').forEach(cb => {
                     if(missing.includes(parseInt(cb.dataset.ep, 10))) cb.checked = true;
@@ -2873,10 +3150,9 @@
                   updateSeasonCount(s, seasonMeta ? seasonMeta.episode_count : '?');
                   updateTopProgress();
                   showToast('Episódios anteriores marcados ✓');
-                  persistEpisodes(); // sem await: o popup fecha na hora
-                },
-                { title: 'Marcar episódios anteriores?', confirmLabel: 'Sim, marcar', confirmClass: 'primary' }
-              );
+                  persistEpisodes();
+                }
+              });
             }
           }
         }
@@ -2891,10 +3167,16 @@
         if(full){
           openWatchedChoiceMenu(
             () => {
+              const before = myData.watched[key] ? Object.assign({}, myData.watched[key]) : null;
               episodesState = {};
-              showToast('Desmarcado');
               openDetail(mediaType, id, details, true);
               persistEpisodes();
+              undoToast('Episódios desmarcados', () => {
+                if(before) myData.watched[key] = before;
+                saveMyProfile();
+                if($('#modalRoot .modal[data-key="' + key + '"]')) openDetail(mediaType, id, details, true);
+                if(viewingNickname === myNickname) refreshListTabs(currentActiveTab());
+              });
             },
             () => {
               const prev = myData.watched[key] || {};
@@ -2910,6 +3192,8 @@
           );
           return;
         }
+        const allBtn = $('#btnWatchedAll');
+        if(allBtn) allBtn.classList.add('busy');
         for(const s of seasons){
           if(seasonEpisodesCache[s.season_number]){
             seasonEpisodesCache[s.season_number].forEach(ep => { episodesState['S'+s.season_number+'E'+ep.episode_number] = true; });
@@ -2926,7 +3210,9 @@
           const s = cb.dataset.season, ep = cb.dataset.ep;
           cb.checked = !!episodesState['S'+s+'E'+ep];
         });
+        if(allBtn) allBtn.classList.remove('busy');
         updateTopProgress();
+        stampWatched($('.btn-row-main'), 'Tudo assistido');
         await persistEpisodes();
       });
       const interruptBtn = $('#btnInterrupt');
@@ -2946,12 +3232,14 @@
       if(isWant){ delete myData.watchlist[key]; } else { myData.watchlist[key] = Object.assign({}, dataForSave, { added_at: new Date().toISOString().slice(0,10) }); }
       saveMyProfile();
       showToast(isWant ? 'Removido do Quero assistir' : 'Adicionado ao Quero assistir ★');
+      detailAfterRender = (m) => pulse($('#btnWant', m));
       openDetail(mediaType, id, details, true);
     });
     $('#btnFavHeart').addEventListener('click', async () => {
       if(isFav){ delete myData.favorites[key]; } else { myData.favorites[key] = Object.assign({}, dataForSave, { added_at: new Date().toISOString().slice(0,10) }); }
       saveMyProfile();
       showToast(isFav ? 'Removido dos favoritos' : 'Adicionado aos favoritos!');
+      detailAfterRender = (m) => pulse($('#btnFavHeart', m), isFav ? 'pulse' : 'pop');
       openDetail(mediaType, id, details, true);
     });
     const saveBtn = $('#saveRatingBtn');
@@ -2972,11 +3260,14 @@
     const removeBtn = $('#removeWatchedBtn');
     if(removeBtn){
       removeBtn.addEventListener('click', () => {
-        confirmAction('Tem certeza que gostaria de retirar dos assistidos?', async () => {
-          delete myData.watched[key];
+        const before = myData.watched[key];
+        delete myData.watched[key];
+        saveMyProfile();
+        closeEverything();
+        if(viewingNickname === myNickname) refreshListTabs(currentActiveTab());
+        undoToast('Removido dos assistidos', () => {
+          myData.watched[key] = before;
           saveMyProfile();
-          showToast('Removido dos assistidos');
-          closeEverything();
           if(viewingNickname === myNickname) refreshListTabs(currentActiveTab());
         });
       });
@@ -2986,10 +3277,12 @@
   async function loadRecommendationsSection(mediaType, id, currentDetails){
     const el = $('#recommendationsSection');
     if(!el || !apiKey) return;
+    // reserva o espaço da fileira enquanto carrega (sem salto de layout no fim do modal)
+    el.innerHTML = `<div class="section-title">Você também pode gostar</div><div class="trend-scroll">${skeletonPostersHTML(4)}</div>`;
     try{
       const data = await tmdb('/' + mediaType + '/' + id + '/recommendations');
       const results = (data.results||[]).filter(r => r.poster_path).slice(0, 12);
-      if(!results.length) return;
+      if(!results.length){ el.innerHTML = ''; return; }
       el.innerHTML = `<div class="section-title">Você também pode gostar</div><div class="trend-scroll" id="modalRecScroll"></div>`;
       const scroll = $('#modalRecScroll');
       results.forEach(it => {
@@ -3003,7 +3296,7 @@
         scroll.appendChild(card);
       });
       wireHScroll(scroll);
-    }catch(e){ /* silencioso: seção opcional */ }
+    }catch(e){ el.innerHTML = ''; /* silencioso: seção opcional */ }
   }
 
   function resolveReviewAvatarUrl(avatarPath){
@@ -3056,7 +3349,7 @@
     const discussUrl = 'https://www.themoviedb.org/' + mediaType + '/' + id + '/discuss';
     const discussLinkHTML = `<a href="${discussUrl}" target="_blank" rel="noopener" class="discuss-link-btn">Ver discussões completas na TMDB ↗</a>`;
     const headerHTML = `<div class="section-title-row"><div class="section-title">Comentários da comunidade (TMDB)</div>${discussLinkHTML}</div>`;
-    el.innerHTML = `${headerHTML}<div class="reviews-list" id="reviewsList"></div>`;
+    el.innerHTML = `${headerHTML}<div class="reviews-list" id="reviewsList">${'<div class="review-card"><div class="review-head"><div class="review-avatar skeleton"></div><div class="review-meta"><div class="skeleton skel-line w40" style="margin:0;"></div></div></div><div class="skeleton skel-line"></div><div class="skeleton skel-line w60"></div></div>'.repeat(2)}</div>`;
     const listEl = $('#reviewsList');
 
     async function loadPage(p){
@@ -3064,6 +3357,7 @@
         const data = await tmdb('/' + mediaType + '/' + id + '/reviews', { page: p });
         totalPages = data.total_pages || 1;
         const results = data.results || [];
+        if(p === 1) listEl.innerHTML = '';
         if(p === 1 && !results.length){
           el.innerHTML = `${headerHTML}<p style="color:var(--slate);font-size:12.5px;">Ninguém comentou esse título na TMDB ainda.</p>`;
           return;
@@ -3084,7 +3378,7 @@
           });
           el.appendChild(btn);
         }
-      }catch(e){ /* seção opcional: falha silenciosa */ }
+      }catch(e){ if(p === 1) el.innerHTML = ''; /* seção opcional: falha silenciosa */ }
     }
     loadPage(1);
   }
@@ -3113,7 +3407,7 @@
               </div>
             </div>
             <div class="person-content">
-              <div id="personFilmoBody"><p style="color:var(--slate);font-size:12.5px;">Carregando...</p></div>
+              <div id="personFilmoBody"><div class="modal-mini-grid">${skeletonPostersHTML(8)}</div></div>
             </div>
           </div>
         </div>
@@ -3169,7 +3463,7 @@
               </button>
               <h2>Personalizar</h2>
             </div>
-            <div id="customizeBody"><p style="color:var(--slate);font-size:12.5px;">Carregando imagens...</p></div>
+            <div id="customizeBody"><div class="section-title">Pôster</div><div class="customize-grid">${'<div class="customize-thumb skeleton"></div>'.repeat(8)}</div></div>
             <button class="btn primary" id="saveCustomArt" style="width:100%;margin-top:6px;">Salvar</button>
           </div>
         </div>
@@ -3455,6 +3749,7 @@
     mediaSubTab.tv = name;
     $all('.stat-subtab[data-mediasub]', $('#tab-series')).forEach(b => b.classList.toggle('active', b.dataset.mediasub === name));
     renderMediaTab('tv');
+    swapIn($('#seriesContent'));
   }
   $all('.stat-subtab[data-mediasub]', $('#tab-series')).forEach(btn => {
     btn.addEventListener('click', () => switchSeriesSub(btn.dataset.mediasub));
@@ -3464,6 +3759,7 @@
     $all('.stat-subtab[data-mediasub]', $('#tab-filmes')).forEach(b => b.classList.toggle('active', b.dataset.mediasub === name));
     updateFilmesSortOptions();
     renderMediaTab('movie');
+    swapIn($('#filmesContent'));
   }
   $all('.stat-subtab[data-mediasub]', $('#tab-filmes')).forEach(btn => {
     btn.addEventListener('click', () => switchFilmesSub(btn.dataset.mediasub));
@@ -3539,7 +3835,7 @@
       }
 
       if(!items.length){
-        el.innerHTML = `<div class="empty"><div class="icon">🎟️</div>Nada por aqui com esse filtro ainda. Troque a aba acima ou busque um título em <strong>Explorar</strong>.</div>`;
+        el.innerHTML = `<div class="empty"><div class="icon">🎟️</div>Nada por aqui com esse filtro ainda. Troque a aba acima ou busque um título novo.<button type="button" class="btn primary empty-cta" data-empty-action="search">Buscar um título</button></div>`;
         return;
       }
 
@@ -3595,6 +3891,7 @@
             if(mediaType === 'movie') filmesQueroGenreFilter = chip.dataset.gfilter;
             else seriesGenreFilter = chip.dataset.gfilter;
             renderMediaTab(mediaType);
+            swapIn(el);
           });
         });
       }
@@ -3763,10 +4060,8 @@
     popup.addEventListener('click', (e) => { if(e.target === popup) goBack(); });
     popup.querySelector('#closeChoiceMenu').addEventListener('click', () => goBack());
     popup.querySelector('#choiceRewatch').addEventListener('click', async () => { goBack(); await onRewatch(); });
-    popup.querySelector('#choiceRemove').addEventListener('click', () => {
-      animatePopupClose(popup, closePopupVisual);
-      confirmAction('Tem certeza que gostaria de retirar dos assistidos?', onRemove, { replaceNav: true });
-    });
+    // retirar é reversível (o toast oferece "Desfazer"), então não pede uma segunda confirmação
+    popup.querySelector('#choiceRemove').addEventListener('click', async () => { goBack(); await onRemove(); });
   }
 
   function movieListRow(item){
@@ -3791,10 +4086,15 @@
       if(isDone){
         openWatchedChoiceMenu(
           () => {
+            const before = myData.watched[key];
             delete myData.watched[key];
             saveMyProfile();
-            showToast('Removido dos assistidos');
             renderMediaTab('movie');
+            undoToast('Removido dos assistidos', () => {
+              myData.watched[key] = before;
+              saveMyProfile();
+              renderMediaTab('movie');
+            });
           },
           () => {
             const prev = myData.watched[key] || {};
@@ -3905,7 +4205,7 @@
       el.innerHTML = `<div class="empty"><div class="icon">📅</div>Nada previsto por aqui. Estreias dos títulos da sua lista aparecem nesta aba.</div>`;
       return;
     }
-    el.innerHTML = skeletonFeedHTML(2);
+    el.innerHTML = '<div class="media-row"><div class="mr-poster skeleton"></div><div class="mr-body"><div class="skeleton skel-line w60" style="margin:0 0 8px;"></div><div class="skeleton skel-line w40"></div></div></div>'.repeat(Math.min(candidates.length, 4));
     const today = new Date().toISOString().slice(0,10);
     try{
       const upcoming = [];
@@ -3998,7 +4298,7 @@
     $('#sortSelect').value = gridSort;
     $('#sortSelect').addEventListener('change', (e) => { gridSort = e.target.value; renderCollectionGrid(el); });
     $all('.filter-chip', el).forEach(chip => {
-      chip.addEventListener('click', () => { gridFilter = chip.dataset.filter; renderCollectionGrid(el); });
+      chip.addEventListener('click', () => { gridFilter = chip.dataset.filter; renderCollectionGrid(el); swapIn($('#collectionGrid')); });
     });
     const gridEl = $('#collectionGrid');
     if(!list.length){
@@ -4088,7 +4388,7 @@
     area.innerHTML = `
       <button class="btn small" id="backToCoverTitles">${ICON_CHEVRON_LEFT} Voltar</button>
       <div class="section-title">${item.title}</div>
-      <p style="color:var(--slate);font-size:12.5px;">Carregando todas as imagens...</p>
+      <div class="cover-grid">${'<div class="cover-opt skeleton"></div>'.repeat(6)}</div>
     `;
     $('#backToCoverTitles').addEventListener('click', renderCoverTitleGrid);
     try{
@@ -4161,7 +4461,7 @@
     });
     const readOnly = viewingNickname !== myNickname;
     if(!entries.length){
-      el.innerHTML = `<div class="empty"><div class="icon">🎟️</div>Nenhum favorito ainda. Toque no coração de um filme ou série para guardá-lo aqui.</div>`;
+      el.innerHTML = `<div class="empty"><div class="icon">🎟️</div>Nenhum favorito ainda. Toque no coração de um filme ou série para guardá-lo aqui.<button type="button" class="btn primary empty-cta" data-empty-action="search">Buscar um título</button></div>`;
       return;
     }
     el.innerHTML = '';
@@ -4369,12 +4669,14 @@
       btn.addEventListener('click', () => {
         listDetailState.subtab = btn.dataset.listsub;
         renderListDetail(el, listId);
+        swapIn($('#listItemsGrid'));
       });
     });
     $all('.filter-chip[data-listfilter]', el).forEach(chip => {
       chip.addEventListener('click', () => {
         listDetailState.filter = chip.dataset.listfilter;
         renderListDetail(el, listId);
+        swapIn($('#listItemsGrid'));
       });
     });
     renderListItemsGrid(listId, isMine);
@@ -4388,7 +4690,7 @@
     const filtered = listDetailState.filter === 'all' ? items : items.filter(i => i.media_type === listDetailState.filter);
     if(!filtered.length){
       grid.className = '';
-      grid.innerHTML = `<div class="empty"><div class="icon">🎬</div>Nenhum título aqui ainda.${isMine ? ' Use <strong>Adicionar título</strong> para começar.' : ''}</div>`;
+      grid.innerHTML = `<div class="empty"><div class="icon">🎬</div>Nenhum título aqui ainda.${isMine ? '<button type="button" class="btn primary empty-cta" data-empty-action="list-add">Adicionar título</button>' : ''}</div>`;
       return;
     }
     grid.className = 'grid';
@@ -4419,12 +4721,18 @@
       removeBtn.title = 'Remover da lista';
       removeBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        confirmAction(`Remover "${item.title}" desta lista?`, () => {
-          delete myData.lists[listId].items[item.media_type + '-' + item.id];
-          showToast('Removido da lista');
-          renderListItemsGrid(listId, isMine);
+        const itemKey = item.media_type + '-' + item.id;
+        const before = myData.lists[listId].items[itemKey];
+        div.classList.add('leaving'); // a caixa sai da prateleira antes de a grade se refazer
+        delete myData.lists[listId].items[itemKey];
+        saveMyProfile();
+        setTimeout(() => renderListItemsGrid(listId, isMine), prefersReducedMotion() ? 0 : 160);
+        undoToast(`"${item.title}" saiu da lista`, () => {
+          if(!myData.lists[listId]) return;
+          myData.lists[listId].items[itemKey] = before;
           saveMyProfile();
-        }, { confirmLabel: 'Sim, remover' });
+          renderListItemsGrid(listId, isMine);
+        });
       });
       div.querySelector('.poster-img').appendChild(removeBtn);
     }
@@ -4553,6 +4861,7 @@
         };
       }
       refreshBtn();
+      pulse(btn, 'pop');
       showToast(wasAdded ? 'Removido da lista' : 'Adicionado à lista ✓');
       saveMyProfile();
     });
@@ -4564,8 +4873,10 @@
   let statsSubTab = 'series';
   function switchStatsSub(name){
     statsSubTab = name;
+    statsCountUpNext = true;
     $all('.stat-subtab[data-substat]').forEach(b => b.classList.toggle('active', b.dataset.substat === name));
     renderStats();
+    swapIn($('#statsContent'));
   }
   $all('.stat-subtab[data-substat]').forEach(btn => {
     btn.addEventListener('click', () => switchStatsSub(btn.dataset.substat));
@@ -4654,7 +4965,7 @@
         ${panels.map((p,i) => `
           <div class="combo-panel ${i===0?'':'hidden'}" data-panel="${i}">
             <div class="bs-title">${p.title}</div>
-            <div class="bs-num">${p.num}</div>
+            <div class="bs-num" ${typeof p.num === 'number' ? `data-countup="${p.num}"` : ''}>${p.num}</div>
             <div class="bs-sub">${p.sub}</div>
             ${p.chart}
           </div>
@@ -4766,14 +5077,16 @@
     return t;
   }
 
+  let statsCountUpNext = false; // números contam só ao entrar na aba/subaba, não a cada sincronização
   function renderStats(){
     const el = $('#statsContent');
     const allWatched = Object.values(viewingData.watched);
     if(!allWatched.length){
-      el.innerHTML = `<div class="empty"><div class="icon">📊</div>Nenhum título assistido ainda para gerar estatísticas. Marque algo como assistido e os números aparecem aqui.</div>`;
+      el.innerHTML = `<div class="empty"><div class="icon">📊</div>Nenhum título assistido ainda para gerar estatísticas. Marque algo como assistido e os números aparecem aqui.${viewingNickname === myNickname ? '<button type="button" class="btn primary empty-cta" data-empty-action="search">Buscar um título</button>' : ''}</div>`;
       return;
     }
     if(statsSubTab === 'series') renderSeriesStats(el); else renderMovieStats(el);
+    if(statsCountUpNext){ statsCountUpNext = false; countUp(el); }
     if(viewingNickname === myNickname && apiKey) syncEpisodeCounts();
   }
 
@@ -4842,9 +5155,9 @@
       ])}
 
       <div class="stat-cards" style="margin-top:22px;">
-        <div class="stat-card"><div class="num">${items.length + watchlistItems.length}</div><div class="lbl">Séries adicionadas</div></div>
-        <div class="stat-card"><div class="num">${watchlistItems.length}</div><div class="lbl">Ainda não assistidas</div></div>
-        <div class="stat-card"><div class="num">${epsRemaining}</div><div class="lbl">Episódios restantes</div></div>
+        <div class="stat-card"><div class="num" data-countup="${items.length + watchlistItems.length}">${items.length + watchlistItems.length}</div><div class="lbl">Séries adicionadas</div></div>
+        <div class="stat-card"><div class="num" data-countup="${watchlistItems.length}">${watchlistItems.length}</div><div class="lbl">Ainda não assistidas</div></div>
+        <div class="stat-card"><div class="num" data-countup="${epsRemaining}">${epsRemaining}</div><div class="lbl">Episódios restantes</div></div>
       </div>
 
       <div class="section-title">Principais gêneros</div>
@@ -4854,8 +5167,8 @@
       </table>
 
       <div class="stat-cards" style="margin-top:18px;">
-        <div class="stat-card"><div class="num">${avgR!=null ? avgR.toFixed(1) : '—'}</div><div class="lbl">Sua nota média</div></div>
-        <div class="stat-card clickable" id="rewatchedSeriesCard"><div class="num">${rewatchedCount}</div><div class="lbl">Reassistidas</div></div>
+        <div class="stat-card"><div class="num" data-countup="${avgR!=null ? avgR.toFixed(1) : '—'}">${avgR!=null ? avgR.toFixed(1) : '—'}</div><div class="lbl">Sua nota média</div></div>
+        <div class="stat-card clickable" id="rewatchedSeriesCard"><div class="num" data-countup="${rewatchedCount}">${rewatchedCount}</div><div class="lbl">Reassistidas</div></div>
         <div class="stat-card"><div class="num" style="font-size:13px;">${activeDay ? activeDay.day : '—'}</div><div class="lbl">Dia que mais assiste</div></div>
       </div>
 
@@ -4942,9 +5255,9 @@
       ])}
 
       <div class="stat-cards">
-        <div class="stat-card"><div class="num">${items.length + watchlistItems.length}</div><div class="lbl">Filmes adicionados</div></div>
-        <div class="stat-card"><div class="num">${watchlistItems.length}</div><div class="lbl">Na lista</div></div>
-        <div class="stat-card"><div class="num">${rated.length}</div><div class="lbl">Avaliações dadas</div></div>
+        <div class="stat-card"><div class="num" data-countup="${items.length + watchlistItems.length}">${items.length + watchlistItems.length}</div><div class="lbl">Filmes adicionados</div></div>
+        <div class="stat-card"><div class="num" data-countup="${watchlistItems.length}">${watchlistItems.length}</div><div class="lbl">Na lista</div></div>
+        <div class="stat-card"><div class="num" data-countup="${rated.length}">${rated.length}</div><div class="lbl">Avaliações dadas</div></div>
       </div>
 
       <div class="section-title">Principais gêneros</div>
@@ -4954,8 +5267,8 @@
       </table>
 
       <div class="stat-cards" style="margin-top:18px;">
-        <div class="stat-card"><div class="num">${avgR!=null ? avgR.toFixed(1) : '—'}</div><div class="lbl">Sua nota média</div></div>
-        <div class="stat-card clickable" id="rewatchedMoviesCard"><div class="num">${rewatchedCount}</div><div class="lbl">Reassistidos</div></div>
+        <div class="stat-card"><div class="num" data-countup="${avgR!=null ? avgR.toFixed(1) : '—'}">${avgR!=null ? avgR.toFixed(1) : '—'}</div><div class="lbl">Sua nota média</div></div>
+        <div class="stat-card clickable" id="rewatchedMoviesCard"><div class="num" data-countup="${rewatchedCount}">${rewatchedCount}</div><div class="lbl">Reassistidos</div></div>
         <div class="stat-card"><div class="num" style="font-size:13px;">${activeDay ? activeDay.day : '—'}</div><div class="lbl">Dia que mais assiste</div></div>
       </div>
 
